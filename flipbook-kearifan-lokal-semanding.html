@@ -142,7 +142,109 @@
         position: relative;
         min-height: 560px;
         animation: pageFlip 0.5s ease;
+        transform-style: preserve-3d;
+        backface-visibility: hidden;
+        will-change: transform, box-shadow;
         flex-shrink: 0;
+      }
+
+      /* 3D flip animations */
+      .page.flip-out {
+        display: flex;
+        animation: flipOut 0.7s ease forwards;
+        transform-origin: left center;
+      }
+
+      .page.flip-in {
+        display: flex;
+        animation: flipIn 0.7s ease forwards;
+        transform-origin: right center;
+      }
+
+      @keyframes flipOut {
+        0% { transform: rotateY(0deg); box-shadow: var(--shadow), var(--page-shadow); }
+        60% { transform: rotateY(-120deg); box-shadow: 0 20px 40px rgba(0,0,0,0.35); }
+        100% { transform: rotateY(-180deg) translateX(-10px); opacity: 0.98; }
+      }
+
+      @keyframes flipIn {
+        0% { transform: rotateY(180deg) translateX(10px); opacity: 0.98; box-shadow: 0 20px 40px rgba(0,0,0,0.35); }
+        60% { transform: rotateY(40deg); }
+        100% { transform: rotateY(0deg); box-shadow: var(--shadow), var(--page-shadow); }
+      }
+
+      /* subtle thickness effect */
+      .page::after {
+        content: "";
+        position: absolute;
+        top: 6px;
+        right: -8px;
+        bottom: 6px;
+        width: 8px;
+        background: linear-gradient(90deg, rgba(0,0,0,0.06), rgba(0,0,0,0.02));
+        border-radius: 0 3px 3px 0;
+        transform: translateZ(-1px);
+        pointer-events: none;
+      }
+
+      /* Two-page spread layout */
+      .book {
+        position: relative;
+        width: 100%;
+        max-width: 820px;
+        height: 560px;
+        margin: 0 auto;
+        perspective: 2200px;
+      }
+
+      /* Position pages as half spreads */
+      .page {
+        position: absolute;
+        top: 0;
+        height: 100%;
+        width: 50%;
+        transform-style: preserve-3d;
+        transition: transform 0.7s ease, box-shadow 0.7s ease;
+        backface-visibility: hidden;
+        display: none;
+      }
+
+      .page.right {
+        left: 50%;
+        transform-origin: left center;
+        border-radius: 0 16px 16px 0;
+        box-shadow: var(--shadow), var(--page-shadow);
+      }
+
+      .page.left {
+        left: 0;
+        transform-origin: right center;
+        border-radius: 16px 0 0 16px;
+        box-shadow: var(--shadow), var(--page-shadow);
+        transform: rotateY(-180deg);
+      }
+
+      /* visible page (current right) */
+      .page.visible {
+        display: block;
+        z-index: 5;
+        transform: rotateY(0deg);
+      }
+
+      /* pages that have been flipped to left */
+      .page.flipped {
+        display: block;
+        z-index: 3;
+        transform: rotateY(-180deg);
+      }
+
+      /* animation helpers for flip action */
+      .anim-flip-next {
+        animation: flipOut 0.7s ease forwards;
+      }
+
+      .anim-flip-in {
+        animation: flipIn 0.7s ease forwards;
       }
 
       .page.active {
@@ -1515,16 +1617,102 @@
           });
       }
 
-      function goToPage(n, autoPlay) {
-        if (autoPlay) ensureBacksound();
-        // Hide current
-        document.getElementById("page-" + currentPage).classList.remove("active");
-        // Show new
-        currentPage = n;
-        document.getElementById("page-" + currentPage).classList.add("active");
+      // Render spread: set which pages are left/right/visible.
+      function renderSpread(pageIndex) {
+        for (let i = 0; i < TOTAL_PAGES; i++) {
+          const el = document.getElementById("page-" + i);
+          if (!el) continue;
+          el.classList.remove("left", "right", "visible", "flipped", "anim-flip-next", "anim-flip-in", "flip-in", "flip-out", "active");
+          // Default hide
+          el.style.display = "none";
+        }
+
+        // Pages before pageIndex are on the left (flipped)
+        for (let i = 0; i < pageIndex; i++) {
+          const el = document.getElementById("page-" + i);
+          if (!el) continue;
+          el.classList.add("left", "flipped");
+          el.style.display = "block";
+        }
+
+        // Current page (right side)
+        const currentEl = document.getElementById("page-" + pageIndex);
+        if (currentEl) {
+          currentEl.classList.add("right", "visible", "active");
+          currentEl.style.display = "block";
+        }
+
+        // next page (right-side neighbor) should be hidden until flipped
+        const nextEl = document.getElementById("page-" + (pageIndex + 1));
+        if (nextEl) {
+          // keep it ready on the right but not visible front until flip
+          nextEl.classList.add("right");
+          nextEl.style.display = "block";
+          nextEl.style.zIndex = 4;
+          // but keep it rotated (backside) initially
+          // it will be animated in during flip
+          nextEl.style.transform = "rotateY(180deg)";
+        }
+
+        currentPage = pageIndex;
         updateNav();
-        // Scroll to top
-        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      // Flip to page n (next/prev). This animates current right page out and incoming page in.
+      function goToPage(n, autoPlay) {
+        if (n === currentPage) return;
+        if (n < 0 || n >= TOTAL_PAGES) return;
+        if (autoPlay) ensureBacksound();
+
+        const from = document.getElementById("page-" + currentPage);
+        const to = document.getElementById("page-" + n);
+        if (!from || !to) return;
+
+        const forward = n > currentPage;
+
+        // Prepare 'to' on right side
+        to.classList.add("right");
+        to.style.display = "block";
+        to.style.transform = "rotateY(180deg)";
+        to.style.zIndex = 6;
+
+        // animate outgoing page
+        from.style.zIndex = 7;
+        from.classList.add("anim-flip-next");
+
+        // animate incoming
+        to.classList.add("anim-flip-in");
+
+        const onEnd = () => {
+          // mark pages correctly after animation
+          from.classList.remove("anim-flip-next", "visible", "active");
+          from.classList.add("left", "flipped");
+          from.style.zIndex = 3;
+
+          to.classList.remove("anim-flip-in");
+          to.classList.add("visible", "active");
+          to.style.transform = "rotateY(0deg)";
+          to.style.zIndex = 5;
+
+          // cleanup any inline styles
+          to.style.zIndex = "";
+
+          // ensure previous pages stay flipped
+          for (let i = 0; i < n; i++) {
+            const p = document.getElementById("page-" + i);
+            if (p) {
+              p.classList.add("left", "flipped");
+              p.style.display = "block";
+            }
+          }
+
+          currentPage = n;
+          updateNav();
+
+          from.removeEventListener("animationend", onEnd);
+        };
+
+        from.addEventListener("animationend", onEnd);
       }
 
       function nextPage() {
@@ -1536,9 +1724,12 @@
       }
 
       function updateNav() {
-        document.getElementById("btnPrev").disabled = currentPage === 0;
-        document.getElementById("btnNext").disabled = currentPage === TOTAL_PAGES - 1;
-        document.getElementById("pageIndicator").textContent = "Halaman " + currentPage + " / " + (TOTAL_PAGES - 1);
+        const btnPrevEl = document.getElementById("btnPrev");
+        const btnNextEl = document.getElementById("btnNext");
+        if (btnPrevEl) btnPrevEl.disabled = currentPage === 0;
+        if (btnNextEl) btnNextEl.disabled = currentPage === TOTAL_PAGES - 1;
+        const pageIndicator = document.getElementById("pageIndicator");
+        if (pageIndicator) pageIndicator.textContent = "Halaman " + currentPage + " / " + (TOTAL_PAGES - 1);
       }
 
       // Song simulation (Web Audio API)
