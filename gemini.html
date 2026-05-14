@@ -262,6 +262,61 @@
       .swiper-button-prev {
         left: -50px;
       }
+
+      /* Kuis Styling */
+      .quiz-option {
+        display: flex;
+        align-items: center;
+        padding: 6px 8px;
+        margin-bottom: 4px;
+        border-radius: 3px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+
+      .quiz-option input[type="radio"] {
+        cursor: pointer;
+        margin-right: 8px;
+      }
+
+      .quiz-option.correct {
+        background: #d4edda;
+        color: #155724;
+        border-left: 3px solid #28a745;
+        padding-left: 10px;
+      }
+
+      .quiz-option.wrong {
+        background: #f8d7da;
+        color: #721c24;
+        border-left: 3px solid #dc3545;
+        padding-left: 10px;
+      }
+
+      .quiz-feedback {
+        margin-top: 8px;
+        padding: 8px 10px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: bold;
+        display: none;
+      }
+
+      .quiz-feedback.show {
+        display: block;
+      }
+
+      .quiz-feedback.correct-msg {
+        background: #d4edda;
+        color: #155724;
+        border-left: 3px solid #28a745;
+      }
+
+      .quiz-feedback.wrong-msg {
+        background: #f8d7da;
+        color: #721c24;
+        border-left: 3px solid #dc3545;
+      }
     </style>
   </head>
   <body>
@@ -476,31 +531,65 @@
           </div>
           <h2 class="page-title" style="text-align: center">EVALUASI: YUK, KITA COBA!</h2>
 
+          <!-- Soal 1 -->
           <div class="kuis-box">
             <p style="margin: 0 0 5px 0"><b>Soal 1:</b> Pusat pemerintahan Tuban pada zaman dahulu pernah berada di desa...</p>
-            <input type="radio" name="s1" /> Prunggahan Kulon<br />
-            <input type="radio" name="s1" /> Kowang<br />
-            <input type="radio" name="s1" /> Gesing
+            <div style="padding-left: 0">
+              <label class="quiz-option">
+                <input type="radio" name="s1" value="prunggahan" /> Prunggahan Kulon
+              </label>
+              <label class="quiz-option">
+                <input type="radio" name="s1" value="kowang" /> Kowang
+              </label>
+              <label class="quiz-option">
+                <input type="radio" name="s1" value="gesing" /> Gesing
+              </label>
+            </div>
+            <div class="quiz-feedback" id="fb1"></div>
           </div>
 
+          <!-- Soal 2 -->
           <div class="kuis-box">
             <p style="margin: 0 0 5px 0"><b>Soal 2:</b> Tradisi syukuran agar padi subur di Desa Ngino disebut...</p>
-            <input type="radio" name="s2" /> Siraman Waranggono<br />
-            <input type="radio" name="s2" /> Ritual Keleman<br />
-            <input type="radio" name="s2" /> Kenduren
+            <div style="padding-left: 0">
+              <label class="quiz-option">
+                <input type="radio" name="s2" value="siraman" /> Siraman Waranggono
+              </label>
+              <label class="quiz-option">
+                <input type="radio" name="s2" value="keleman" /> Ritual Keleman
+              </label>
+              <label class="quiz-option">
+                <input type="radio" name="s2" value="kenduren" /> Kenduren
+              </label>
+            </div>
+            <div class="quiz-feedback" id="fb2"></div>
           </div>
 
+          <!-- Soal 3 -->
           <div class="kuis-box">
             <p style="margin: 0 0 5px 0"><b>Soal 3:</b> Kerajinan tanah liat seperti gendok dan kuali banyak dibuat di desa...</p>
-            <input type="radio" name="s3" /> Bejagung<br />
-            <input type="radio" name="s3" /> Karang<br />
-            <input type="radio" name="s3" /> Bektiharjo
+            <div style="padding-left: 0">
+              <label class="quiz-option">
+                <input type="radio" name="s3" value="bejagung" /> Bejagung
+              </label>
+              <label class="quiz-option">
+                <input type="radio" name="s3" value="karang" /> Karang
+              </label>
+              <label class="quiz-option">
+                <input type="radio" name="s3" value="bektiharjo" /> Bektiharjo
+              </label>
+            </div>
+            <div class="quiz-feedback" id="fb3"></div>
           </div>
 
           <div style="text-align: center; margin-top: 15px">
-            <button class="btn-video" style="background: #27ae60; border: none; cursor: pointer" onclick="alert('Hebat! Kamu sudah paham betul tentang budaya Semanding!\n\n(Jika ada yang salah: Ayo coba lagi! Jangan menyerah ya.)')">
+            <button class="btn-video" style="background: #27ae60; border: none; cursor: pointer" onclick="submitQuiz()">
               KIRIM JAWABAN
             </button>
+          </div>
+
+          <div id="quiz-result" style="display: none; margin-top: 15px; padding: 12px; background: #e8f5e9; border: 2px solid #4caf50; border-radius: 6px; text-align: center">
+            <p id="result-text" style="margin: 0; font-weight: bold; color: #2e7d32; font-size: 14px"></p>
           </div>
 
           <h3 class="page-subtitle" style="margin-top: 30px">TANTANGAN AKHIR</h3>
@@ -604,6 +693,88 @@
           audioButton.title = "Nyalakan Suara";
         }
       });
+
+      // Kunci Jawaban Quiz
+      const correctAnswers = {
+        s1: "prunggahan", // Prunggahan Kulon
+        s2: "keleman",    // Ritual Keleman
+        s3: "karang"      // Karang
+      };
+
+      function submitQuiz() {
+        let answered = 0;
+        let correct = 0;
+
+        // Check setiap soal
+        for (let i = 1; i <= 3; i++) {
+          const questionName = "s" + i;
+          const selected = document.querySelector(`input[name="${questionName}"]:checked`);
+          const feedbackEl = document.getElementById("fb" + i);
+          const options = document.querySelectorAll(`input[name="${questionName}"]`);
+
+          // Reset styling
+          options.forEach(opt => {
+            opt.closest(".quiz-option").classList.remove("correct", "wrong");
+          });
+          feedbackEl.classList.remove("show", "correct-msg", "wrong-msg");
+
+          if (!selected) {
+            feedbackEl.textContent = "❌ Pilih jawaban dulu ya!";
+            feedbackEl.className = "quiz-feedback show wrong-msg";
+            continue;
+          }
+
+          answered++;
+          const selectedOption = selected.closest(".quiz-option");
+          const isCorrect = selected.value === correctAnswers[questionName];
+
+          if (isCorrect) {
+            correct++;
+            selectedOption.classList.add("correct");
+            feedbackEl.textContent = "✅ Benar! Jawaban yang tepat.";
+            feedbackEl.className = "quiz-feedback show correct-msg";
+          } else {
+            selectedOption.classList.add("wrong");
+            // Highlight the correct answer
+            options.forEach(opt => {
+              if (opt.value === correctAnswers[questionName]) {
+                opt.closest(".quiz-option").classList.add("correct");
+              }
+            });
+            feedbackEl.textContent = "❌ Jawaban salah. Coba lihat jawaban yang benar (hijau).";
+            feedbackEl.className = "quiz-feedback show wrong-msg";
+          }
+        }
+
+        // Tampilkan hasil
+        const resultDiv = document.getElementById("quiz-result");
+        const resultText = document.getElementById("result-text");
+
+        if (answered === 0) {
+          resultDiv.style.display = "none";
+          return;
+        }
+
+        resultDiv.style.display = "block";
+
+        if (correct === 3) {
+          resultText.textContent = "🏆 Sempurna! Kamu sudah paham betul tentang budaya Semanding! Hebat sekali!";
+          resultDiv.style.background = "#c8e6c9";
+          resultDiv.style.borderColor = "#2e7d32";
+        } else if (correct === 2) {
+          resultText.textContent = "⭐ Bagus! " + correct + " dari 3 benar. Ayo coba lagi!";
+          resultDiv.style.background = "#fff9c4";
+          resultDiv.style.borderColor = "#f57f17";
+        } else if (correct === 1) {
+          resultText.textContent = "💪 Lumayan! " + correct + " dari 3 benar. Baca lagi materinya ya!";
+          resultDiv.style.background = "#ffccbc";
+          resultDiv.style.borderColor = "#d84315";
+        } else {
+          resultText.textContent = "📖 Semangat! Coba baca ulang materi dari awal!";
+          resultDiv.style.background = "#ffccbc";
+          resultDiv.style.borderColor = "#d84315";
+        }
+      }
     </script>
   </body>
 </html>
