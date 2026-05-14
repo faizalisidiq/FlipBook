@@ -26,7 +26,7 @@
       }
 
       body {
-        background: linear-gradient(135deg, #1a0a00 0%, #3d1a00 40%, #1a3d1a 100%);
+        background: linear-gradient(180deg, #e9f7e6 0%, #cfe9c3 45%, #a7d7a0 100%);
         min-height: 100vh;
         font-family: "Nunito", sans-serif;
         overflow-x: hidden;
@@ -39,9 +39,12 @@
         position: fixed;
         inset: 0;
         background-image:
-          radial-gradient(circle at 20% 20%, rgba(212, 160, 23, 0.08) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(45, 106, 45, 0.08) 0%, transparent 50%),
-          repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(212, 160, 23, 0.03) 20px, rgba(212, 160, 23, 0.03) 21px),
-          repeating-linear-gradient(-45deg, transparent, transparent 20px, rgba(45, 106, 45, 0.03) 20px, rgba(45, 106, 45, 0.03) 21px);
+          radial-gradient(circle at 15% 20%, rgba(255, 255, 255, 0.55) 0%, transparent 45%),
+          radial-gradient(circle at 85% 15%, rgba(255, 255, 255, 0.45) 0%, transparent 50%),
+          radial-gradient(circle at 20% 80%, rgba(109, 182, 93, 0.22) 0%, transparent 55%),
+          radial-gradient(circle at 80% 85%, rgba(127, 200, 112, 0.2) 0%, transparent 55%),
+          repeating-linear-gradient(135deg, rgba(74, 133, 67, 0.08) 0 2px, transparent 2px 16px),
+          repeating-linear-gradient(45deg, rgba(119, 181, 102, 0.08) 0 2px, transparent 2px 18px);
         pointer-events: none;
         z-index: 0;
       }
@@ -118,7 +121,7 @@
         max-width: 820px;
         perspective: 2600px;
         position: relative;
-        height: clamp(420px, calc(100vh - 220px), 560px);
+        height: clamp(620px, 84vh, 900px);
         isolation: isolate;
       }
 
@@ -141,7 +144,7 @@
         display: flex;
         justify-content: center;
         align-items: stretch;
-        min-height: 420px;
+        min-height: 520px;
         height: 100%;
         gap: 0;
         transform-style: preserve-3d;
@@ -154,10 +157,10 @@
         position: absolute;
         inset: -10px -16px -14px -16px;
         border-radius: 18px;
-        background: linear-gradient(135deg, #2a1406, #1a0c05 45%, #140803 100%);
+        background: linear-gradient(135deg, #7a4a1f, #5a3416 45%, #3f240f 100%);
         box-shadow:
-          0 24px 40px rgba(0, 0, 0, 0.45),
-          inset 0 0 0 2px rgba(255, 248, 231, 0.05);
+          0 20px 32px rgba(0, 0, 0, 0.35),
+          inset 0 0 0 2px rgba(255, 248, 231, 0.12);
         transform: translateZ(-28px);
         z-index: 2;
         pointer-events: none;
@@ -168,7 +171,9 @@
         position: absolute;
         inset: 6px 10px 6px 10px;
         border-radius: 12px;
-        background: repeating-linear-gradient(90deg, rgba(255, 248, 231, 0.08) 0 2px, rgba(0, 0, 0, 0.04) 2px 4px), linear-gradient(180deg, rgba(255, 248, 231, 0.15), rgba(0, 0, 0, 0.08));
+        background:
+          repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.18) 0 2px, rgba(0, 0, 0, 0.04) 2px 4px),
+          linear-gradient(180deg, rgba(232, 245, 233, 0.5), rgba(197, 225, 198, 0.2));
         transform: translateZ(-10px);
         z-index: 2;
         pointer-events: none;
@@ -179,7 +184,10 @@
         display: none;
         width: 100%;
         max-width: 420px;
-        background: var(--batik-cream);
+        background:
+          radial-gradient(circle at 15% 20%, rgba(255, 255, 255, 0.6) 0%, transparent 45%),
+          radial-gradient(circle at 85% 30%, rgba(255, 255, 255, 0.35) 0%, transparent 55%),
+          linear-gradient(180deg, #fffaf0 0%, #f7f0da 100%);
         border-radius: 4px 16px 16px 4px;
         box-shadow:
           0 10px 26px rgba(0, 0, 0, 0.28),
@@ -193,7 +201,7 @@
         will-change: transform, box-shadow;
         flex-shrink: 0;
         transform: translateZ(0);
-        border: 1px solid rgba(123, 63, 0, 0.15);
+        border: 1px solid rgba(76, 122, 76, 0.25);
       }
 
       /* 3D flip animations */
@@ -247,7 +255,7 @@
         right: -8px;
         bottom: 6px;
         width: 8px;
-        background: linear-gradient(90deg, rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0.02));
+        background: linear-gradient(90deg, rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.02));
         border-radius: 0 3px 3px 0;
         z-index: 3;
         pointer-events: none;
@@ -425,9 +433,24 @@
         position: absolute;
         inset: 0;
         background-image:
-          radial-gradient(circle at 30% 30%, rgba(212, 160, 23, 0.15) 0%, transparent 40%), radial-gradient(circle at 70% 70%, rgba(255, 248, 231, 0.08) 0%, transparent 40%),
-          repeating-conic-gradient(from 0deg at 50% 50%, rgba(212, 160, 23, 0.05) 0deg 30deg, transparent 30deg 60deg);
+          radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.25) 0%, transparent 40%),
+          radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.15) 0%, transparent 40%),
+          repeating-conic-gradient(from 0deg at 50% 50%, rgba(255, 255, 255, 0.08) 0deg 25deg, transparent 25deg 50deg),
+          repeating-linear-gradient(120deg, rgba(72, 140, 78, 0.18) 0 6px, transparent 6px 18px);
         pointer-events: none;
+      }
+
+      .cover-page::after {
+        content: "";
+        position: absolute;
+        inset: auto 0 0 0;
+        height: 28%;
+        background:
+          radial-gradient(circle at 15% 100%, rgba(120, 200, 120, 0.6) 0%, transparent 55%),
+          radial-gradient(circle at 85% 100%, rgba(90, 170, 100, 0.65) 0%, transparent 60%),
+          linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(77, 144, 82, 0.35) 70%);
+        pointer-events: none;
+        z-index: 1;
       }
 
       .cover-content {
@@ -437,10 +460,20 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        padding: 30px 24px;
+        padding: 20px 22px;
         height: 100%;
         text-align: center;
-        gap: 12px;
+        gap: 10px;
+      }
+
+      .cover-hero {
+        width: 100%;
+        max-width: 360px;
+        height: clamp(140px, 22vh, 200px);
+        object-fit: cover;
+        border-radius: 14px;
+        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+        border: 2px solid rgba(255, 248, 231, 0.25);
       }
 
       .cover-emblem {
@@ -541,10 +574,20 @@
       /* CONTENT PAGES */
       .page-header {
         padding: 16px 20px 12px 24px;
-        background: linear-gradient(135deg, var(--batik-brown), #5a2d00);
+        background: linear-gradient(135deg, #2f6d2f, #3f8b3f);
         color: var(--batik-cream);
         position: relative;
         overflow: hidden;
+      }
+
+      .page-header::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.15) 0%, transparent 55%),
+          radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.12) 0%, transparent 60%);
+        pointer-events: none;
       }
 
       .page-header::after {
@@ -592,6 +635,30 @@
         min-height: 0;
         -webkit-overflow-scrolling: touch;
         overscroll-behavior: contain;
+        max-height: calc(100% - 96px);
+      }
+
+      .page-body::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 40px;
+        background:
+          radial-gradient(circle at 10% 100%, rgba(130, 200, 120, 0.45) 0%, transparent 55%),
+          radial-gradient(circle at 90% 100%, rgba(110, 190, 110, 0.4) 0%, transparent 60%);
+        pointer-events: none;
+      }
+
+      .page.active,
+      .page.visible,
+      .page.visible-left,
+      .page.flipped,
+      .page.flip-out,
+      .page.flip-in {
+        display: flex;
+        flex-direction: column;
       }
 
       .page-body::-webkit-scrollbar {
@@ -692,6 +759,58 @@
 
       .fact-card strong {
         color: var(--batik-green);
+      }
+
+      .gallery-section {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin: 10px 0;
+      }
+
+      .gallery-figure {
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .gallery-image {
+        width: 100%;
+        height: 160px;
+        object-fit: cover;
+        border-radius: 10px;
+        border: 1px solid rgba(123, 63, 0, 0.15);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+      }
+
+      .gallery-video {
+        width: 100%;
+        height: 180px;
+        border-radius: 10px;
+        border: 1px solid rgba(123, 63, 0, 0.15);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+      }
+
+      .gallery-placeholder {
+        width: 100%;
+        height: 160px;
+        border-radius: 10px;
+        border: 2px dashed rgba(123, 63, 0, 0.25);
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.65), rgba(212, 160, 23, 0.08));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.78rem;
+        color: #5a2d00;
+        text-align: center;
+        padding: 10px;
+      }
+
+      .gallery-caption {
+        font-size: 0.75rem;
+        color: #5a2d00;
+        line-height: 1.5;
       }
 
       /* Tujuan box */
@@ -1165,12 +1284,20 @@
         }
         .page-body {
           padding: 12px 14px 36px;
+          max-height: calc(100% - 88px);
         }
         .book-wrapper {
-          height: clamp(400px, calc(100vh - 200px), 520px);
+          height: clamp(580px, 90vh, 900px);
         }
         .petunjuk-grid {
           grid-template-columns: 1fr 1fr;
+        }
+        .cover-hero {
+          height: clamp(150px, 26vh, 220px);
+        }
+        .cover-content {
+          padding: 18px 18px;
+          gap: 8px;
         }
       }
 
@@ -1219,6 +1346,15 @@
         align-items: center;
         gap: 6px;
       }
+
+      /* Justify text in page 4 */
+      #page-4 p {
+        text-align: justify;
+      }
+
+      #page-4 .value-list li {
+        text-align: justify;
+      }
     </style>
   </head>
   <body>
@@ -1239,6 +1375,7 @@
             <div class="cover-batik"></div>
             <div class="cover-content">
               <div class="cover-emblem">🏛️</div>
+              <img class="cover-hero" src="asset/gambar/cover.webp" alt="Pemandangan Semanding" />
               <div class="cover-label">E-Book Interaktif</div>
               <div class="cover-title">Menggali Kearifan<br />Lokal Semanding</div>
               <div class="cover-divider"></div>
@@ -1269,6 +1406,7 @@
                 Puji syukur kita panjatkan ke hadirat Tuhan Yang Maha Esa. Atas rahmat dan hidayah-Nya, buku elektronik interaktif berjudul <strong>"Menggali Kearifan Lokal Semanding"</strong> ini dapat diselesaikan dengan baik.
               </p>
               <br />
+              <p class="pengantar-text">Kecamatan Semanding bukan hanya tempat tinggal kita, tetapi juga tanah yang kaya akan sejarah, tradisi, dan nilai-nilai luhur yang diwariskan leluhur.</p>
               <div class="pengantar-highlight">💡 Tahukah kamu? Dahulu, pusat pemerintahan Kabupaten Tuban pernah berada di Prunggahan Kulon, wilayah Semanding!</div>
               <p class="pengantar-text">Melalui buku ini, kita diajak untuk lebih mengenal, mencintai, dan melestarikan budaya sendiri. Selamat membaca dan menjelajah!</p>
               <br />
@@ -1347,6 +1485,29 @@
                 Kecamatan Semanding terletak di bagian selatan Tuban, dengan wilayah yang sebagian besar berupa <strong>perbukitan kapur</strong>. Pada masa Kerajaan Majapahit, pusat pemerintahan Tuban pernah berada di
                 <strong>Desa Prunggahan Kulon</strong>, Semanding.
               </p>
+              <p style="font-size: 0.8rem; line-height: 1.7; color: #3a1500">
+                Di sini juga terdapat banyak sumber mata air yang jernih dan menjadi tempat wisata favorit, seperti Pemandian Bektiharjo. Selain itu, daerah ini kaya akan hasil bumi seperti padi, jagung, dan kelapa.
+              </p>
+
+              <div class="section-title">Galeri Foto & Info</div>
+              <div class="gallery-section">
+                <figure class="gallery-figure">
+                  <div class="gallery-placeholder">Gambar: Peta Wilayah Semanding</div>
+                  <figcaption class="gallery-caption">
+                    <strong>Fakta Menarik:</strong>
+                    <ul class="value-list">
+                      <li>Semanding terdiri dari banyak desa, seperti Prunggahan Wetan, Bektiharjo, Karang, dan lain-lain.</li>
+                      <li>Wilayahnya yang bergunung-gunung membuat udaranya sejuk dan asri.</li>
+                    </ul>
+                  </figcaption>
+                </figure>
+                <figure class="gallery-figure">
+                  <img class="gallery-image" src="asset/gambar/pemandian bektiharjo.jpg" alt="Pemandian Bektiharjo" />
+                  <figcaption class="gallery-caption">
+                    <strong>Keterangan:</strong> Tempat ini tidak hanya untuk mandi, tapi juga memiliki nilai sejarah dan sering digunakan untuk upacara adat.
+                  </figcaption>
+                </figure>
+              </div>
             </div>
             <div class="page-num">Halaman 3</div>
           </div>
@@ -1362,40 +1523,126 @@
               <div class="tujuan-box">
                 <div class="tujuan-title">🎯 Tujuan Pembelajaran</div>
                 <ul>
-                  <li>Mengenal tradisi unik di Semanding</li>
-                  <li>Memahami makna dan nilai yang terkandung</li>
+                  <li>Siswa dapat mengenal berbagai tradisi unik di Semanding.</li>
+                  <li>Siswa dapat memahami makna dan nilai yang terkandung di dalamnya.</li>
                 </ul>
               </div>
 
-              <div class="section-title">1. Ritual Keleman</div>
+              <div class="section-title">Materi Inti</div>
+              <strong style="color: #7b3f00">Tradisi yang Masih Hidup di Tengah Masyarakat</strong>
+
+              <div class="section-title">1. Ritual Keleman / Tingkepan Dewi Sri</div>
               <p style="font-size: 0.79rem; line-height: 1.7; color: #3a1500">
-                Tradisi masyarakat Desa Ngino sebagai bentuk penghormatan kepada <strong>Dewi Sri</strong> (simbol kesuburan). Dilaksanakan saat padi mulai subur atau menjelang panen.
+                Ritual Keleman atau Tingkepan Dewi Sri merupakan salah satu tradisi masyarakat Jawa yang masih dilaksanakan oleh warga Desa Ngino dan daerah sekitarnya sebagai bentuk penghormatan kepada Dewi Sri. Dalam kepercayaan masyarakat Jawa, Dewi Sri dianggap sebagai simbol kesuburan, kemakmuran, dan pelindung tanaman padi. Oleh karena itu, ritual ini dilakukan sebagai ungkapan rasa syukur sekaligus harapan agar hasil pertanian tetap baik dan panen melimpah.
+              </p>
+              <p style="font-size: 0.79rem; line-height: 1.7; color: #3a1500">
+                Ritual ini biasanya dilaksanakan ketika tanaman padi mulai tumbuh subur atau menjelang masa panen. Kata “tingkepan” memiliki arti selamatan atau upacara khusus yang dilakukan untuk memohon keselamatan dan keberkahan. Sementara itu, istilah “keleman” berkaitan dengan kegiatan masyarakat tani dalam menjaga kesuburan sawah dan tanaman.
+              </p>
+              <p style="font-size: 0.79rem; line-height: 1.7; color: #3a1500">
+                Pada pelaksanaannya, warga desa berkumpul di area persawahan dengan membawa berbagai makanan tradisional, terutama tumpeng, jajanan pasar, hasil bumi, dan lauk-pauk. Tumpeng berbentuk kerucut melambangkan rasa syukur kepada Tuhan atas rezeki yang diberikan. Selain itu, hasil bumi yang dibawa menunjukkan harapan agar tanah tetap subur dan memberikan kehidupan bagi masyarakat.
+              </p>
+              <p style="font-size: 0.79rem; line-height: 1.7; color: #3a1500">
+                Acara biasanya diawali dengan doa bersama yang dipimpin oleh tokoh masyarakat atau sesepuh desa. Dalam doa tersebut, masyarakat memohon agar tanaman padi terhindar dari hama, bencana, dan penyakit yang dapat menyebabkan gagal panen. Setelah doa selesai, sebagian makanan dan hasil bumi ditaburkan di sawah. Kegiatan ini memiliki makna simbolis sebagai “tolak bala”, yaitu menolak segala hal buruk yang dapat mengganggu pertanian dan kehidupan masyarakat.
+              </p>
+              <p style="font-size: 0.79rem; line-height: 1.7; color: #3a1500">
+                Selain sebagai tradisi adat, Ritual Keleman juga menjadi sarana mempererat hubungan sosial antarwarga. Masyarakat bekerja sama menyiapkan acara, memasak makanan, hingga mengikuti doa bersama. Hal ini menunjukkan adanya nilai gotong royong dan kebersamaan yang masih dijaga dalam kehidupan desa.
               </p>
 
-              <div class="info-box">Warga berkumpul di sawah membawa tumpeng, jajanan pasar, dan hasil bumi. Diakhiri dengan menabur makanan ke sawah sebagai "tolak bala".</div>
-
-              <div class="section-title">Nilai-Nilai Ritual Keleman</div>
+              <div class="section-title">Nilai-Nilai dalam Ritual Keleman</div>
               <ul class="value-list">
-                <li><strong>Rasa Syukur</strong> – bersyukur atas hasil pertanian</li>
-                <li><strong>Menjaga Alam</strong> – hidup selaras dengan alam</li>
-                <li><strong>Gotong Royong</strong> – dilakukan bersama-sama</li>
-                <li><strong>Pelestarian Budaya</strong> – warisan turun-temurun</li>
-                <li><strong>Spiritual</strong> – doa dan usaha berjalan bersama</li>
+                <li><strong>Nilai Rasa Syukur</strong> atas nikmat Tuhan, terutama hasil pertanian.</li>
+                <li><strong>Nilai Menjaga Keseimbangan Alam</strong> agar sawah dan tanaman terawat.</li>
+                <li><strong>Nilai Gotong Royong</strong> melalui kerja sama dan kepedulian warga.</li>
+                <li><strong>Nilai Pelestarian Budaya</strong> sebagai warisan turun-temurun.</li>
+                <li><strong>Nilai Spiritual</strong> bahwa doa dan usaha harus berjalan bersama.</li>
               </ul>
 
               <div class="section-title">2. Siraman Waranggono</div>
-              <p style="font-size: 0.79rem; line-height: 1.7; color: #3a1500">Prosesi penyucian bagi para penari <strong>Tayub (Waranggono)</strong> sebelum tampil di depan umum. Dilaksanakan di Pemandian Bektiharjo.</p>
-              <div class="fact-card">Para calon penari mengenakan <strong>pakaian putih</strong> sebagai simbol kesucian, lalu disiram air sambil dipanjatkan doa keselamatan.</div>
+              <p style="font-size: 0.79rem; line-height: 1.7; color: #3a1500">
+                Siraman Waranggono merupakan salah satu tradisi budaya yang bersifat sakral dan masih dilestarikan oleh masyarakat di kawasan Pemandian Bektiharjo. Tradisi ini dilakukan sebagai prosesi penyucian atau “wisuda” bagi para penari Tayub sebelum mereka diperbolehkan tampil di depan umum. Dalam budaya Jawa, penari Tayub sering disebut sebagai “Waranggono” atau “Sindir”, yaitu perempuan yang memiliki kemampuan menari dan menyanyi dalam pertunjukan seni tradisional Tayub.
+              </p>
+              <p style="font-size: 0.79rem; line-height: 1.7; color: #3a1500">
+                Tradisi siraman memiliki makna penting karena dianggap sebagai tahap awal bagi seorang penari untuk memasuki dunia seni pertunjukan. Prosesi ini tidak hanya bertujuan membersihkan tubuh secara fisik, tetapi juga menyucikan hati, pikiran, dan niat para penari agar mereka dapat menjalankan seni dengan baik, sopan, dan penuh tanggung jawab.
+              </p>
+              <p style="font-size: 0.79rem; line-height: 1.7; color: #3a1500">
+                Pelaksanaan Siraman Waranggono biasanya dilakukan di sumber mata air atau tempat pemandian yang dianggap memiliki nilai sejarah dan kesakralan, salah satunya di Pemandian Bektiharjo. Tempat ini dipercaya memiliki air yang bersih dan membawa keberkahan. Sebelum prosesi dimulai, para calon Waranggono mengenakan pakaian putih bersih sebagai simbol kesucian dan niat yang tulus. Warna putih melambangkan hati yang bersih, kejujuran, dan kesiapan untuk menjalani tanggung jawab sebagai pelaku seni budaya.
+              </p>
+              <p style="font-size: 0.79rem; line-height: 1.7; color: #3a1500">
+                Acara kemudian dipimpin oleh sesepuh atau tokoh adat yang dihormati masyarakat. Para calon penari disiram air secara bergantian sambil dipanjatkan doa-doa keselamatan dan harapan agar mereka menjadi seniman yang berbudi baik, menjaga nama baik seni tradisional, serta memberikan hiburan yang bermanfaat bagi masyarakat. Air dalam prosesi siraman melambangkan pembersihan diri dari sifat buruk dan harapan agar kehidupan mereka dipenuhi keberkahan.
+              </p>
+              <p style="font-size: 0.79rem; line-height: 1.7; color: #3a1500">
+                Setelah prosesi selesai, para Waranggono dianggap telah resmi diterima dan diperbolehkan tampil dalam pertunjukan Tayub. Tradisi ini menjadi bentuk penghormatan terhadap seni tradisional karena seorang penari tidak hanya dituntut memiliki kemampuan menari, tetapi juga harus menjaga etika, sikap, dan tata krama dalam kehidupan sehari-hari.
+              </p>
+              <p style="font-size: 0.79rem; line-height: 1.7; color: #3a1500">
+                Selain memiliki nilai spiritual, Siraman Waranggono juga menjadi sarana pelestarian budaya daerah. Melalui tradisi ini, generasi muda diajarkan untuk menghargai seni tradisional sebagai warisan leluhur yang memiliki makna mendalam, bukan sekadar hiburan semata.
+              </p>
+              <figure class="gallery-figure">
+                <iframe
+                  class="gallery-video"
+                  src="https://www.youtube.com/embed/EpPbhZF95gs"
+                  title="Siraman Waranggono"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowfullscreen
+                  loading="lazy"
+                  referrerpolicy="strict-origin-when-cross-origin"
+                ></iframe>
+                <figcaption class="gallery-caption">
+                  <strong>Video:</strong> Siraman Waranggono.
+                </figcaption>
+              </figure>
+              <div class="section-title">Nilai-Nilai dalam Siraman Waranggono</div>
+              <ul class="value-list">
+                <li><strong>Nilai Kesucian Hati</strong> sebelum menjalankan tugas.</li>
+                <li><strong>Nilai Penghormatan terhadap Seni</strong> yang dijaga dengan tanggung jawab.</li>
+                <li><strong>Nilai Disiplin dan Tanggung Jawab</strong> sebagai pelaku seni daerah.</li>
+                <li><strong>Nilai Pelestarian Budaya</strong> agar seni Tayub tetap lestari.</li>
+                <li><strong>Nilai Spiritual dan Kebersamaan</strong> melalui doa bersama.</li>
+              </ul>
 
               <div class="section-title">3. Tabuh Lesung</div>
               <p style="font-size: 0.79rem; line-height: 1.7; color: #3a1500">
-                Tradisi memukul lesung padi bersama-sama secara berirama. Berasal dari Desa Prunggahan & Ngino. Menjadi sarana <strong>hiburan rakyat</strong> sekaligus ungkapan syukur setelah panen.
+                Tabuh Lesung merupakan salah satu kesenian tradisional masyarakat Jawa yang berkembang di wilayah Semanding dan beberapa daerah pedesaan lainnya. Kesenian ini menggunakan lesung sebagai alat utama. Lesung adalah alat tradisional yang terbuat dari kayu panjang dan biasanya digunakan untuk menumbuk padi agar terpisah dari kulitnya. Alat penumbuknya disebut alu. Pada zaman dahulu, sebelum adanya mesin penggiling padi modern, masyarakat menggunakan lesung dalam kehidupan sehari-hari untuk mengolah hasil panen.
               </p>
+              <p style="font-size: 0.79rem; line-height: 1.7; color: #3a1500">
+                Seiring perkembangan budaya masyarakat, lesung tidak hanya digunakan sebagai alat pertanian, tetapi juga dimanfaatkan sebagai alat musik tradisional. Ketika dipukul menggunakan alu, lesung menghasilkan bunyi yang khas dan berirama. Dari bunyi tersebut lahirlah kesenian yang disebut Tabuh Lesung. Irama yang dihasilkan terdengar unik karena setiap bagian lesung menghasilkan suara yang berbeda-beda. Biasanya, beberapa orang memainkan lesung secara bersama-sama sehingga tercipta perpaduan bunyi yang harmonis.
+              </p>
+              <p style="font-size: 0.79rem; line-height: 1.7; color: #3a1500">
+                Pada masa lalu, suara tabuhan lesung juga berfungsi sebagai alat komunikasi masyarakat desa. Bunyi tertentu digunakan untuk memberi tanda kepada warga, misalnya saat ada kerja bakti, panen raya, hajatan, atau peristiwa penting lainnya. Karena suara lesung cukup keras, bunyinya dapat terdengar hingga ke berbagai sudut desa. Dengan demikian, masyarakat dapat segera berkumpul dan saling membantu.
+              </p>
+              <p style="font-size: 0.79rem; line-height: 1.7; color: #3a1500">
+                Dalam pelaksanaannya, Tabuh Lesung dimainkan secara berkelompok. Para pemain bekerja sama memukul lesung dengan pola irama tertentu agar menghasilkan musik yang teratur dan indah. Permainan ini biasanya dilakukan oleh ibu-ibu atau warga desa saat acara adat, syukuran panen, pertunjukan budaya, maupun festival daerah. Selain menjadi hiburan rakyat, Tabuh Lesung juga mencerminkan kehidupan masyarakat agraris yang dekat dengan alam dan pertanian.
+              </p>
+              <p style="font-size: 0.79rem; line-height: 1.7; color: #3a1500">
+                Kesenian Tabuh Lesung memiliki makna sosial yang kuat. Tradisi ini menggambarkan semangat gotong royong dan kebersamaan masyarakat desa. Saat memainkan lesung, setiap pemain harus saling menyesuaikan irama agar menghasilkan bunyi yang harmonis. Jika salah satu pemain tidak kompak, maka irama yang dihasilkan menjadi tidak teratur. Hal tersebut mengajarkan pentingnya kerja sama dalam kehidupan bermasyarakat.
+              </p>
+              <p style="font-size: 0.79rem; line-height: 1.7; color: #3a1500">
+                Selain itu, Tabuh Lesung juga menjadi simbol rasa syukur masyarakat atas hasil panen yang diperoleh. Bunyi tabuhan yang meriah menunjukkan kegembiraan warga setelah bekerja keras di sawah. Oleh karena itu, kesenian ini sering ditampilkan saat perayaan panen atau acara adat desa.
+              </p>
+
+              <div class="section-title">Nilai-Nilai dalam Tabuh Lesung</div>
               <ul class="value-list">
-                <li>Kebersamaan dan kekeluargaan</li>
-                <li>Kesopanan dan etika</li>
-                <li>Pelestarian tradisi daerah</li>
+                <li><strong>Nilai Kerja Sama</strong> agar irama tetap kompak dan harmonis.</li>
+                <li><strong>Nilai Kebersamaan</strong> melalui latihan dan tampil bersama.</li>
+                <li><strong>Nilai Gotong Royong</strong> dalam kegiatan sosial masyarakat.</li>
+                <li><strong>Nilai Pelestarian Budaya</strong> agar tradisi tetap dikenal generasi muda.</li>
+                <li><strong>Nilai Rasa Syukur</strong> atas hasil bumi yang melimpah.</li>
               </ul>
+
+              <div class="section-title">Galeri Foto & Info</div>
+              <div class="gallery-section">
+                <figure class="gallery-figure">
+                  <div class="gallery-placeholder">Gambar: Prosesi Ritual Keleman</div>
+                  <figcaption class="gallery-caption">
+                    <strong>Penjelasan:</strong> Warga berkumpul di dekat mata air untuk berdoa bersama. Klik gambar untuk melihat detail!
+                  </figcaption>
+                </figure>
+                <figure class="gallery-figure">
+                  <div class="gallery-placeholder">Gambar: Kegiatan Tabuh Lesung</div>
+                  <figcaption class="gallery-caption">
+                    <strong>Suara:</strong> 🔊 Dengarkan irama tabuhan lesung yang gagah!
+                  </figcaption>
+                </figure>
+              </div>
             </div>
             <div class="page-num">Halaman 4</div>
           </div>
