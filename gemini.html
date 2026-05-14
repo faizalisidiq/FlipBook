@@ -94,24 +94,45 @@
         width: 550px; /* Lebar buku agak diperlebar agar teks muat */
         height: 750px;
         padding: 20px;
+        touch-action: pan-y;
+        overflow: hidden;
+        margin-top: 40px;
+      }
+
+      .swiper-wrapper {
+        height: 100%;
       }
 
       .swiper-slide {
         display: flex;
         flex-direction: column;
+        height: 100%;
+        max-height: 100%;
+        min-height: 0;
         border-radius: 8px;
         background-color: #fdfbf7;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         padding: 40px;
         box-sizing: border-box;
         border: 1px solid #ddd;
-        overflow-y: auto; /* Bisa di-scroll jika kepanjangan */
+        overflow: hidden;
+        touch-action: pan-y;
       }
 
-      .swiper-slide::-webkit-scrollbar {
+      .page-scroll {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        touch-action: pan-y;
+        -webkit-overflow-scrolling: touch;
+        padding-right: 6px;
+      }
+
+      .page-scroll::-webkit-scrollbar {
         width: 5px;
       }
-      .swiper-slide::-webkit-scrollbar-thumb {
+      .page-scroll::-webkit-scrollbar-thumb {
         background: #bdc3c7;
         border-radius: 4px;
       }
@@ -273,7 +294,7 @@
             </div>
             <p style="margin-top: 20px; font-weight: bold; color: #f1c40f">Penulis: siti nurhalimah<br />Tahun: 2026</p>
 
-            <button style="margin-top: 20px; background: #e74c3c; color: white; border: none; padding: 10px 20px; font-size: 16px; border-radius: 25px; cursor: pointer; font-weight: bold" onclick="swiper.slideNext()">MULAI BACA ➡</button>
+            <button style="margin-top: 20px; background: #e74c3c; color: white; border: none; padding: 10px 20px; font-size: 16px; border-radius: 25px; cursor: pointer; font-weight: bold" onclick="startReading()">MULAI BACA ➡</button>
           </div>
         </div>
 
@@ -506,9 +527,25 @@
     </div>
 
     <script>
+      document.querySelectorAll(".swiper-slide.page:not(.cover)").forEach(function (slide) {
+        var scroller = document.createElement("div");
+        scroller.className = "page-scroll";
+
+        while (slide.firstChild) {
+          scroller.appendChild(slide.firstChild);
+        }
+
+        slide.appendChild(scroller);
+      });
+
       var swiper = new Swiper(".mySwiper", {
         effect: "cards",
         grabCursor: true,
+        touchStartPreventDefault: false,
+        touchMoveStopPropagation: false,
+        touchReleaseOnEdges: true,
+        passiveListeners: false,
+        nested: true,
         cardsEffect: {
           perSlideOffset: 8,
           perSlideRotate: 2,
@@ -533,6 +570,22 @@
 
       var audioButton = document.getElementById("audio-toggle");
       var bgAudio = document.getElementById("bg-audio");
+
+      function startReading() {
+        swiper.slideNext();
+
+        if (bgAudio && bgAudio.paused) {
+          bgAudio
+            .play()
+            .then(function () {
+              audioButton.textContent = "🔊";
+              audioButton.title = "Matikan Suara";
+            })
+            .catch(function () {
+              alert("Audio tidak bisa diputar. Pastikan file lagu ada di asset/music dan formatnya didukung.");
+            });
+        }
+      }
 
       audioButton.addEventListener("click", function () {
         if (bgAudio.paused) {
