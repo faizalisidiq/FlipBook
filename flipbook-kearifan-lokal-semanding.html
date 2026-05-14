@@ -1,1500 +1,1680 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>E-Book Flipbook: Menggali Kearifan Lokal Semanding</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&family=Baloo+2:wght@400;600;700;800&display=swap');
-
-  :root {
-    --batik-brown: #7B3F00;
-    --batik-gold: #D4A017;
-    --batik-green: #2D6A2D;
-    --batik-red: #C0392B;
-    --batik-cream: #FFF8E7;
-    --batik-orange: #E67E22;
-    --batik-teal: #1A7A6A;
-    --shadow: 0 8px 32px rgba(123,63,0,0.18);
-    --page-shadow: -8px 0 24px rgba(0,0,0,0.18);
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    background: linear-gradient(135deg, #1a0a00 0%, #3d1a00 40%, #1a3d1a 100%);
-    min-height: 100vh;
-    font-family: 'Nunito', sans-serif;
-    overflow-x: hidden;
-    position: relative;
-  }
-
-  /* Batik pattern background */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: 
-      radial-gradient(circle at 20% 20%, rgba(212,160,23,0.08) 0%, transparent 50%),
-      radial-gradient(circle at 80% 80%, rgba(45,106,45,0.08) 0%, transparent 50%),
-      repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(212,160,23,0.03) 20px, rgba(212,160,23,0.03) 21px),
-      repeating-linear-gradient(-45deg, transparent, transparent 20px, rgba(45,106,45,0.03) 20px, rgba(45,106,45,0.03) 21px);
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  .app-container {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-    padding: 20px 10px 40px;
-  }
-
-  /* Header */
-  .app-header {
-    text-align: center;
-    margin-bottom: 20px;
-    animation: fadeDown 0.8s ease;
-  }
-
-  .app-header h1 {
-    font-family: 'Baloo 2', cursive;
-    font-size: clamp(1.2rem, 3vw, 1.8rem);
-    color: var(--batik-gold);
-    text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
-    letter-spacing: 1px;
-  }
-
-  .app-header p {
-    color: rgba(255,248,231,0.7);
-    font-size: 0.85rem;
-    margin-top: 4px;
-  }
-
-  /* Book Container */
-  .book-wrapper {
-    width: 100%;
-    max-width: 820px;
-    perspective: 2000px;
-    position: relative;
-  }
-
-  .book {
-    width: 100%;
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: stretch;
-    min-height: 560px;
-    gap: 0;
-  }
-
-  /* Page styles */
-  .page {
-    display: none;
-    width: 100%;
-    max-width: 420px;
-    background: var(--batik-cream);
-    border-radius: 4px 16px 16px 4px;
-    box-shadow: var(--shadow), var(--page-shadow);
-    overflow: hidden;
-    position: relative;
-    min-height: 560px;
-    animation: pageFlip 0.5s ease;
-    flex-shrink: 0;
-  }
-
-  .page.active { display: flex; flex-direction: column; }
-  .page.left-page { 
-    border-radius: 16px 4px 4px 16px; 
-    box-shadow: var(--shadow), 8px 0 24px rgba(0,0,0,0.15);
-    display: none;
-  }
-  .page.left-page.active { display: flex; flex-direction: column; }
-
-  @keyframes pageFlip {
-    from { opacity: 0; transform: rotateY(15deg) translateX(30px); }
-    to { opacity: 1; transform: rotateY(0) translateX(0); }
-  }
-
-  @keyframes fadeDown {
-    from { opacity: 0; transform: translateY(-20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  /* Page spine decoration */
-  .page::before {
-    content: '';
-    position: absolute;
-    left: 0; top: 0; bottom: 0;
-    width: 6px;
-    background: linear-gradient(to bottom, var(--batik-gold), var(--batik-brown), var(--batik-gold));
-    border-radius: 4px 0 0 4px;
-  }
-
-  .page.left-page::before {
-    left: auto; right: 0;
-    border-radius: 0 4px 4px 0;
-  }
-
-  /* Page number */
-  .page-num {
-    position: absolute;
-    bottom: 12px;
-    right: 20px;
-    font-size: 0.75rem;
-    color: rgba(123,63,0,0.5);
-    font-style: italic;
-  }
-  .page.left-page .page-num { right: auto; left: 20px; }
-
-  /* ===== PAGE CONTENT STYLES ===== */
-
-  /* COVER PAGE */
-  .cover-page {
-    background: linear-gradient(160deg, #2D6A2D 0%, #1A5530 30%, #7B3F00 70%, #4A1A00 100%);
-  }
-
-  .cover-page::before { display: none; }
-
-  .cover-batik {
-    position: absolute;
-    inset: 0;
-    background-image:
-      radial-gradient(circle at 30% 30%, rgba(212,160,23,0.15) 0%, transparent 40%),
-      radial-gradient(circle at 70% 70%, rgba(255,248,231,0.08) 0%, transparent 40%),
-      repeating-conic-gradient(from 0deg at 50% 50%, rgba(212,160,23,0.05) 0deg 30deg, transparent 30deg 60deg);
-    pointer-events: none;
-  }
-
-  .cover-content {
-    position: relative;
-    z-index: 2;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 30px 24px;
-    height: 100%;
-    text-align: center;
-    gap: 12px;
-  }
-
-  .cover-emblem {
-    width: 90px;
-    height: 90px;
-    background: radial-gradient(circle, var(--batik-gold) 0%, #A07010 100%);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2.8rem;
-    box-shadow: 0 0 30px rgba(212,160,23,0.6), 0 4px 16px rgba(0,0,0,0.3);
-    animation: glow 3s ease-in-out infinite alternate;
-    border: 4px solid rgba(255,248,231,0.3);
-  }
-
-  @keyframes glow {
-    from { box-shadow: 0 0 20px rgba(212,160,23,0.4); }
-    to { box-shadow: 0 0 40px rgba(212,160,23,0.8), 0 0 60px rgba(212,160,23,0.3); }
-  }
-
-  .cover-label {
-    background: rgba(212,160,23,0.25);
-    border: 1px solid rgba(212,160,23,0.5);
-    color: var(--batik-gold);
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    padding: 4px 14px;
-    border-radius: 20px;
-  }
-
-  .cover-title {
-    font-family: 'Baloo 2', cursive;
-    font-size: clamp(1.4rem, 4vw, 1.9rem);
-    color: #FFF8E7;
-    line-height: 1.2;
-    text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
-    font-weight: 800;
-  }
-
-  .cover-subtitle {
-    font-size: 0.82rem;
-    color: rgba(255,248,231,0.8);
-    font-style: italic;
-    line-height: 1.5;
-    max-width: 280px;
-  }
-
-  .cover-divider {
-    width: 60px;
-    height: 3px;
-    background: linear-gradient(to right, transparent, var(--batik-gold), transparent);
-    border-radius: 2px;
-  }
-
-  .cover-meta {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    font-size: 0.78rem;
-    color: rgba(255,248,231,0.75);
-  }
-
-  .cover-meta strong { color: var(--batik-gold); }
-
-  .btn-start {
-    background: linear-gradient(135deg, var(--batik-gold), #F0C040);
-    color: var(--batik-brown);
-    border: none;
-    padding: 12px 32px;
-    border-radius: 30px;
-    font-family: 'Baloo 2', cursive;
-    font-size: 1rem;
-    font-weight: 700;
-    cursor: pointer;
-    box-shadow: 0 4px 16px rgba(212,160,23,0.4);
-    transition: all 0.3s;
-    letter-spacing: 1px;
-  }
-
-  .btn-start:hover {
-    transform: translateY(-2px) scale(1.05);
-    box-shadow: 0 8px 24px rgba(212,160,23,0.6);
-  }
-
-  /* CONTENT PAGES */
-  .page-header {
-    padding: 16px 20px 12px 24px;
-    background: linear-gradient(135deg, var(--batik-brown), #5A2D00);
-    color: var(--batik-cream);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .page-header::after {
-    content: '';
-    position: absolute;
-    right: -20px; top: -20px;
-    width: 80px; height: 80px;
-    background: rgba(212,160,23,0.15);
-    border-radius: 50%;
-  }
-
-  .page-header .bab-label {
-    font-size: 0.65rem;
-    font-weight: 700;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--batik-gold);
-    margin-bottom: 4px;
-  }
-
-  .page-header h2 {
-    font-family: 'Baloo 2', cursive;
-    font-size: 1.1rem;
-    font-weight: 800;
-    line-height: 1.3;
-    position: relative;
-    z-index: 1;
-  }
-
-  .page-header .header-icon {
-    font-size: 1.5rem;
-    position: absolute;
-    right: 20px;
-    bottom: 10px;
-    opacity: 0.6;
-  }
-
-  .page-body {
-    padding: 16px 20px 40px 20px;
-    flex: 1;
-    overflow-y: auto;
-    scroll-behavior: smooth;
-  }
-
-  .page-body::-webkit-scrollbar { width: 4px; }
-  .page-body::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); }
-  .page-body::-webkit-scrollbar-thumb { background: var(--batik-gold); border-radius: 4px; }
-
-  /* Info box */
-  .info-box {
-    background: linear-gradient(135deg, rgba(212,160,23,0.12), rgba(212,160,23,0.06));
-    border-left: 4px solid var(--batik-gold);
-    border-radius: 0 8px 8px 0;
-    padding: 10px 14px;
-    margin: 10px 0;
-    font-size: 0.82rem;
-    line-height: 1.6;
-    color: #4A2000;
-  }
-
-  .info-box strong { color: var(--batik-brown); font-weight: 700; }
-
-  /* Value list */
-  .value-list {
-    list-style: none;
-    margin: 10px 0;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .value-list li {
-    display: flex;
-    align-items: flex-start;
-    gap: 8px;
-    font-size: 0.8rem;
-    line-height: 1.5;
-    color: #3A1500;
-  }
-
-  .value-list li::before {
-    content: '✦';
-    color: var(--batik-gold);
-    font-size: 0.7rem;
-    margin-top: 3px;
-    flex-shrink: 0;
-  }
-
-  /* Section heading */
-  .section-title {
-    font-family: 'Baloo 2', cursive;
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: var(--batik-brown);
-    margin: 14px 0 6px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .section-title::after {
-    content: '';
-    flex: 1;
-    height: 2px;
-    background: linear-gradient(to right, var(--batik-gold), transparent);
-  }
-
-  /* Fact card */
-  .fact-card {
-    background: linear-gradient(135deg, #E8F5E9, #F1F8E9);
-    border: 1.5px solid rgba(45,106,45,0.3);
-    border-radius: 10px;
-    padding: 10px 14px;
-    margin: 8px 0;
-    font-size: 0.8rem;
-    line-height: 1.6;
-    color: #1A4020;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .fact-card::before {
-    content: '💡';
-    position: absolute;
-    top: 8px; right: 10px;
-    font-size: 1.1rem;
-    opacity: 0.7;
-  }
-
-  .fact-card strong { color: var(--batik-green); }
-
-  /* Tujuan box */
-  .tujuan-box {
-    background: linear-gradient(135deg, rgba(26,122,106,0.1), rgba(26,122,106,0.05));
-    border: 1.5px solid rgba(26,122,106,0.3);
-    border-radius: 10px;
-    padding: 10px 14px;
-    margin: 8px 0;
-  }
-
-  .tujuan-box .tujuan-title {
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--batik-teal);
-    margin-bottom: 6px;
-  }
-
-  .tujuan-box ul { list-style: none; }
-  .tujuan-box ul li {
-    font-size: 0.78rem;
-    color: #1A3A35;
-    line-height: 1.5;
-    padding: 2px 0 2px 16px;
-    position: relative;
-  }
-  .tujuan-box ul li::before {
-    content: '→';
-    position: absolute;
-    left: 0;
-    color: var(--batik-teal);
-    font-weight: 700;
-  }
-
-  /* Kata Pengantar */
-  .pengantar-text {
-    font-size: 0.82rem;
-    line-height: 1.8;
-    color: #3A1500;
-    text-indent: 1.2em;
-  }
-
-  .pengantar-highlight {
-    background: linear-gradient(to right, rgba(212,160,23,0.2), transparent);
-    border-left: 3px solid var(--batik-gold);
-    padding: 8px 12px;
-    margin: 10px 0;
-    font-style: italic;
-    font-size: 0.82rem;
-    color: var(--batik-brown);
-    border-radius: 0 6px 6px 0;
-  }
-
-  /* Quiz section */
-  .quiz-container { display: flex; flex-direction: column; gap: 14px; }
-
-  .quiz-question {
-    background: linear-gradient(135deg, #FFF8E7, #FFF3D0);
-    border: 2px solid rgba(212,160,23,0.3);
-    border-radius: 12px;
-    padding: 12px;
-    box-shadow: 0 2px 8px rgba(212,160,23,0.1);
-  }
-
-  .quiz-q-text {
-    font-size: 0.82rem;
-    font-weight: 700;
-    color: var(--batik-brown);
-    margin-bottom: 8px;
-    line-height: 1.4;
-  }
-
-  .quiz-options { display: flex; flex-direction: column; gap: 5px; }
-
-  .quiz-option {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.78rem;
-    color: #3A1500;
-    padding: 5px 8px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.2s;
-    border: 1.5px solid transparent;
-  }
-
-  .quiz-option:hover { background: rgba(212,160,23,0.1); border-color: rgba(212,160,23,0.3); }
-
-  .quiz-option input[type="radio"] { accent-color: var(--batik-gold); width: 14px; height: 14px; }
-
-  .quiz-option.correct { background: rgba(45,106,45,0.15); border-color: var(--batik-green); }
-  .quiz-option.wrong { background: rgba(192,57,43,0.1); border-color: var(--batik-red); }
-
-  .quiz-feedback {
-    display: none;
-    margin-top: 8px;
-    padding: 6px 10px;
-    border-radius: 6px;
-    font-size: 0.75rem;
-    font-weight: 700;
-  }
-
-  .quiz-feedback.correct-msg { background: rgba(45,106,45,0.15); color: var(--batik-green); }
-  .quiz-feedback.wrong-msg { background: rgba(192,57,43,0.1); color: var(--batik-red); }
-
-  /* Song section */
-  .song-card {
-    background: linear-gradient(135deg, #1A0A00, #2D1500);
-    border-radius: 14px;
-    padding: 16px;
-    margin: 10px 0;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-  }
-
-  .song-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(circle at 80% 20%, rgba(212,160,23,0.15) 0%, transparent 60%);
-    pointer-events: none;
-  }
-
-  .song-title {
-    font-family: 'Baloo 2', cursive;
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: var(--batik-gold);
-    margin-bottom: 4px;
-    position: relative;
-    z-index: 1;
-  }
-
-  .song-meta {
-    font-size: 0.7rem;
-    color: rgba(255,248,231,0.6);
-    margin-bottom: 10px;
-    position: relative;
-    z-index: 1;
-  }
-
-  .song-lyrics {
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(212,160,23,0.2);
-    border-radius: 8px;
-    padding: 10px;
-    font-size: 0.78rem;
-    line-height: 1.8;
-    color: rgba(255,248,231,0.9);
-    white-space: pre-line;
-    position: relative;
-    z-index: 1;
-    max-height: 160px;
-    overflow-y: auto;
-  }
-
-  .song-lyrics::-webkit-scrollbar { width: 3px; }
-  .song-lyrics::-webkit-scrollbar-thumb { background: var(--batik-gold); }
-
-  /* Song player controls */
-  .song-player {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-top: 10px;
-    position: relative;
-    z-index: 1;
-  }
-
-  .btn-play {
-    width: 38px; height: 38px;
-    background: linear-gradient(135deg, var(--batik-gold), #F0C040);
-    border: none; border-radius: 50%;
-    cursor: pointer;
-    font-size: 1rem;
-    display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 3px 12px rgba(212,160,23,0.4);
-    transition: all 0.2s;
-    flex-shrink: 0;
-  }
-
-  .btn-play:hover { transform: scale(1.1); }
-
-  .song-progress-wrap { flex: 1; }
-  .song-label-text { font-size: 0.7rem; color: rgba(255,248,231,0.6); margin-bottom: 3px; }
-
-  .progress-bar {
-    height: 4px;
-    background: rgba(255,255,255,0.15);
-    border-radius: 4px;
-    overflow: hidden;
-  }
-
-  .progress-fill {
-    height: 100%;
-    background: linear-gradient(to right, var(--batik-gold), #F0C040);
-    border-radius: 4px;
-    width: 0%;
-    transition: width 0.1s linear;
-  }
-
-  /* Navigation */
-  .nav-section {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    margin-top: 20px;
-    flex-wrap: wrap;
-  }
-
-  .btn-nav {
-    background: linear-gradient(135deg, var(--batik-gold), #E8A800);
-    color: var(--batik-brown);
-    border: none;
-    padding: 10px 24px;
-    border-radius: 30px;
-    font-family: 'Baloo 2', cursive;
-    font-size: 0.9rem;
-    font-weight: 700;
-    cursor: pointer;
-    box-shadow: 0 4px 14px rgba(212,160,23,0.35);
-    transition: all 0.25s;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .btn-nav:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(212,160,23,0.5); }
-  .btn-nav:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
-
-  .page-indicator {
-    font-family: 'Baloo 2', cursive;
-    color: rgba(255,248,231,0.8);
-    font-size: 0.85rem;
-    min-width: 80px;
-    text-align: center;
-  }
-
-  /* TOC (Daftar Isi) */
-  .toc-list { list-style: none; display: flex; flex-direction: column; gap: 6px; margin: 10px 0; }
-
-  .toc-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 7px 12px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 0.8rem;
-    color: var(--batik-brown);
-    background: rgba(212,160,23,0.07);
-    border: 1.5px solid rgba(212,160,23,0.15);
-    transition: all 0.2s;
-    font-weight: 600;
-  }
-
-  .toc-item:hover { background: rgba(212,160,23,0.18); border-color: var(--batik-gold); transform: translateX(4px); }
-  .toc-item .toc-num { font-size: 0.7rem; background: var(--batik-brown); color: var(--batik-cream); border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .toc-item .toc-icon { font-size: 0.9rem; }
-
-  /* Petunjuk icons */
-  .petunjuk-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0; }
-
-  .petunjuk-item {
-    background: linear-gradient(135deg, rgba(212,160,23,0.1), rgba(212,160,23,0.05));
-    border: 1.5px solid rgba(212,160,23,0.25);
-    border-radius: 10px;
-    padding: 10px;
-    text-align: center;
-    font-size: 0.72rem;
-    line-height: 1.5;
-    color: #3A1500;
-  }
-
-  .petunjuk-item .pi-icon { font-size: 1.4rem; margin-bottom: 4px; display: block; }
-
-  /* Penutup */
-  .pesan-bijak {
-    background: linear-gradient(135deg, var(--batik-green), #1A5530);
-    color: var(--batik-cream);
-    border-radius: 12px;
-    padding: 16px;
-    margin: 10px 0;
-    text-align: center;
-    font-style: italic;
-    font-size: 0.85rem;
-    line-height: 1.7;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .pesan-bijak::before {
-    content: '"';
-    position: absolute;
-    top: -10px; left: 10px;
-    font-size: 5rem;
-    color: rgba(212,160,23,0.2);
-    font-family: Georgia, serif;
-    line-height: 1;
-  }
-
-  .glosarium-item {
-    display: flex;
-    gap: 8px;
-    padding: 6px 0;
-    border-bottom: 1px solid rgba(212,160,23,0.15);
-    font-size: 0.78rem;
-    line-height: 1.5;
-  }
-
-  .glosarium-item .term { 
-    font-weight: 700; 
-    color: var(--batik-brown); 
-    min-width: 90px; 
-    flex-shrink: 0; 
-  }
-
-  .glosarium-item .def { color: #3A1500; }
-
-  /* Score display */
-  .score-display {
-    display: none;
-    text-align: center;
-    padding: 14px;
-    background: linear-gradient(135deg, rgba(212,160,23,0.15), rgba(212,160,23,0.05));
-    border: 2px solid var(--batik-gold);
-    border-radius: 12px;
-    margin: 12px 0;
-  }
-
-  .score-number { 
-    font-family: 'Baloo 2', cursive;
-    font-size: 2rem;
-    font-weight: 800;
-    color: var(--batik-brown);
-  }
-
-  .score-text { font-size: 0.8rem; color: #5A2D00; margin-top: 4px; }
-
-  .btn-submit-quiz {
-    display: block;
-    width: 100%;
-    background: linear-gradient(135deg, var(--batik-brown), #5A2D00);
-    color: var(--batik-cream);
-    border: none;
-    padding: 10px;
-    border-radius: 10px;
-    font-family: 'Baloo 2', cursive;
-    font-size: 0.9rem;
-    font-weight: 700;
-    cursor: pointer;
-    margin-top: 10px;
-    transition: all 0.2s;
-  }
-
-  .btn-submit-quiz:hover { opacity: 0.9; transform: translateY(-1px); }
-
-  /* Responsive */
-  @media (min-width: 700px) {
-    .book {
-      gap: 0;
-    }
-    .page, .page.left-page {
-      max-width: 380px;
-    }
-  }
-
-  @media (max-width: 500px) {
-    .page-header h2 { font-size: 0.95rem; }
-    .page-body { padding: 12px 14px 36px; }
-    .petunjuk-grid { grid-template-columns: 1fr 1fr; }
-  }
-
-  /* Animated note icons for song */
-  @keyframes float {
-    0%, 100% { transform: translateY(0) rotate(0deg); }
-    50% { transform: translateY(-8px) rotate(10deg); }
-  }
-
-  .note-float {
-    display: inline-block;
-    animation: float 2s ease-in-out infinite;
-  }
-
-  .note-float:nth-child(2) { animation-delay: 0.5s; }
-  .note-float:nth-child(3) { animation-delay: 1s; }
-
-  /* Challenge box */
-  .challenge-box {
-    background: linear-gradient(135deg, rgba(192,57,43,0.1), rgba(192,57,43,0.05));
-    border: 2px dashed rgba(192,57,43,0.4);
-    border-radius: 12px;
-    padding: 12px;
-    margin: 10px 0;
-    font-size: 0.8rem;
-    color: #5A1A10;
-    line-height: 1.6;
-  }
-
-  .challenge-box .ch-title {
-    font-family: 'Baloo 2', cursive;
-    font-weight: 700;
-    font-size: 0.9rem;
-    color: var(--batik-red);
-    margin-bottom: 6px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-</style>
-</head>
-<body>
-
-<div class="app-container">
-
-  <div class="app-header">
-    <h1>📖 E-Book Interaktif SD Kelas VI</h1>
-    <p>Klik tombol panah untuk membalik halaman</p>
-  </div>
-
-  <div class="book-wrapper">
-    <div class="book" id="book">
-
-      <!-- PAGE 0: COVER -->
-      <div class="page cover-page active" id="page-0">
-        <div class="cover-batik"></div>
-        <div class="cover-content">
-          <div class="cover-emblem">🏛️</div>
-          <div class="cover-label">E-Book Interaktif</div>
-          <div class="cover-title">Menggali Kearifan<br>Lokal Semanding</div>
-          <div class="cover-divider"></div>
-          <div class="cover-subtitle">Menjelajahi Warisan Budaya dan<br>Ilmu Pengetahuan Sosial</div>
-          <div class="cover-meta">
-            <span>✍️ Penulis: <strong>Siti Nurhalimah</strong></span>
-            <span>📚 Mata Pelajaran: <strong>IPAS · Kelas VI SD</strong></span>
-            <span>📅 Tahun: <strong>2026</strong></span>
-          </div>
-          <button class="btn-start" onclick="goToPage(1)">✨ MULAI BACA →</button>
-        </div>
-        <div class="page-num">Halaman Depan</div>
-      </div>
-
-      <!-- PAGE 1: KATA PENGANTAR -->
-      <div class="page" id="page-1">
-        <div class="page-header">
-          <div class="bab-label">Pembuka</div>
-          <h2>Kata Pengantar</h2>
-          <span class="header-icon">🙏</span>
-        </div>
-        <div class="page-body">
-          <p class="pengantar-text">
-            <em>Assalamu'alaikum Warahmatullahi Wabarakatuh,</em>
-          </p>
-          <br>
-          <p class="pengantar-text">
-            Puji syukur kita panjatkan ke hadirat Tuhan Yang Maha Esa. Atas rahmat dan hidayah-Nya, buku elektronik interaktif berjudul <strong>"Menggali Kearifan Lokal Semanding"</strong> ini dapat diselesaikan dengan baik.
-          </p>
-          <br>
-          <div class="pengantar-highlight">
-            💡 Tahukah kamu? Dahulu, pusat pemerintahan Kabupaten Tuban pernah berada di Prunggahan Kulon, wilayah Semanding!
-          </div>
-          <p class="pengantar-text">
-            Melalui buku ini, kita diajak untuk lebih mengenal, mencintai, dan melestarikan budaya sendiri. Selamat membaca dan menjelajah!
-          </p>
-          <br>
-          <p class="pengantar-text"><em>Wassalamu'alaikum Warahmatullahi Wabarakatuh.</em></p>
-          <br>
-          <p class="pengantar-text" style="text-align:right;"><em>— Penulis</em></p>
-
-          <div class="section-title" style="margin-top:16px;">Daftar Isi</div>
-          <ul class="toc-list">
-            <li class="toc-item" onclick="goToPage(2)"><span class="toc-num">1</span><span class="toc-icon">📋</span>Petunjuk Penggunaan</li>
-            <li class="toc-item" onclick="goToPage(3)"><span class="toc-num">2</span><span class="toc-icon">🗺️</span>Mengenal Semanding</li>
-            <li class="toc-item" onclick="goToPage(4)"><span class="toc-num">3</span><span class="toc-icon">🪔</span>Tradisi & Upacara Adat</li>
-            <li class="toc-item" onclick="goToPage(5)"><span class="toc-num">4</span><span class="toc-icon">🏺</span>Kerajinan & Kearifan Hidup</li>
-            <li class="toc-item" onclick="goToPage(6)"><span class="toc-num">5</span><span class="toc-icon">🎭</span>Seni & Budaya</li>
-            <li class="toc-item" onclick="goToPage(7)"><span class="toc-num">6</span><span class="toc-icon">🎵</span>Lagu Pendidikan</li>
-            <li class="toc-item" onclick="goToPage(8)"><span class="toc-num">7</span><span class="toc-icon">📝</span>Evaluasi & Kuis</li>
-            <li class="toc-item" onclick="goToPage(9)"><span class="toc-num">8</span><span class="toc-icon">🌿</span>Penutup & Glosarium</li>
-          </ul>
-        </div>
-        <div class="page-num">Halaman 1</div>
-      </div>
-
-      <!-- PAGE 2: PETUNJUK -->
-      <div class="page" id="page-2">
-        <div class="page-header">
-          <div class="bab-label">Panduan</div>
-          <h2>Petunjuk Penggunaan E-Book</h2>
-          <span class="header-icon">📌</span>
-        </div>
-        <div class="page-body">
-          <div class="section-title">Ayo Belajar dengan Cara Seru!</div>
-          <div class="petunjuk-grid">
-            <div class="petunjuk-item">
-              <span class="pi-icon">◀▶</span>
-              Klik tombol <strong>panah</strong> di bawah untuk membalik halaman
-            </div>
-            <div class="petunjuk-item">
-              <span class="pi-icon">👀</span>
-              Perhatikan gambar dan baca teks dengan <strong>teliti</strong>
-            </div>
-            <div class="petunjuk-item">
-              <span class="pi-icon">🔊</span>
-              Klik tombol <strong>putar</strong> untuk mendengar lagu pendidikan
-            </div>
-            <div class="petunjuk-item">
-              <span class="pi-icon">📝</span>
-              Kerjakan soal latihan dengan <strong>jujur</strong>
-            </div>
-            <div class="petunjuk-item">
-              <span class="pi-icon">🏛️</span>
-              Klik Daftar Isi untuk <strong>loncat ke bab</strong> tertentu
-            </div>
-            <div class="petunjuk-item">
-              <span class="pi-icon">🌟</span>
-              Selesaikan semua bab untuk mendapat <strong>bintang!</strong>
-            </div>
-          </div>
-          <div class="fact-card" style="margin-top:14px;">
-            <strong>🎯 Tujuan Belajar:</strong><br>
-            Setelah membaca e-book ini, kamu akan mengenal sejarah, tradisi, kerajinan, dan seni budaya Kecamatan Semanding dengan bangga!
-          </div>
-          <div class="info-box" style="margin-top:10px;">
-            Buku ini cocok dibaca oleh <strong>siswa SD kelas VI</strong> sebagai tambahan materi IPAS tentang kearifan lokal dan budaya daerah Jawa Timur.
-          </div>
-        </div>
-        <div class="page-num">Halaman 2</div>
-      </div>
-
-      <!-- PAGE 3: BAB 1 MENGENAL SEMANDING -->
-      <div class="page" id="page-3">
-        <div class="page-header">
-          <div class="bab-label">Bab 1</div>
-          <h2>Mengenal Semanding</h2>
-          <span class="header-icon">🗺️</span>
-        </div>
-        <div class="page-body">
-          <div class="tujuan-box">
-            <div class="tujuan-title">🎯 Tujuan Pembelajaran</div>
-            <ul>
-              <li>Mengetahui letak geografis dan sejarah Semanding</li>
-              <li>Menyebutkan potensi alam dan tempat bersejarah</li>
-            </ul>
-          </div>
-
-          <div class="section-title">Ayo Pikir Dulu!</div>
-          <div class="pengantar-highlight">
-            "Semanding terletak di bagian selatan Kabupaten Tuban. Tahukah kamu apa yang membuat daerah ini istimewa dalam sejarah?"
-          </div>
-
-          <div class="section-title">Materi Inti</div>
-          <p style="font-size:0.8rem;line-height:1.7;color:#3A1500;">
-            Kecamatan Semanding terletak di bagian selatan Tuban, dengan wilayah yang sebagian besar berupa <strong>perbukitan kapur</strong>. Pada masa Kerajaan Majapahit, pusat pemerintahan Tuban pernah berada di <strong>Desa Prunggahan Kulon</strong>, Semanding.
-          </p>
-
-          <div class="fact-card">
-            <strong>📍 Pemandian Bektiharjo</strong><br>
-            Tempat wisata favorit yang juga memiliki nilai sejarah dan sering digunakan untuk upacara adat.
-          </div>
-
-          <div class="section-title">Fakta Menarik</div>
-          <ul class="value-list">
-            <li>Semanding terdiri dari banyak desa: Prunggahan Wetan, Bektiharjo, Karang, dll.</li>
-            <li>Wilayahnya yang bergunung-gunung membuat udaranya sejuk dan asri.</li>
-            <li>Kaya hasil bumi: padi, jagung, dan kelapa.</li>
-            <li>Terdapat banyak sumber mata air yang jernih.</li>
-          </ul>
-        </div>
-        <div class="page-num">Halaman 3</div>
-      </div>
-
-      <!-- PAGE 4: BAB 2 TRADISI -->
-      <div class="page" id="page-4">
-        <div class="page-header">
-          <div class="bab-label">Bab 2</div>
-          <h2>Tradisi & Upacara Adat</h2>
-          <span class="header-icon">🪔</span>
-        </div>
-        <div class="page-body">
-          <div class="tujuan-box">
-            <div class="tujuan-title">🎯 Tujuan Pembelajaran</div>
-            <ul>
-              <li>Mengenal tradisi unik di Semanding</li>
-              <li>Memahami makna dan nilai yang terkandung</li>
-            </ul>
-          </div>
-
-          <div class="section-title">1. Ritual Keleman</div>
-          <p style="font-size:0.79rem;line-height:1.7;color:#3A1500;">
-            Tradisi masyarakat Desa Ngino sebagai bentuk penghormatan kepada <strong>Dewi Sri</strong> (simbol kesuburan). Dilaksanakan saat padi mulai subur atau menjelang panen.
-          </p>
-
-          <div class="info-box">
-            Warga berkumpul di sawah membawa tumpeng, jajanan pasar, dan hasil bumi. Diakhiri dengan menabur makanan ke sawah sebagai "tolak bala".
-          </div>
-
-          <div class="section-title">Nilai-Nilai Ritual Keleman</div>
-          <ul class="value-list">
-            <li><strong>Rasa Syukur</strong> – bersyukur atas hasil pertanian</li>
-            <li><strong>Menjaga Alam</strong> – hidup selaras dengan alam</li>
-            <li><strong>Gotong Royong</strong> – dilakukan bersama-sama</li>
-            <li><strong>Pelestarian Budaya</strong> – warisan turun-temurun</li>
-            <li><strong>Spiritual</strong> – doa dan usaha berjalan bersama</li>
-          </ul>
-
-          <div class="section-title">2. Siraman Waranggono</div>
-          <p style="font-size:0.79rem;line-height:1.7;color:#3A1500;">
-            Prosesi penyucian bagi para penari <strong>Tayub (Waranggono)</strong> sebelum tampil di depan umum. Dilaksanakan di Pemandian Bektiharjo.
-          </p>
-          <div class="fact-card">
-            Para calon penari mengenakan <strong>pakaian putih</strong> sebagai simbol kesucian, lalu disiram air sambil dipanjatkan doa keselamatan.
-          </div>
-
-          <div class="section-title">3. Tabuh Lesung</div>
-          <p style="font-size:0.79rem;line-height:1.7;color:#3A1500;">
-            Tradisi memukul lesung padi bersama-sama secara berirama. Berasal dari Desa Prunggahan & Ngino. Menjadi sarana <strong>hiburan rakyat</strong> sekaligus ungkapan syukur setelah panen.
-          </p>
-          <ul class="value-list">
-            <li>Kebersamaan dan kekeluargaan</li>
-            <li>Kesopanan dan etika</li>
-            <li>Pelestarian tradisi daerah</li>
-          </ul>
-        </div>
-        <div class="page-num">Halaman 4</div>
-      </div>
-
-      <!-- PAGE 5: BAB 3 KERAJINAN -->
-      <div class="page" id="page-5">
-        <div class="page-header">
-          <div class="bab-label">Bab 3</div>
-          <h2>Kerajinan & Kearifan Hidup</h2>
-          <span class="header-icon">🏺</span>
-        </div>
-        <div class="page-body">
-          <div class="section-title">1. Kerajinan Gerabah (Desa Karang)</div>
-          <p style="font-size:0.79rem;line-height:1.7;color:#3A1500;">
-            Desa Karang dikenal sebagai sentra pembuatan <strong>gerabah/tembikar</strong> tradisional. Warga membuat gendok, kuali, dan berbagai peralatan rumah tangga dari tanah liat.
-          </p>
-          <div class="info-box">
-            <strong>Proses Pembuatan:</strong> Tanah liat dipilih → dibentuk dengan tangan & roda putar → dijemur → dibakar → siap digunakan!
-          </div>
-
-          <div class="section-title">2. Seni Patung & Ukir (Desa Bejagung)</div>
-          <p style="font-size:0.79rem;line-height:1.7;color:#3A1500;">
-            Desa Bejagung dikenal karena karya seni patung dan ukir. Para pengrajin menghasilkan berbagai karya yang mencerminkan <strong>kreativitas lokal</strong> dan kecintaan terhadap seni budaya.
-          </p>
-
-          <div class="section-title">3. Paes Semandingan</div>
-          <p style="font-size:0.79rem;line-height:1.7;color:#3A1500;">
-            <strong>Paes</strong> adalah tata rias wajah pengantin yang khas dari Semanding. Merupakan bagian penting dari tradisi pernikahan adat Jawa Tuban.
-          </p>
-          <div class="fact-card">
-            <strong>💡 Tahukah kamu?</strong><br>
-            Paes bukan hanya dekorasi, tapi memiliki makna simbolis tentang harapan, kesetiaan, dan keberkahan bagi pengantin!
-          </div>
-
-          <div class="section-title">Nilai Kearifan Hidup</div>
-          <ul class="value-list">
-            <li>Kreativitas dan keterampilan tangan warga</li>
-            <li>Warisan leluhur yang terus hidup</li>
-            <li>Sumber mata pencaharian ramah lingkungan</li>
-            <li>Identitas budaya yang membedakan Semanding</li>
-          </ul>
-        </div>
-        <div class="page-num">Halaman 5</div>
-      </div>
-
-      <!-- PAGE 6: BAB 4 SENI BUDAYA -->
-      <div class="page" id="page-6">
-        <div class="page-header">
-          <div class="bab-label">Bab 4</div>
-          <h2>Seni & Budaya yang Memukau</h2>
-          <span class="header-icon">🎭</span>
-        </div>
-        <div class="page-body">
-          <div class="section-title">1. Seni Tayub / Waranggono</div>
-          <p style="font-size:0.79rem;line-height:1.7;color:#3A1500;">
-            Pertunjukan tari tradisional yang dibawakan oleh penari wanita bernama <strong>Waranggono (Sindir)</strong>. Diiringi gamelan dan lagu-lagu Jawa.
-          </p>
-
-          <div class="section-title">2. Seni Sandur (Prunggahan Kulon)</div>
-          <p style="font-size:0.79rem;line-height:1.7;color:#3A1500;">
-            Kesenian rakyat dari kehidupan petani di sekitar Bengawan Solo. Menggabungkan <strong>cerita, lawakan, dialog, musik, nyanyian, dan tarian</strong>.
-          </p>
-          <div class="info-box">
-            <strong>Tokoh Sandur:</strong> Ada Tangsil, Pelat, Pethak, dan Cawik yang membuat pertunjukan seru dan menghibur!
-          </div>
-
-          <div class="section-title">Fungsi Seni Sandur</div>
-          <ul class="value-list">
-            <li><strong>Hiburan:</strong> Murah dan meriah bagi masyarakat desa</li>
-            <li><strong>Pendidikan:</strong> Pesan moral kerja keras & kejujuran</li>
-            <li><strong>Pelestarian:</strong> Menjaga tradisi & bahasa daerah</li>
-          </ul>
-
-          <div class="section-title">3. Musik Kentrung</div>
-          <p style="font-size:0.79rem;line-height:1.7;color:#3A1500;">
-            Musik tradisional dari <strong>bambu</strong> yang menghasilkan irama unik. Digunakan untuk mengiringi lagu daerah, pertunjukan rakyat, dan cerita tradisional.
-          </p>
-          <div class="fact-card">
-            <strong>🎋 Ciri Khas:</strong><br>
-            Alat musik sederhana dari bambu dengan irama khas yang menarik. Bersifat tradisional dan merakyat!
-          </div>
-
-          <p style="font-size:0.78rem;line-height:1.6;color:#3A1500;margin-top:10px;font-style:italic;background:rgba(212,160,23,0.08);padding:8px;border-radius:6px;">
-            ✨ Tayub, Sandur, dan Kentrung merupakan kekayaan budaya yang membanggakan masyarakat Semanding — bukan sekadar hiburan, tapi cermin identitas!
-          </p>
-        </div>
-        <div class="page-num">Halaman 6</div>
-      </div>
-
-      <!-- PAGE 7: LAGU PENDIDIKAN -->
-      <div class="page" id="page-7">
-        <div class="page-header">
-          <div class="bab-label">Lagu Pendidikan</div>
-          <h2>Nyanyian Kearifan Lokal 🎵</h2>
-          <span class="header-icon">🎶</span>
-        </div>
-        <div class="page-body">
-          <p style="font-size:0.78rem;color:#5A2D00;margin-bottom:10px;line-height:1.5;">
-            <span class="note-float">🎵</span> <span class="note-float">🎶</span> <span class="note-float">🎵</span>
-            Yuk nyanyikan lagu ini bersama teman-teman!
-          </p>
-
-          <!-- Song 1 -->
-          <div class="song-card" id="songCard1">
-            <div class="song-title">🎵 Lagu Semanding Bumi Kita</div>
-            <div class="song-meta">Nada: Gundul-Gundul Pacul · Untuk kelas VI SD</div>
-            <div class="song-lyrics">Di selatan Tuban nan indah
-Semanding bumi kita
-Perbukitan kapur berdiri
-Sumber air mengalir
-
-Reff:
-Kearifan lokal kita jaga
-Tradisi leluhur kita lestarikan
-Gerabah dan Sandur budaya kita
-Semanding tanah warisan
-
-Ritual Keleman syukur petani
-Siraman Waranggono seni sejati
-Mari kita cinta budaya sendiri
-Bangga menjadi anak negeri</div>
-            <div class="song-player">
-              <button class="btn-play" onclick="playSong(1)" id="playBtn1" title="Putar / Pause">▶</button>
-              <div class="song-progress-wrap">
-                <div class="song-label-text" id="songStatus1">Klik untuk memutar simulasi</div>
-                <div class="progress-bar"><div class="progress-fill" id="songProgress1"></div></div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Song 2 -->
-          <div class="song-card" id="songCard2">
-            <div class="song-title">🎶 Lagu Aku Anak Semanding</div>
-            <div class="song-meta">Nada: Bintang Kecil · Untuk kelas VI SD</div>
-            <div class="song-lyrics">Aku anak Semanding
-Bangga dengan budayaku
-Gerabah dari tanah liat
-Karya tangan leluhur
-
-Tayub dan Kentrung bersama
-Sandur kita mainkan
-Tradisi dan kearifan
-Aku jaga selamanya
-
-Reff:
-Semanding indah berseri
-Bektiharjo mata airnya
-Aku cinta budayaku
-Warisan yang berharga!</div>
-            <div class="song-player">
-              <button class="btn-play" onclick="playSong(2)" id="playBtn2" title="Putar / Pause">▶</button>
-              <div class="song-progress-wrap">
-                <div class="song-label-text" id="songStatus2">Klik untuk memutar simulasi</div>
-                <div class="progress-bar"><div class="progress-fill" id="songProgress2"></div></div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="page-num">Halaman 7</div>
-      </div>
-
-      <!-- PAGE 8: EVALUASI -->
-      <div class="page" id="page-8">
-        <div class="page-header">
-          <div class="bab-label">Evaluasi</div>
-          <h2>Yuk, Kita Coba! 📝</h2>
-          <span class="header-icon">🧠</span>
-        </div>
-        <div class="page-body">
-          <p style="font-size:0.78rem;color:#5A2D00;margin-bottom:12px;">Pilih jawaban yang benar, lalu klik <strong>Kirim Jawaban</strong>!</p>
-
-          <div class="quiz-container">
-
-            <div class="quiz-question" id="q1">
-              <div class="quiz-q-text">1. Pusat pemerintahan Tuban pada zaman dahulu pernah berada di desa...</div>
-              <div class="quiz-options">
-                <label class="quiz-option"><input type="radio" name="q1" value="a"> Kowang</label>
-                <label class="quiz-option"><input type="radio" name="q1" value="b"> Prunggahan Kulon ✅</label>
-                <label class="quiz-option"><input type="radio" name="q1" value="c"> Gesing</label>
-              </div>
-              <div class="quiz-feedback" id="fb1"></div>
-            </div>
-
-            <div class="quiz-question" id="q2">
-              <div class="quiz-q-text">2. Tradisi syukuran agar padi subur di Desa Ngino disebut...</div>
-              <div class="quiz-options">
-                <label class="quiz-option"><input type="radio" name="q2" value="a"> Siraman Waranggono</label>
-                <label class="quiz-option"><input type="radio" name="q2" value="b"> Kenduren</label>
-                <label class="quiz-option"><input type="radio" name="q2" value="c"> Ritual Keleman ✅</label>
-              </div>
-              <div class="quiz-feedback" id="fb2"></div>
-            </div>
-
-            <div class="quiz-question" id="q3">
-              <div class="quiz-q-text">3. Kerajinan gerabah seperti gendok dan kuali banyak dibuat di desa...</div>
-              <div class="quiz-options">
-                <label class="quiz-option"><input type="radio" name="q3" value="a"> Bejagung</label>
-                <label class="quiz-option"><input type="radio" name="q3" value="b"> Karang ✅</label>
-                <label class="quiz-option"><input type="radio" name="q3" value="c"> Bektiharjo</label>
-              </div>
-              <div class="quiz-feedback" id="fb3"></div>
-            </div>
-
-            <div class="quiz-question" id="q4">
-              <div class="quiz-q-text">4. Penari wanita dalam pertunjukan Tayub disebut...</div>
-              <div class="quiz-options">
-                <label class="quiz-option"><input type="radio" name="q4" value="a"> Waranggono ✅</label>
-                <label class="quiz-option"><input type="radio" name="q4" value="b"> Pelat</label>
-                <label class="quiz-option"><input type="radio" name="q4" value="c"> Tangsil</label>
-              </div>
-              <div class="quiz-feedback" id="fb4"></div>
-            </div>
-
-          </div>
-
-          <button class="btn-submit-quiz" onclick="submitQuiz()">📩 KIRIM JAWABAN</button>
-
-          <div class="score-display" id="scoreDisplay">
-            <div class="score-number" id="scoreNumber">0/4</div>
-            <div class="score-text" id="scoreText"></div>
-          </div>
-
-          <div class="challenge-box" style="margin-top:10px;">
-            <div class="ch-title">🚀 Tantangan Akhir!</div>
-            Amati lingkungan sekitarmu! Apa tradisi atau kerajinan yang ada di desamu? Ceritakan atau gambarkan di buku tulismu!
-          </div>
-        </div>
-        <div class="page-num">Halaman 8</div>
-      </div>
-
-      <!-- PAGE 9: PENUTUP -->
-      <div class="page" id="page-9">
-        <div class="page-header">
-          <div class="bab-label">Penutup</div>
-          <h2>Pesan & Glosarium 🌿</h2>
-          <span class="header-icon">✨</span>
-        </div>
-        <div class="page-body">
-          <div class="pesan-bijak">
-            "Mencintai budaya sendiri adalah awal dari mencintai bangsa. Mari kita jaga kearifan lokal Semanding agar tidak hilang ditelan zaman."
-          </div>
-
-          <div class="section-title" style="margin-top:14px;">Glosarium</div>
-          <div class="glosarium-item">
-            <span class="term">Kearifan Lokal</span>
-            <span class="def">Nilai-nilai luhur yang berlaku dalam tata kehidupan masyarakat setempat.</span>
-          </div>
-          <div class="glosarium-item">
-            <span class="term">Waranggono</span>
-            <span class="def">Penari wanita dalam pertunjukan Tayub; juga disebut Sindir.</span>
-          </div>
-          <div class="glosarium-item">
-            <span class="term">Gerabah</span>
-            <span class="def">Barang pecah belah yang terbuat dari tanah liat yang dibakar.</span>
-          </div>
-          <div class="glosarium-item">
-            <span class="term">Paes</span>
-            <span class="def">Tata rias atau bedak wajah pengantin khas daerah.</span>
-          </div>
-          <div class="glosarium-item">
-            <span class="term">Sandur</span>
-            <span class="def">Kesenian rakyat yang menggabungkan cerita, tari, musik, dan lawakan.</span>
-          </div>
-          <div class="glosarium-item">
-            <span class="term">Kentrung</span>
-            <span class="def">Musik tradisional menggunakan alat dari bambu.</span>
-          </div>
-          <div class="glosarium-item">
-            <span class="term">Tolak Bala</span>
-            <span class="def">Ritual untuk menolak segala hal buruk atau malapetaka.</span>
-          </div>
-
-          <div class="fact-card" style="margin-top:14px;text-align:center;">
-            🎉 <strong>Selamat!</strong> Kamu telah menyelesaikan e-book ini!<br>
-            <span style="font-size:0.75rem;">Kamu sudah mengenal kearifan lokal Semanding dengan baik. Terus lestarikan budaya kita! 🏛️</span>
-          </div>
-
-          <div style="text-align:center;margin-top:12px;">
-            <button class="btn-start" style="font-size:0.85rem;padding:9px 20px;" onclick="goToPage(0)">↩ Kembali ke Cover</button>
-          </div>
-        </div>
-        <div class="page-num">Halaman 9</div>
-      </div>
-
-    </div><!-- /book -->
-  </div><!-- /book-wrapper -->
-
-  <!-- Navigation -->
-  <div class="nav-section">
-    <button class="btn-nav" id="btnPrev" onclick="prevPage()" disabled>◀ Sebelumnya</button>
-    <!-- <div class="page-indicator" id="pageIndicator">Halaman 0 / 9</div> -->
-    <button class="btn-nav" id="btnNext" onclick="nextPage()">Selanjutnya ▶</button>
-  </div>
-
-</div>
-
-<script>
-  const TOTAL_PAGES = 10;
-  let currentPage = 0;
-  let songTimers = {};
-  let songStates = {};
-
-  function goToPage(n) {
-    // Hide current
-    document.getElementById('page-' + currentPage).classList.remove('active');
-    // Show new
-    currentPage = n;
-    document.getElementById('page-' + currentPage).classList.add('active');
-    updateNav();
-    // Scroll to top
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  function nextPage() {
-    if (currentPage < TOTAL_PAGES - 1) goToPage(currentPage + 1);
-  }
-
-  function prevPage() {
-    if (currentPage > 0) goToPage(currentPage - 1);
-  }
-
-  function updateNav() {
-    document.getElementById('btnPrev').disabled = currentPage === 0;
-    document.getElementById('btnNext').disabled = currentPage === TOTAL_PAGES - 1;
-    document.getElementById('pageIndicator').textContent = 'Halaman ' + currentPage + ' / ' + (TOTAL_PAGES - 1);
-  }
-
-  // Song simulation (Web Audio API)
-  function playSong(id) {
-    const btn = document.getElementById('playBtn' + id);
-    const status = document.getElementById('songStatus' + id);
-    const prog = document.getElementById('songProgress' + id);
-
-    if (songStates[id]) {
-      // Pause
-      clearInterval(songTimers[id]);
-      songStates[id] = false;
-      btn.textContent = '▶';
-      status.textContent = 'Dijeda';
-      return;
-    }
-
-    // Play: animate progress
-    songStates[id] = true;
-    btn.textContent = '⏸';
-    status.textContent = '🎵 Sedang memutar...';
-
-    let currentWidth = parseFloat(prog.style.width) || 0;
-    const duration = 30; // 30-second simulation
-    const step = 100 / (duration * 10); // per 100ms
-
-    // Generate beep sounds using Web Audio API
-    playBeepMelody(id);
-
-    songTimers[id] = setInterval(() => {
-      if (!songStates[id]) return;
-      currentWidth += step;
-      prog.style.width = Math.min(currentWidth, 100) + '%';
-      if (currentWidth >= 100) {
-        clearInterval(songTimers[id]);
-        songStates[id] = false;
-        btn.textContent = '▶';
-        status.textContent = '✅ Selesai! Putar lagi?';
-        prog.style.width = '0%';
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>E-Book Flipbook: Menggali Kearifan Lokal Semanding</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&family=Baloo+2:wght@400;600;700;800&display=swap");
+
+      :root {
+        --batik-brown: #7b3f00;
+        --batik-gold: #d4a017;
+        --batik-green: #2d6a2d;
+        --batik-red: #c0392b;
+        --batik-cream: #fff8e7;
+        --batik-orange: #e67e22;
+        --batik-teal: #1a7a6a;
+        --shadow: 0 8px 32px rgba(123, 63, 0, 0.18);
+        --page-shadow: -8px 0 24px rgba(0, 0, 0, 0.18);
       }
-    }, 100);
-  }
 
-  function playBeepMelody(id) {
-    try {
-      const AudioContext = window.AudioContext || window.webkitAudioContext;
-      if (!AudioContext) return;
-      const ctx = new AudioContext();
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
 
-      // Simple pentatonic melody (Jawa-inspired)
-      const notes = id === 1
-        ? [261.6, 293.7, 329.6, 392, 440, 392, 329.6, 293.7, 261.6, 293.7, 329.6, 440]
-        : [329.6, 392, 440, 523.3, 440, 392, 329.6, 261.6, 293.7, 329.6, 392, 329.6];
+      body {
+        background: linear-gradient(135deg, #1a0a00 0%, #3d1a00 40%, #1a3d1a 100%);
+        min-height: 100vh;
+        font-family: "Nunito", sans-serif;
+        overflow-x: hidden;
+        position: relative;
+      }
 
-      notes.forEach((freq, i) => {
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.type = 'sine';
-        osc.frequency.value = freq;
-        const start = ctx.currentTime + i * 0.4;
-        gain.gain.setValueAtTime(0, start);
-        gain.gain.linearRampToValueAtTime(0.15, start + 0.05);
-        gain.gain.linearRampToValueAtTime(0, start + 0.38);
-        osc.start(start);
-        osc.stop(start + 0.4);
+      /* Batik pattern background */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image:
+          radial-gradient(circle at 20% 20%, rgba(212, 160, 23, 0.08) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(45, 106, 45, 0.08) 0%, transparent 50%),
+          repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(212, 160, 23, 0.03) 20px, rgba(212, 160, 23, 0.03) 21px),
+          repeating-linear-gradient(-45deg, transparent, transparent 20px, rgba(45, 106, 45, 0.03) 20px, rgba(45, 106, 45, 0.03) 21px);
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .app-container {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px 10px 40px;
+      }
+
+      /* Header */
+      .app-header {
+        text-align: center;
+        margin-bottom: 20px;
+        animation: fadeDown 0.8s ease;
+      }
+
+      .app-header h1 {
+        font-family: "Baloo 2", cursive;
+        font-size: clamp(1.2rem, 3vw, 1.8rem);
+        color: var(--batik-gold);
+        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+        letter-spacing: 1px;
+      }
+
+      .app-header p {
+        color: rgba(255, 248, 231, 0.7);
+        font-size: 0.85rem;
+        margin-top: 4px;
+      }
+
+      .audio-control {
+        margin-top: 10px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 12px;
+        border-radius: 999px;
+        background: rgba(255, 248, 231, 0.08);
+        border: 1px solid rgba(212, 160, 23, 0.3);
+        color: rgba(255, 248, 231, 0.85);
+        font-size: 0.75rem;
+      }
+
+      .audio-toggle {
+        border: none;
+        background: linear-gradient(135deg, var(--batik-gold), #f0c040);
+        color: var(--batik-brown);
+        font-family: "Baloo 2", cursive;
+        font-weight: 700;
+        font-size: 0.75rem;
+        padding: 6px 12px;
+        border-radius: 999px;
+        cursor: pointer;
+        box-shadow: 0 3px 10px rgba(212, 160, 23, 0.35);
+      }
+
+      .audio-toggle:hover {
+        transform: translateY(-1px);
+      }
+
+      .audio-volume {
+        width: 90px;
+        accent-color: var(--batik-gold);
+      }
+
+      /* Book Container */
+      .book-wrapper {
+        width: 100%;
+        max-width: 820px;
+        perspective: 2000px;
+        position: relative;
+      }
+
+      .book {
+        width: 100%;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: stretch;
+        min-height: 560px;
+        gap: 0;
+      }
+
+      /* Page styles */
+      .page {
+        display: none;
+        width: 100%;
+        max-width: 420px;
+        background: var(--batik-cream);
+        border-radius: 4px 16px 16px 4px;
+        box-shadow: var(--shadow), var(--page-shadow);
+        overflow: hidden;
+        position: relative;
+        min-height: 560px;
+        animation: pageFlip 0.5s ease;
+        flex-shrink: 0;
+      }
+
+      .page.active {
+        display: flex;
+        flex-direction: column;
+      }
+      .page.left-page {
+        border-radius: 16px 4px 4px 16px;
+        box-shadow:
+          var(--shadow),
+          8px 0 24px rgba(0, 0, 0, 0.15);
+        display: none;
+      }
+      .page.left-page.active {
+        display: flex;
+        flex-direction: column;
+      }
+
+      @keyframes pageFlip {
+        from {
+          opacity: 0;
+          transform: rotateY(15deg) translateX(30px);
+        }
+        to {
+          opacity: 1;
+          transform: rotateY(0) translateX(0);
+        }
+      }
+
+      @keyframes fadeDown {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Page spine decoration */
+      .page::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 6px;
+        background: linear-gradient(to bottom, var(--batik-gold), var(--batik-brown), var(--batik-gold));
+        border-radius: 4px 0 0 4px;
+      }
+
+      .page.left-page::before {
+        left: auto;
+        right: 0;
+        border-radius: 0 4px 4px 0;
+      }
+
+      /* Page number */
+      .page-num {
+        position: absolute;
+        bottom: 12px;
+        right: 20px;
+        font-size: 0.75rem;
+        color: rgba(123, 63, 0, 0.5);
+        font-style: italic;
+      }
+      .page.left-page .page-num {
+        right: auto;
+        left: 20px;
+      }
+
+      /* ===== PAGE CONTENT STYLES ===== */
+
+      /* COVER PAGE */
+      .cover-page {
+        background: linear-gradient(160deg, #2d6a2d 0%, #1a5530 30%, #7b3f00 70%, #4a1a00 100%);
+      }
+
+      .cover-page::before {
+        display: none;
+      }
+
+      .cover-batik {
+        position: absolute;
+        inset: 0;
+        background-image:
+          radial-gradient(circle at 30% 30%, rgba(212, 160, 23, 0.15) 0%, transparent 40%), radial-gradient(circle at 70% 70%, rgba(255, 248, 231, 0.08) 0%, transparent 40%),
+          repeating-conic-gradient(from 0deg at 50% 50%, rgba(212, 160, 23, 0.05) 0deg 30deg, transparent 30deg 60deg);
+        pointer-events: none;
+      }
+
+      .cover-content {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 30px 24px;
+        height: 100%;
+        text-align: center;
+        gap: 12px;
+      }
+
+      .cover-emblem {
+        width: 90px;
+        height: 90px;
+        background: radial-gradient(circle, var(--batik-gold) 0%, #a07010 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.8rem;
+        box-shadow:
+          0 0 30px rgba(212, 160, 23, 0.6),
+          0 4px 16px rgba(0, 0, 0, 0.3);
+        animation: glow 3s ease-in-out infinite alternate;
+        border: 4px solid rgba(255, 248, 231, 0.3);
+      }
+
+      @keyframes glow {
+        from {
+          box-shadow: 0 0 20px rgba(212, 160, 23, 0.4);
+        }
+        to {
+          box-shadow:
+            0 0 40px rgba(212, 160, 23, 0.8),
+            0 0 60px rgba(212, 160, 23, 0.3);
+        }
+      }
+
+      .cover-label {
+        background: rgba(212, 160, 23, 0.25);
+        border: 1px solid rgba(212, 160, 23, 0.5);
+        color: var(--batik-gold);
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        padding: 4px 14px;
+        border-radius: 20px;
+      }
+
+      .cover-title {
+        font-family: "Baloo 2", cursive;
+        font-size: clamp(1.4rem, 4vw, 1.9rem);
+        color: #fff8e7;
+        line-height: 1.2;
+        text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+        font-weight: 800;
+      }
+
+      .cover-subtitle {
+        font-size: 0.82rem;
+        color: rgba(255, 248, 231, 0.8);
+        font-style: italic;
+        line-height: 1.5;
+        max-width: 280px;
+      }
+
+      .cover-divider {
+        width: 60px;
+        height: 3px;
+        background: linear-gradient(to right, transparent, var(--batik-gold), transparent);
+        border-radius: 2px;
+      }
+
+      .cover-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        font-size: 0.78rem;
+        color: rgba(255, 248, 231, 0.75);
+      }
+
+      .cover-meta strong {
+        color: var(--batik-gold);
+      }
+
+      .btn-start {
+        background: linear-gradient(135deg, var(--batik-gold), #f0c040);
+        color: var(--batik-brown);
+        border: none;
+        padding: 12px 32px;
+        border-radius: 30px;
+        font-family: "Baloo 2", cursive;
+        font-size: 1rem;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 4px 16px rgba(212, 160, 23, 0.4);
+        transition: all 0.3s;
+        letter-spacing: 1px;
+      }
+
+      .btn-start:hover {
+        transform: translateY(-2px) scale(1.05);
+        box-shadow: 0 8px 24px rgba(212, 160, 23, 0.6);
+      }
+
+      /* CONTENT PAGES */
+      .page-header {
+        padding: 16px 20px 12px 24px;
+        background: linear-gradient(135deg, var(--batik-brown), #5a2d00);
+        color: var(--batik-cream);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .page-header::after {
+        content: "";
+        position: absolute;
+        right: -20px;
+        top: -20px;
+        width: 80px;
+        height: 80px;
+        background: rgba(212, 160, 23, 0.15);
+        border-radius: 50%;
+      }
+
+      .page-header .bab-label {
+        font-size: 0.65rem;
+        font-weight: 700;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--batik-gold);
+        margin-bottom: 4px;
+      }
+
+      .page-header h2 {
+        font-family: "Baloo 2", cursive;
+        font-size: 1.1rem;
+        font-weight: 800;
+        line-height: 1.3;
+        position: relative;
+        z-index: 1;
+      }
+
+      .page-header .header-icon {
+        font-size: 1.5rem;
+        position: absolute;
+        right: 20px;
+        bottom: 10px;
+        opacity: 0.6;
+      }
+
+      .page-body {
+        padding: 16px 20px 40px 20px;
+        flex: 1;
+        overflow-y: auto;
+        scroll-behavior: smooth;
+      }
+
+      .page-body::-webkit-scrollbar {
+        width: 4px;
+      }
+      .page-body::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.05);
+      }
+      .page-body::-webkit-scrollbar-thumb {
+        background: var(--batik-gold);
+        border-radius: 4px;
+      }
+
+      /* Info box */
+      .info-box {
+        background: linear-gradient(135deg, rgba(212, 160, 23, 0.12), rgba(212, 160, 23, 0.06));
+        border-left: 4px solid var(--batik-gold);
+        border-radius: 0 8px 8px 0;
+        padding: 10px 14px;
+        margin: 10px 0;
+        font-size: 0.82rem;
+        line-height: 1.6;
+        color: #4a2000;
+      }
+
+      .info-box strong {
+        color: var(--batik-brown);
+        font-weight: 700;
+      }
+
+      /* Value list */
+      .value-list {
+        list-style: none;
+        margin: 10px 0;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .value-list li {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        font-size: 0.8rem;
+        line-height: 1.5;
+        color: #3a1500;
+      }
+
+      .value-list li::before {
+        content: "✦";
+        color: var(--batik-gold);
+        font-size: 0.7rem;
+        margin-top: 3px;
+        flex-shrink: 0;
+      }
+
+      /* Section heading */
+      .section-title {
+        font-family: "Baloo 2", cursive;
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: var(--batik-brown);
+        margin: 14px 0 6px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .section-title::after {
+        content: "";
+        flex: 1;
+        height: 2px;
+        background: linear-gradient(to right, var(--batik-gold), transparent);
+      }
+
+      /* Fact card */
+      .fact-card {
+        background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
+        border: 1.5px solid rgba(45, 106, 45, 0.3);
+        border-radius: 10px;
+        padding: 10px 14px;
+        margin: 8px 0;
+        font-size: 0.8rem;
+        line-height: 1.6;
+        color: #1a4020;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .fact-card::before {
+        content: "💡";
+        position: absolute;
+        top: 8px;
+        right: 10px;
+        font-size: 1.1rem;
+        opacity: 0.7;
+      }
+
+      .fact-card strong {
+        color: var(--batik-green);
+      }
+
+      /* Tujuan box */
+      .tujuan-box {
+        background: linear-gradient(135deg, rgba(26, 122, 106, 0.1), rgba(26, 122, 106, 0.05));
+        border: 1.5px solid rgba(26, 122, 106, 0.3);
+        border-radius: 10px;
+        padding: 10px 14px;
+        margin: 8px 0;
+      }
+
+      .tujuan-box .tujuan-title {
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--batik-teal);
+        margin-bottom: 6px;
+      }
+
+      .tujuan-box ul {
+        list-style: none;
+      }
+      .tujuan-box ul li {
+        font-size: 0.78rem;
+        color: #1a3a35;
+        line-height: 1.5;
+        padding: 2px 0 2px 16px;
+        position: relative;
+      }
+      .tujuan-box ul li::before {
+        content: "→";
+        position: absolute;
+        left: 0;
+        color: var(--batik-teal);
+        font-weight: 700;
+      }
+
+      /* Kata Pengantar */
+      .pengantar-text {
+        font-size: 0.82rem;
+        line-height: 1.8;
+        color: #3a1500;
+        text-indent: 1.2em;
+      }
+
+      .pengantar-highlight {
+        background: linear-gradient(to right, rgba(212, 160, 23, 0.2), transparent);
+        border-left: 3px solid var(--batik-gold);
+        padding: 8px 12px;
+        margin: 10px 0;
+        font-style: italic;
+        font-size: 0.82rem;
+        color: var(--batik-brown);
+        border-radius: 0 6px 6px 0;
+      }
+
+      /* Quiz section */
+      .quiz-container {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+
+      .quiz-question {
+        background: linear-gradient(135deg, #fff8e7, #fff3d0);
+        border: 2px solid rgba(212, 160, 23, 0.3);
+        border-radius: 12px;
+        padding: 12px;
+        box-shadow: 0 2px 8px rgba(212, 160, 23, 0.1);
+      }
+
+      .quiz-q-text {
+        font-size: 0.82rem;
+        font-weight: 700;
+        color: var(--batik-brown);
+        margin-bottom: 8px;
+        line-height: 1.4;
+      }
+
+      .quiz-options {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      .quiz-option {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.78rem;
+        color: #3a1500;
+        padding: 5px 8px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: 1.5px solid transparent;
+      }
+
+      .quiz-option:hover {
+        background: rgba(212, 160, 23, 0.1);
+        border-color: rgba(212, 160, 23, 0.3);
+      }
+
+      .quiz-option input[type="radio"] {
+        accent-color: var(--batik-gold);
+        width: 14px;
+        height: 14px;
+      }
+
+      .quiz-option.correct {
+        background: rgba(45, 106, 45, 0.15);
+        border-color: var(--batik-green);
+      }
+      .quiz-option.wrong {
+        background: rgba(192, 57, 43, 0.1);
+        border-color: var(--batik-red);
+      }
+
+      .quiz-feedback {
+        display: none;
+        margin-top: 8px;
+        padding: 6px 10px;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        font-weight: 700;
+      }
+
+      .quiz-feedback.correct-msg {
+        background: rgba(45, 106, 45, 0.15);
+        color: var(--batik-green);
+      }
+      .quiz-feedback.wrong-msg {
+        background: rgba(192, 57, 43, 0.1);
+        color: var(--batik-red);
+      }
+
+      /* Song section */
+      .song-card {
+        background: linear-gradient(135deg, #1a0a00, #2d1500);
+        border-radius: 14px;
+        padding: 16px;
+        margin: 10px 0;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      }
+
+      .song-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at 80% 20%, rgba(212, 160, 23, 0.15) 0%, transparent 60%);
+        pointer-events: none;
+      }
+
+      .song-title {
+        font-family: "Baloo 2", cursive;
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: var(--batik-gold);
+        margin-bottom: 4px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .song-meta {
+        font-size: 0.7rem;
+        color: rgba(255, 248, 231, 0.6);
+        margin-bottom: 10px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .song-lyrics {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(212, 160, 23, 0.2);
+        border-radius: 8px;
+        padding: 10px;
+        font-size: 0.78rem;
+        line-height: 1.8;
+        color: rgba(255, 248, 231, 0.9);
+        white-space: pre-line;
+        position: relative;
+        z-index: 1;
+        max-height: 160px;
+        overflow-y: auto;
+      }
+
+      .song-lyrics::-webkit-scrollbar {
+        width: 3px;
+      }
+      .song-lyrics::-webkit-scrollbar-thumb {
+        background: var(--batik-gold);
+      }
+
+      /* Song player controls */
+      .song-player {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 10px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .btn-play {
+        width: 38px;
+        height: 38px;
+        background: linear-gradient(135deg, var(--batik-gold), #f0c040);
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 3px 12px rgba(212, 160, 23, 0.4);
+        transition: all 0.2s;
+        flex-shrink: 0;
+      }
+
+      .btn-play:hover {
+        transform: scale(1.1);
+      }
+
+      .song-progress-wrap {
+        flex: 1;
+      }
+      .song-label-text {
+        font-size: 0.7rem;
+        color: rgba(255, 248, 231, 0.6);
+        margin-bottom: 3px;
+      }
+
+      .progress-bar {
+        height: 4px;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 4px;
+        overflow: hidden;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: linear-gradient(to right, var(--batik-gold), #f0c040);
+        border-radius: 4px;
+        width: 0%;
+        transition: width 0.1s linear;
+      }
+
+      /* Navigation */
+      .nav-section {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        margin-top: 20px;
+        flex-wrap: wrap;
+      }
+
+      .btn-nav {
+        background: linear-gradient(135deg, var(--batik-gold), #e8a800);
+        color: var(--batik-brown);
+        border: none;
+        padding: 10px 24px;
+        border-radius: 30px;
+        font-family: "Baloo 2", cursive;
+        font-size: 0.9rem;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 4px 14px rgba(212, 160, 23, 0.35);
+        transition: all 0.25s;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .btn-nav:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(212, 160, 23, 0.5);
+      }
+      .btn-nav:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .page-indicator {
+        font-family: "Baloo 2", cursive;
+        color: rgba(255, 248, 231, 0.8);
+        font-size: 0.85rem;
+        min-width: 80px;
+        text-align: center;
+      }
+
+      /* TOC (Daftar Isi) */
+      .toc-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin: 10px 0;
+      }
+
+      .toc-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 0.8rem;
+        color: var(--batik-brown);
+        background: rgba(212, 160, 23, 0.07);
+        border: 1.5px solid rgba(212, 160, 23, 0.15);
+        transition: all 0.2s;
+        font-weight: 600;
+      }
+
+      .toc-item:hover {
+        background: rgba(212, 160, 23, 0.18);
+        border-color: var(--batik-gold);
+        transform: translateX(4px);
+      }
+      .toc-item .toc-num {
+        font-size: 0.7rem;
+        background: var(--batik-brown);
+        color: var(--batik-cream);
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .toc-item .toc-icon {
+        font-size: 0.9rem;
+      }
+
+      /* Petunjuk icons */
+      .petunjuk-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin: 10px 0;
+      }
+
+      .petunjuk-item {
+        background: linear-gradient(135deg, rgba(212, 160, 23, 0.1), rgba(212, 160, 23, 0.05));
+        border: 1.5px solid rgba(212, 160, 23, 0.25);
+        border-radius: 10px;
+        padding: 10px;
+        text-align: center;
+        font-size: 0.72rem;
+        line-height: 1.5;
+        color: #3a1500;
+      }
+
+      .petunjuk-item .pi-icon {
+        font-size: 1.4rem;
+        margin-bottom: 4px;
+        display: block;
+      }
+
+      /* Penutup */
+      .pesan-bijak {
+        background: linear-gradient(135deg, var(--batik-green), #1a5530);
+        color: var(--batik-cream);
+        border-radius: 12px;
+        padding: 16px;
+        margin: 10px 0;
+        text-align: center;
+        font-style: italic;
+        font-size: 0.85rem;
+        line-height: 1.7;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .pesan-bijak::before {
+        content: '"';
+        position: absolute;
+        top: -10px;
+        left: 10px;
+        font-size: 5rem;
+        color: rgba(212, 160, 23, 0.2);
+        font-family: Georgia, serif;
+        line-height: 1;
+      }
+
+      .glosarium-item {
+        display: flex;
+        gap: 8px;
+        padding: 6px 0;
+        border-bottom: 1px solid rgba(212, 160, 23, 0.15);
+        font-size: 0.78rem;
+        line-height: 1.5;
+      }
+
+      .glosarium-item .term {
+        font-weight: 700;
+        color: var(--batik-brown);
+        min-width: 90px;
+        flex-shrink: 0;
+      }
+
+      .glosarium-item .def {
+        color: #3a1500;
+      }
+
+      /* Score display */
+      .score-display {
+        display: none;
+        text-align: center;
+        padding: 14px;
+        background: linear-gradient(135deg, rgba(212, 160, 23, 0.15), rgba(212, 160, 23, 0.05));
+        border: 2px solid var(--batik-gold);
+        border-radius: 12px;
+        margin: 12px 0;
+      }
+
+      .score-number {
+        font-family: "Baloo 2", cursive;
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--batik-brown);
+      }
+
+      .score-text {
+        font-size: 0.8rem;
+        color: #5a2d00;
+        margin-top: 4px;
+      }
+
+      .btn-submit-quiz {
+        display: block;
+        width: 100%;
+        background: linear-gradient(135deg, var(--batik-brown), #5a2d00);
+        color: var(--batik-cream);
+        border: none;
+        padding: 10px;
+        border-radius: 10px;
+        font-family: "Baloo 2", cursive;
+        font-size: 0.9rem;
+        font-weight: 700;
+        cursor: pointer;
+        margin-top: 10px;
+        transition: all 0.2s;
+      }
+
+      .btn-submit-quiz:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+      }
+
+      /* Responsive */
+      @media (min-width: 700px) {
+        .book {
+          gap: 0;
+        }
+        .page,
+        .page.left-page {
+          max-width: 380px;
+        }
+      }
+
+      @media (max-width: 500px) {
+        .page-header h2 {
+          font-size: 0.95rem;
+        }
+        .page-body {
+          padding: 12px 14px 36px;
+        }
+        .petunjuk-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      /* Animated note icons for song */
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0) rotate(0deg);
+        }
+        50% {
+          transform: translateY(-8px) rotate(10deg);
+        }
+      }
+
+      .note-float {
+        display: inline-block;
+        animation: float 2s ease-in-out infinite;
+      }
+
+      .note-float:nth-child(2) {
+        animation-delay: 0.5s;
+      }
+      .note-float:nth-child(3) {
+        animation-delay: 1s;
+      }
+
+      /* Challenge box */
+      .challenge-box {
+        background: linear-gradient(135deg, rgba(192, 57, 43, 0.1), rgba(192, 57, 43, 0.05));
+        border: 2px dashed rgba(192, 57, 43, 0.4);
+        border-radius: 12px;
+        padding: 12px;
+        margin: 10px 0;
+        font-size: 0.8rem;
+        color: #5a1a10;
+        line-height: 1.6;
+      }
+
+      .challenge-box .ch-title {
+        font-family: "Baloo 2", cursive;
+        font-weight: 700;
+        font-size: 0.9rem;
+        color: var(--batik-red);
+        margin-bottom: 6px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-container">
+      <div class="app-header">
+        <h1>📖 E-Book Interaktif SD Kelas VI</h1>
+        <p>Klik tombol panah untuk membalik halaman</p>
+        <div class="audio-control">
+          <button class="audio-toggle" id="bgToggle" type="button">▶ Backsound</button>
+          <input class="audio-volume" id="bgVolume" type="range" min="0" max="1" step="0.05" value="0.4" aria-label="Volume backsound" />
+        </div>
+      </div>
+
+      <div class="book-wrapper">
+        <div class="book" id="book">
+          <!-- PAGE 0: COVER -->
+          <div class="page cover-page active" id="page-0">
+            <div class="cover-batik"></div>
+            <div class="cover-content">
+              <div class="cover-emblem">🏛️</div>
+              <div class="cover-label">E-Book Interaktif</div>
+              <div class="cover-title">Menggali Kearifan<br />Lokal Semanding</div>
+              <div class="cover-divider"></div>
+              <div class="cover-subtitle">Menjelajahi Warisan Budaya dan<br />Ilmu Pengetahuan Sosial</div>
+              <div class="cover-meta">
+                <span>✍️ Penulis: <strong>Siti Nurhalimah</strong></span>
+                <span>📚 Mata Pelajaran: <strong>IPAS · Kelas VI SD</strong></span>
+                <span>📅 Tahun: <strong>2026</strong></span>
+              </div>
+              <button class="btn-start" onclick="goToPage(1, true)">✨ MULAI BACA →</button>
+            </div>
+            <div class="page-num">Halaman Depan</div>
+          </div>
+
+          <!-- PAGE 1: KATA PENGANTAR -->
+          <div class="page" id="page-1">
+            <div class="page-header">
+              <div class="bab-label">Pembuka</div>
+              <h2>Kata Pengantar</h2>
+              <span class="header-icon">🙏</span>
+            </div>
+            <div class="page-body">
+              <p class="pengantar-text">
+                <em>Assalamu'alaikum Warahmatullahi Wabarakatuh,</em>
+              </p>
+              <br />
+              <p class="pengantar-text">
+                Puji syukur kita panjatkan ke hadirat Tuhan Yang Maha Esa. Atas rahmat dan hidayah-Nya, buku elektronik interaktif berjudul <strong>"Menggali Kearifan Lokal Semanding"</strong> ini dapat diselesaikan dengan baik.
+              </p>
+              <br />
+              <div class="pengantar-highlight">💡 Tahukah kamu? Dahulu, pusat pemerintahan Kabupaten Tuban pernah berada di Prunggahan Kulon, wilayah Semanding!</div>
+              <p class="pengantar-text">Melalui buku ini, kita diajak untuk lebih mengenal, mencintai, dan melestarikan budaya sendiri. Selamat membaca dan menjelajah!</p>
+              <br />
+              <p class="pengantar-text"><em>Wassalamu'alaikum Warahmatullahi Wabarakatuh.</em></p>
+              <br />
+              <p class="pengantar-text" style="text-align: right"><em>— Penulis</em></p>
+            </div>
+            <div class="page-num">Halaman 1</div>
+          </div>
+
+          <!-- PAGE 2: PETUNJUK -->
+          <div class="page" id="page-2">
+            <div class="page-header">
+              <div class="bab-label">Panduan</div>
+              <h2>Petunjuk Penggunaan E-Book</h2>
+              <span class="header-icon">📌</span>
+            </div>
+            <div class="page-body">
+              <div class="section-title">Ayo Belajar dengan Cara Seru!</div>
+              <div class="petunjuk-grid">
+                <div class="petunjuk-item">
+                  <span class="pi-icon">◀▶</span>
+                  Klik tombol <strong>panah</strong> di bawah untuk membalik halaman
+                </div>
+                <div class="petunjuk-item">
+                  <span class="pi-icon">👀</span>
+                  Perhatikan gambar dan baca teks dengan <strong>teliti</strong>
+                </div>
+                <div class="petunjuk-item">
+                  <span class="pi-icon">🔊</span>
+                  Klik tombol <strong>putar</strong> untuk mendengar lagu pendidikan
+                </div>
+                <div class="petunjuk-item">
+                  <span class="pi-icon">📝</span>
+                  Kerjakan soal latihan dengan <strong>jujur</strong>
+                </div>
+                <div class="petunjuk-item">
+                  <span class="pi-icon">🏛️</span>
+                  Klik Daftar Isi untuk <strong>loncat ke bab</strong> tertentu
+                </div>
+                <div class="petunjuk-item">
+                  <span class="pi-icon">🌟</span>
+                  Selesaikan semua bab untuk mendapat <strong>bintang!</strong>
+                </div>
+              </div>
+              <div class="fact-card" style="margin-top: 14px">
+                <strong>🎯 Tujuan Belajar:</strong><br />
+                Setelah membaca e-book ini, kamu akan mengenal sejarah, tradisi, kerajinan, dan seni budaya Kecamatan Semanding dengan bangga!
+              </div>
+            </div>
+            <div class="page-num">Halaman 2</div>
+          </div>
+
+          <!-- PAGE 3: BAB 1 MENGENAL SEMANDING -->
+          <div class="page" id="page-3">
+            <div class="page-header">
+              <div class="bab-label">Bab 1</div>
+              <h2>Mengenal Semanding</h2>
+              <span class="header-icon">🗺️</span>
+            </div>
+            <div class="page-body">
+              <div class="tujuan-box">
+                <div class="tujuan-title">🎯 Tujuan Pembelajaran</div>
+                <ul>
+                  <li>Mengetahui letak geografis dan sejarah Semanding</li>
+                  <li>Menyebutkan potensi alam dan tempat bersejarah</li>
+                </ul>
+              </div>
+
+              <div class="section-title">Ayo Pikir Dulu!</div>
+              <div class="pengantar-highlight">"Semanding terletak di bagian selatan Kabupaten Tuban. Tahukah kamu apa yang membuat daerah ini istimewa dalam sejarah?"</div>
+
+              <div class="section-title">Materi Inti</div>
+              <strong style="color: #7b3f00;">Semanding: Wilayah Bersejarah dan Berbukit</strong>
+              <p style="font-size: 0.8rem; line-height: 1.7; color: #3a1500">
+                Kecamatan Semanding terletak di bagian selatan Tuban, dengan wilayah yang sebagian besar berupa <strong>perbukitan kapur</strong>. Pada masa Kerajaan Majapahit, pusat pemerintahan Tuban pernah berada di
+                <strong>Desa Prunggahan Kulon</strong>, Semanding.
+              </p>
+
+              <div class="fact-card">
+                <strong>📍 Pemandian Bektiharjo</strong><br />
+                Tempat wisata favorit yang juga memiliki nilai sejarah dan sering digunakan untuk upacara adat.
+              </div>
+
+              <div class="section-title">Fakta Menarik</div>
+              <ul class="value-list">
+                <li>Semanding terdiri dari banyak desa: Prunggahan Wetan, Bektiharjo, Karang, dll.</li>
+                <li>Wilayahnya yang bergunung-gunung membuat udaranya sejuk dan asri.</li>
+                <li>Kaya hasil bumi: padi, jagung, dan kelapa.</li>
+                <li>Terdapat banyak sumber mata air yang jernih.</li>
+              </ul>
+            </div>
+            <div class="page-num">Halaman 3</div>
+          </div>
+
+          <!-- PAGE 4: BAB 2 TRADISI -->
+          <div class="page" id="page-4">
+            <div class="page-header">
+              <div class="bab-label">Bab 2</div>
+              <h2>Tradisi & Upacara Adat</h2>
+              <span class="header-icon">🪔</span>
+            </div>
+            <div class="page-body">
+              <div class="tujuan-box">
+                <div class="tujuan-title">🎯 Tujuan Pembelajaran</div>
+                <ul>
+                  <li>Mengenal tradisi unik di Semanding</li>
+                  <li>Memahami makna dan nilai yang terkandung</li>
+                </ul>
+              </div>
+
+              <div class="section-title">1. Ritual Keleman</div>
+              <p style="font-size: 0.79rem; line-height: 1.7; color: #3a1500">
+                Tradisi masyarakat Desa Ngino sebagai bentuk penghormatan kepada <strong>Dewi Sri</strong> (simbol kesuburan). Dilaksanakan saat padi mulai subur atau menjelang panen.
+              </p>
+
+              <div class="info-box">Warga berkumpul di sawah membawa tumpeng, jajanan pasar, dan hasil bumi. Diakhiri dengan menabur makanan ke sawah sebagai "tolak bala".</div>
+
+              <div class="section-title">Nilai-Nilai Ritual Keleman</div>
+              <ul class="value-list">
+                <li><strong>Rasa Syukur</strong> – bersyukur atas hasil pertanian</li>
+                <li><strong>Menjaga Alam</strong> – hidup selaras dengan alam</li>
+                <li><strong>Gotong Royong</strong> – dilakukan bersama-sama</li>
+                <li><strong>Pelestarian Budaya</strong> – warisan turun-temurun</li>
+                <li><strong>Spiritual</strong> – doa dan usaha berjalan bersama</li>
+              </ul>
+
+              <div class="section-title">2. Siraman Waranggono</div>
+              <p style="font-size: 0.79rem; line-height: 1.7; color: #3a1500">Prosesi penyucian bagi para penari <strong>Tayub (Waranggono)</strong> sebelum tampil di depan umum. Dilaksanakan di Pemandian Bektiharjo.</p>
+              <div class="fact-card">Para calon penari mengenakan <strong>pakaian putih</strong> sebagai simbol kesucian, lalu disiram air sambil dipanjatkan doa keselamatan.</div>
+
+              <div class="section-title">3. Tabuh Lesung</div>
+              <p style="font-size: 0.79rem; line-height: 1.7; color: #3a1500">
+                Tradisi memukul lesung padi bersama-sama secara berirama. Berasal dari Desa Prunggahan & Ngino. Menjadi sarana <strong>hiburan rakyat</strong> sekaligus ungkapan syukur setelah panen.
+              </p>
+              <ul class="value-list">
+                <li>Kebersamaan dan kekeluargaan</li>
+                <li>Kesopanan dan etika</li>
+                <li>Pelestarian tradisi daerah</li>
+              </ul>
+            </div>
+            <div class="page-num">Halaman 4</div>
+          </div>
+
+          <!-- PAGE 5: BAB 3 KERAJINAN -->
+          <div class="page" id="page-5">
+            <div class="page-header">
+              <div class="bab-label">Bab 3</div>
+              <h2>Kerajinan & Kearifan Hidup</h2>
+              <span class="header-icon">🏺</span>
+            </div>
+            <div class="page-body">
+              <div class="section-title">1. Kerajinan Gerabah (Desa Karang)</div>
+              <p style="font-size: 0.79rem; line-height: 1.7; color: #3a1500">
+                Desa Karang dikenal sebagai sentra pembuatan <strong>gerabah/tembikar</strong> tradisional. Warga membuat gendok, kuali, dan berbagai peralatan rumah tangga dari tanah liat.
+              </p>
+              <div class="info-box"><strong>Proses Pembuatan:</strong> Tanah liat dipilih → dibentuk dengan tangan & roda putar → dijemur → dibakar → siap digunakan!</div>
+
+              <div class="section-title">2. Seni Patung & Ukir (Desa Bejagung)</div>
+              <p style="font-size: 0.79rem; line-height: 1.7; color: #3a1500">
+                Desa Bejagung dikenal karena karya seni patung dan ukir. Para pengrajin menghasilkan berbagai karya yang mencerminkan <strong>kreativitas lokal</strong> dan kecintaan terhadap seni budaya.
+              </p>
+
+              <div class="section-title">3. Paes Semandingan</div>
+              <p style="font-size: 0.79rem; line-height: 1.7; color: #3a1500"><strong>Paes</strong> adalah tata rias wajah pengantin yang khas dari Semanding. Merupakan bagian penting dari tradisi pernikahan adat Jawa Tuban.</p>
+              <div class="fact-card">
+                <strong>💡 Tahukah kamu?</strong><br />
+                Paes bukan hanya dekorasi, tapi memiliki makna simbolis tentang harapan, kesetiaan, dan keberkahan bagi pengantin!
+              </div>
+
+              <div class="section-title">Nilai Kearifan Hidup</div>
+              <ul class="value-list">
+                <li>Kreativitas dan keterampilan tangan warga</li>
+                <li>Warisan leluhur yang terus hidup</li>
+                <li>Sumber mata pencaharian ramah lingkungan</li>
+                <li>Identitas budaya yang membedakan Semanding</li>
+              </ul>
+            </div>
+            <div class="page-num">Halaman 5</div>
+          </div>
+
+          <!-- PAGE 6: BAB 4 SENI BUDAYA -->
+          <div class="page" id="page-6">
+            <div class="page-header">
+              <div class="bab-label">Bab 4</div>
+              <h2>Seni & Budaya yang Memukau</h2>
+              <span class="header-icon">🎭</span>
+            </div>
+            <div class="page-body">
+              <div class="section-title">1. Seni Tayub / Waranggono</div>
+              <p style="font-size: 0.79rem; line-height: 1.7; color: #3a1500">Pertunjukan tari tradisional yang dibawakan oleh penari wanita bernama <strong>Waranggono (Sindir)</strong>. Diiringi gamelan dan lagu-lagu Jawa.</p>
+
+              <div class="section-title">2. Seni Sandur (Prunggahan Kulon)</div>
+              <p style="font-size: 0.79rem; line-height: 1.7; color: #3a1500">Kesenian rakyat dari kehidupan petani di sekitar Bengawan Solo. Menggabungkan <strong>cerita, lawakan, dialog, musik, nyanyian, dan tarian</strong>.</p>
+              <div class="info-box"><strong>Tokoh Sandur:</strong> Ada Tangsil, Pelat, Pethak, dan Cawik yang membuat pertunjukan seru dan menghibur!</div>
+
+              <div class="section-title">Fungsi Seni Sandur</div>
+              <ul class="value-list">
+                <li><strong>Hiburan:</strong> Murah dan meriah bagi masyarakat desa</li>
+                <li><strong>Pendidikan:</strong> Pesan moral kerja keras & kejujuran</li>
+                <li><strong>Pelestarian:</strong> Menjaga tradisi & bahasa daerah</li>
+              </ul>
+
+              <div class="section-title">3. Musik Kentrung</div>
+              <p style="font-size: 0.79rem; line-height: 1.7; color: #3a1500">
+                Musik tradisional dari <strong>bambu</strong> yang menghasilkan irama unik. Digunakan untuk mengiringi lagu daerah, pertunjukan rakyat, dan cerita tradisional.
+              </p>
+              <div class="fact-card">
+                <strong>🎋 Ciri Khas:</strong><br />
+                Alat musik sederhana dari bambu dengan irama khas yang menarik. Bersifat tradisional dan merakyat!
+              </div>
+
+              <p style="font-size: 0.78rem; line-height: 1.6; color: #3a1500; margin-top: 10px; font-style: italic; background: rgba(212, 160, 23, 0.08); padding: 8px; border-radius: 6px">
+                ✨ Tayub, Sandur, dan Kentrung merupakan kekayaan budaya yang membanggakan masyarakat Semanding — bukan sekadar hiburan, tapi cermin identitas!
+              </p>
+            </div>
+            <div class="page-num">Halaman 6</div>
+          </div>
+
+          <!-- PAGE 7: LAGU PENDIDIKAN -->
+          <div class="page" id="page-7">
+            <div class="page-header">
+              <div class="bab-label">Lagu Pendidikan</div>
+              <h2>Nyanyian Kearifan Lokal 🎵</h2>
+              <span class="header-icon">🎶</span>
+            </div>
+            <div class="page-body">
+              <p style="font-size: 0.78rem; color: #5a2d00; margin-bottom: 10px; line-height: 1.5">
+                <span class="note-float">🎵</span> <span class="note-float">🎶</span> <span class="note-float">🎵</span>
+                Yuk nyanyikan lagu ini bersama teman-teman!
+              </p>
+
+              <!-- Song 1 -->
+              <div class="song-card" id="songCard1">
+                <div class="song-title">🎵 Lagu Semanding Bumi Kita</div>
+                <div class="song-meta">Nada: Gundul-Gundul Pacul · Untuk kelas VI SD</div>
+                <div class="song-lyrics">
+                  Di selatan Tuban nan indah Semanding bumi kita Perbukitan kapur berdiri Sumber air mengalir Reff: Kearifan lokal kita jaga Tradisi leluhur kita lestarikan Gerabah dan Sandur budaya kita Semanding tanah warisan Ritual
+                  Keleman syukur petani Siraman Waranggono seni sejati Mari kita cinta budaya sendiri Bangga menjadi anak negeri
+                </div>
+                <div class="song-player">
+                  <button class="btn-play" onclick="playSong(1)" id="playBtn1" title="Putar / Pause">▶</button>
+                  <div class="song-progress-wrap">
+                    <div class="song-label-text" id="songStatus1">Klik untuk memutar simulasi</div>
+                    <div class="progress-bar"><div class="progress-fill" id="songProgress1"></div></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Song 2 -->
+              <div class="song-card" id="songCard2">
+                <div class="song-title">🎶 Lagu Aku Anak Semanding</div>
+                <div class="song-meta">Nada: Bintang Kecil · Untuk kelas VI SD</div>
+                <div class="song-lyrics">
+                  Aku anak Semanding Bangga dengan budayaku Gerabah dari tanah liat Karya tangan leluhur Tayub dan Kentrung bersama Sandur kita mainkan Tradisi dan kearifan Aku jaga selamanya Reff: Semanding indah berseri Bektiharjo mata
+                  airnya Aku cinta budayaku Warisan yang berharga!
+                </div>
+                <div class="song-player">
+                  <button class="btn-play" onclick="playSong(2)" id="playBtn2" title="Putar / Pause">▶</button>
+                  <div class="song-progress-wrap">
+                    <div class="song-label-text" id="songStatus2">Klik untuk memutar simulasi</div>
+                    <div class="progress-bar"><div class="progress-fill" id="songProgress2"></div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="page-num">Halaman 7</div>
+          </div>
+
+          <!-- PAGE 8: EVALUASI -->
+          <div class="page" id="page-8">
+            <div class="page-header">
+              <div class="bab-label">Evaluasi</div>
+              <h2>Yuk, Kita Coba! 📝</h2>
+              <span class="header-icon">🧠</span>
+            </div>
+            <div class="page-body">
+              <p style="font-size: 0.78rem; color: #5a2d00; margin-bottom: 12px">Pilih jawaban yang benar, lalu klik <strong>Kirim Jawaban</strong>!</p>
+
+              <div class="quiz-container">
+                <div class="quiz-question" id="q1">
+                  <div class="quiz-q-text">1. Pusat pemerintahan Tuban pada zaman dahulu pernah berada di desa...</div>
+                  <div class="quiz-options">
+                    <label class="quiz-option"><input type="radio" name="q1" value="a" /> Kowang</label>
+                    <label class="quiz-option"><input type="radio" name="q1" value="b" /> Prunggahan Kulon ✅</label>
+                    <label class="quiz-option"><input type="radio" name="q1" value="c" /> Gesing</label>
+                  </div>
+                  <div class="quiz-feedback" id="fb1"></div>
+                </div>
+
+                <div class="quiz-question" id="q2">
+                  <div class="quiz-q-text">2. Tradisi syukuran agar padi subur di Desa Ngino disebut...</div>
+                  <div class="quiz-options">
+                    <label class="quiz-option"><input type="radio" name="q2" value="a" /> Siraman Waranggono</label>
+                    <label class="quiz-option"><input type="radio" name="q2" value="b" /> Kenduren</label>
+                    <label class="quiz-option"><input type="radio" name="q2" value="c" /> Ritual Keleman ✅</label>
+                  </div>
+                  <div class="quiz-feedback" id="fb2"></div>
+                </div>
+
+                <div class="quiz-question" id="q3">
+                  <div class="quiz-q-text">3. Kerajinan gerabah seperti gendok dan kuali banyak dibuat di desa...</div>
+                  <div class="quiz-options">
+                    <label class="quiz-option"><input type="radio" name="q3" value="a" /> Bejagung</label>
+                    <label class="quiz-option"><input type="radio" name="q3" value="b" /> Karang ✅</label>
+                    <label class="quiz-option"><input type="radio" name="q3" value="c" /> Bektiharjo</label>
+                  </div>
+                  <div class="quiz-feedback" id="fb3"></div>
+                </div>
+
+                <div class="quiz-question" id="q4">
+                  <div class="quiz-q-text">4. Penari wanita dalam pertunjukan Tayub disebut...</div>
+                  <div class="quiz-options">
+                    <label class="quiz-option"><input type="radio" name="q4" value="a" /> Waranggono ✅</label>
+                    <label class="quiz-option"><input type="radio" name="q4" value="b" /> Pelat</label>
+                    <label class="quiz-option"><input type="radio" name="q4" value="c" /> Tangsil</label>
+                  </div>
+                  <div class="quiz-feedback" id="fb4"></div>
+                </div>
+              </div>
+
+              <button class="btn-submit-quiz" onclick="submitQuiz()">📩 KIRIM JAWABAN</button>
+
+              <div class="score-display" id="scoreDisplay">
+                <div class="score-number" id="scoreNumber">0/4</div>
+                <div class="score-text" id="scoreText"></div>
+              </div>
+
+              <div class="challenge-box" style="margin-top: 10px">
+                <div class="ch-title">🚀 Tantangan Akhir!</div>
+                Amati lingkungan sekitarmu! Apa tradisi atau kerajinan yang ada di desamu? Ceritakan atau gambarkan di buku tulismu!
+              </div>
+            </div>
+            <div class="page-num">Halaman 8</div>
+          </div>
+
+          <!-- PAGE 9: PENUTUP -->
+          <div class="page" id="page-9">
+            <div class="page-header">
+              <div class="bab-label">Penutup</div>
+              <h2>Pesan & Glosarium 🌿</h2>
+              <span class="header-icon">✨</span>
+            </div>
+            <div class="page-body">
+              <div class="pesan-bijak">"Mencintai budaya sendiri adalah awal dari mencintai bangsa. Mari kita jaga kearifan lokal Semanding agar tidak hilang ditelan zaman."</div>
+
+              <div class="section-title" style="margin-top: 14px">Glosarium</div>
+              <div class="glosarium-item">
+                <span class="term">Kearifan Lokal</span>
+                <span class="def">Nilai-nilai luhur yang berlaku dalam tata kehidupan masyarakat setempat.</span>
+              </div>
+              <div class="glosarium-item">
+                <span class="term">Waranggono</span>
+                <span class="def">Penari wanita dalam pertunjukan Tayub; juga disebut Sindir.</span>
+              </div>
+              <div class="glosarium-item">
+                <span class="term">Gerabah</span>
+                <span class="def">Barang pecah belah yang terbuat dari tanah liat yang dibakar.</span>
+              </div>
+              <div class="glosarium-item">
+                <span class="term">Paes</span>
+                <span class="def">Tata rias atau bedak wajah pengantin khas daerah.</span>
+              </div>
+              <div class="glosarium-item">
+                <span class="term">Sandur</span>
+                <span class="def">Kesenian rakyat yang menggabungkan cerita, tari, musik, dan lawakan.</span>
+              </div>
+              <div class="glosarium-item">
+                <span class="term">Kentrung</span>
+                <span class="def">Musik tradisional menggunakan alat dari bambu.</span>
+              </div>
+              <div class="glosarium-item">
+                <span class="term">Tolak Bala</span>
+                <span class="def">Ritual untuk menolak segala hal buruk atau malapetaka.</span>
+              </div>
+
+              <div class="fact-card" style="margin-top: 14px; text-align: center">
+                🎉 <strong>Selamat!</strong> Kamu telah menyelesaikan e-book ini!<br />
+                <span style="font-size: 0.75rem">Kamu sudah mengenal kearifan lokal Semanding dengan baik. Terus lestarikan budaya kita! 🏛️</span>
+              </div>
+
+              <div style="text-align: center; margin-top: 12px">
+                <button class="btn-start" style="font-size: 0.85rem; padding: 9px 20px" onclick="goToPage(0)">↩ Kembali ke Cover</button>
+              </div>
+            </div>
+            <div class="page-num">Halaman 9</div>
+          </div>
+        </div>
+        <!-- /book -->
+      </div>
+      <!-- /book-wrapper -->
+
+      <!-- Navigation -->
+      <div class="nav-section">
+        <button class="btn-nav" id="btnPrev" onclick="prevPage()" disabled>◀ Sebelumnya</button>
+        <!-- <div class="page-indicator" id="pageIndicator">Halaman 0 / 9</div> -->
+        <button class="btn-nav" id="btnNext" onclick="nextPage()">Selanjutnya ▶</button>
+      </div>
+    </div>
+
+    <audio id="bgAudio" loop preload="auto">
+      <source src="asset/music/INSTRUMENTAL MUSIK GENDING JAWA.mp3" type="audio/mpeg" />
+    </audio>
+
+    <script>
+      const TOTAL_PAGES = 10;
+      let currentPage = 0;
+      let songTimers = {};
+      let songStates = {};
+
+      const bgAudio = document.getElementById("bgAudio");
+      const bgToggle = document.getElementById("bgToggle");
+      const bgVolume = document.getElementById("bgVolume");
+      bgAudio.volume = parseFloat(bgVolume.value);
+
+      bgToggle.addEventListener("click", () => {
+        if (bgAudio.paused) {
+          bgAudio
+            .play()
+            .then(() => {
+              bgToggle.textContent = "⏸ Backsound";
+            })
+            .catch(() => {
+              bgToggle.textContent = "▶ Backsound";
+            });
+        } else {
+          bgAudio.pause();
+          bgToggle.textContent = "▶ Backsound";
+        }
       });
-    } catch(e) {
-      // Audio not supported
-    }
-  }
 
-  // Quiz
-  const correctAnswers = { q1: 'b', q2: 'c', q3: 'b', q4: 'a' };
-  const feedbackTexts = {
-    correct: ['Hebat! Kamu sudah paham betul! 🌟', 'Betul sekali! Kamu cerdas! 🎉', 'Jawaban tepat! Luar biasa! ✨', 'Benar! Kamu memang pintar! 🏆'],
-    wrong: ['Ayo coba lagi! Jangan menyerah ya 💪', 'Hampir benar, baca lagi materinya 📖', 'Yuk baca ulang babnya yuk! 🔍', 'Semangat! Coba jawaban lain! 💡']
-  };
+      bgVolume.addEventListener("input", () => {
+        bgAudio.volume = parseFloat(bgVolume.value);
+      });
 
-  function submitQuiz() {
-    let score = 0;
-    let answered = 0;
+      function ensureBacksound() {
+        if (!bgAudio.paused) return;
+        bgAudio
+          .play()
+          .then(() => {
+            bgToggle.textContent = "⏸ Backsound";
+          })
+          .catch(() => {
+            bgToggle.textContent = "▶ Backsound";
+          });
+      }
 
-    ['q1','q2','q3','q4'].forEach((q, idx) => {
-      const selected = document.querySelector(`input[name="${q}"]:checked`);
-      const fb = document.getElementById('fb' + (idx+1));
-      const options = document.querySelectorAll(`input[name="${q}"]`);
+      function goToPage(n, autoPlay) {
+        if (autoPlay) ensureBacksound();
+        // Hide current
+        document.getElementById("page-" + currentPage).classList.remove("active");
+        // Show new
+        currentPage = n;
+        document.getElementById("page-" + currentPage).classList.add("active");
+        updateNav();
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
 
-      if (!selected) return;
-      answered++;
-      fb.style.display = 'block';
+      function nextPage() {
+        if (currentPage < TOTAL_PAGES - 1) goToPage(currentPage + 1, true);
+      }
 
-      if (selected.value === correctAnswers[q]) {
-        score++;
-        fb.className = 'quiz-feedback correct-msg';
-        fb.textContent = feedbackTexts.correct[idx];
-        selected.closest('.quiz-option').classList.add('correct');
-      } else {
-        fb.className = 'quiz-feedback wrong-msg';
-        fb.textContent = feedbackTexts.wrong[idx];
-        selected.closest('.quiz-option').classList.add('wrong');
-        // Show correct
-        options.forEach(opt => {
-          if (opt.value === correctAnswers[q]) {
-            opt.closest('.quiz-option').classList.add('correct');
+      function prevPage() {
+        if (currentPage > 0) goToPage(currentPage - 1, false);
+      }
+
+      function updateNav() {
+        document.getElementById("btnPrev").disabled = currentPage === 0;
+        document.getElementById("btnNext").disabled = currentPage === TOTAL_PAGES - 1;
+        document.getElementById("pageIndicator").textContent = "Halaman " + currentPage + " / " + (TOTAL_PAGES - 1);
+      }
+
+      // Song simulation (Web Audio API)
+      function playSong(id) {
+        const btn = document.getElementById("playBtn" + id);
+        const status = document.getElementById("songStatus" + id);
+        const prog = document.getElementById("songProgress" + id);
+
+        if (songStates[id]) {
+          // Pause
+          clearInterval(songTimers[id]);
+          songStates[id] = false;
+          btn.textContent = "▶";
+          status.textContent = "Dijeda";
+          return;
+        }
+
+        // Play: animate progress
+        songStates[id] = true;
+        btn.textContent = "⏸";
+        status.textContent = "🎵 Sedang memutar...";
+
+        let currentWidth = parseFloat(prog.style.width) || 0;
+        const duration = 30; // 30-second simulation
+        const step = 100 / (duration * 10); // per 100ms
+
+        // Generate beep sounds using Web Audio API
+        playBeepMelody(id);
+
+        songTimers[id] = setInterval(() => {
+          if (!songStates[id]) return;
+          currentWidth += step;
+          prog.style.width = Math.min(currentWidth, 100) + "%";
+          if (currentWidth >= 100) {
+            clearInterval(songTimers[id]);
+            songStates[id] = false;
+            btn.textContent = "▶";
+            status.textContent = "✅ Selesai! Putar lagi?";
+            prog.style.width = "0%";
+          }
+        }, 100);
+      }
+
+      function playBeepMelody(id) {
+        try {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (!AudioContext) return;
+          const ctx = new AudioContext();
+
+          // Simple pentatonic melody (Jawa-inspired)
+          const notes = id === 1 ? [261.6, 293.7, 329.6, 392, 440, 392, 329.6, 293.7, 261.6, 293.7, 329.6, 440] : [329.6, 392, 440, 523.3, 440, 392, 329.6, 261.6, 293.7, 329.6, 392, 329.6];
+
+          notes.forEach((freq, i) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.type = "sine";
+            osc.frequency.value = freq;
+            const start = ctx.currentTime + i * 0.4;
+            gain.gain.setValueAtTime(0, start);
+            gain.gain.linearRampToValueAtTime(0.15, start + 0.05);
+            gain.gain.linearRampToValueAtTime(0, start + 0.38);
+            osc.start(start);
+            osc.stop(start + 0.4);
+          });
+        } catch (e) {
+          // Audio not supported
+        }
+      }
+
+      // Quiz
+      const correctAnswers = { q1: "b", q2: "c", q3: "b", q4: "a" };
+      const feedbackTexts = {
+        correct: ["Hebat! Kamu sudah paham betul! 🌟", "Betul sekali! Kamu cerdas! 🎉", "Jawaban tepat! Luar biasa! ✨", "Benar! Kamu memang pintar! 🏆"],
+        wrong: ["Ayo coba lagi! Jangan menyerah ya 💪", "Hampir benar, baca lagi materinya 📖", "Yuk baca ulang babnya yuk! 🔍", "Semangat! Coba jawaban lain! 💡"],
+      };
+
+      function submitQuiz() {
+        let score = 0;
+        let answered = 0;
+
+        ["q1", "q2", "q3", "q4"].forEach((q, idx) => {
+          const selected = document.querySelector(`input[name="${q}"]:checked`);
+          const fb = document.getElementById("fb" + (idx + 1));
+          const options = document.querySelectorAll(`input[name="${q}"]`);
+
+          if (!selected) return;
+          answered++;
+          fb.style.display = "block";
+
+          if (selected.value === correctAnswers[q]) {
+            score++;
+            fb.className = "quiz-feedback correct-msg";
+            fb.textContent = feedbackTexts.correct[idx];
+            selected.closest(".quiz-option").classList.add("correct");
+          } else {
+            fb.className = "quiz-feedback wrong-msg";
+            fb.textContent = feedbackTexts.wrong[idx];
+            selected.closest(".quiz-option").classList.add("wrong");
+            // Show correct
+            options.forEach((opt) => {
+              if (opt.value === correctAnswers[q]) {
+                opt.closest(".quiz-option").classList.add("correct");
+              }
+            });
           }
         });
+
+        if (answered === 0) {
+          alert("Pilih jawaban dulu ya! 😊");
+          return;
+        }
+
+        const scoreEl = document.getElementById("scoreDisplay");
+        const scoreNum = document.getElementById("scoreNumber");
+        const scoreTxt = document.getElementById("scoreText");
+
+        scoreEl.style.display = "block";
+        scoreNum.textContent = score + "/4";
+
+        if (score === 4) {
+          scoreTxt.textContent = "🏆 Sempurna! Kamu sudah menguasai materi ini! Hebat sekali!";
+          scoreEl.style.background = "linear-gradient(135deg, rgba(45,106,45,0.15), rgba(45,106,45,0.05))";
+          scoreEl.style.borderColor = "#2D6A2D";
+        } else if (score >= 3) {
+          scoreTxt.textContent = "⭐ Bagus! Tinggal sedikit lagi sempurna!";
+        } else if (score >= 2) {
+          scoreTxt.textContent = "💪 Lumayan! Ayo baca lagi materinya!";
+        } else {
+          scoreTxt.textContent = "📖 Yuk, baca ulang materi dari awal!";
+        }
       }
-    });
 
-    if (answered === 0) {
-      alert('Pilih jawaban dulu ya! 😊');
-      return;
-    }
-
-    const scoreEl = document.getElementById('scoreDisplay');
-    const scoreNum = document.getElementById('scoreNumber');
-    const scoreTxt = document.getElementById('scoreText');
-
-    scoreEl.style.display = 'block';
-    scoreNum.textContent = score + '/4';
-
-    if (score === 4) {
-      scoreTxt.textContent = '🏆 Sempurna! Kamu sudah menguasai materi ini! Hebat sekali!';
-      scoreEl.style.background = 'linear-gradient(135deg, rgba(45,106,45,0.15), rgba(45,106,45,0.05))';
-      scoreEl.style.borderColor = '#2D6A2D';
-    } else if (score >= 3) {
-      scoreTxt.textContent = '⭐ Bagus! Tinggal sedikit lagi sempurna!';
-    } else if (score >= 2) {
-      scoreTxt.textContent = '💪 Lumayan! Ayo baca lagi materinya!';
-    } else {
-      scoreTxt.textContent = '📖 Yuk, baca ulang materi dari awal!';
-    }
-  }
-
-  // Init
-  updateNav();
-</script>
-</body>
+      // Init
+      updateNav();
+    </script>
+  </body>
 </html>
