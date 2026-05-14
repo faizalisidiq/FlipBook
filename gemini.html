@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-BOOK INTERAKTIF: Menggali Kearifan Lokal Semanding</title>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+    <style>
+        /* Desain Dasar */
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #e9ecef; 
+        }
+
+        /* Latar Belakang SVG blur */
+        .logo-backs {
+            position: absolute;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background-image: url("https://cdnc.heyzine.com/files/backgrounds/back5.svg");
+            background-size: cover;
+            background-position: center center;
+            opacity: 0.8;
+            filter: blur(2px);
+            z-index: -1;
+        }
+
+        /* Judul Buku Kiri Atas */
+        .flipbook-title {
+            position: absolute;
+            top: 20px;
+            left: 30px;
+            color: #ffffff;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+            z-index: 10;
+        }
+        .flipbook-title h1 { margin: 0; font-size: 22px; font-weight: bold; }
+        .flipbook-title h2 { margin: 5px 0; font-size: 16px; font-weight: normal; color: #f1c40f; }
+        .flipbook-title p { margin: 0; font-size: 12px; opacity: 0.9; }
+
+        /* Panel Kontrol Kanan Atas */
+        .controls-top {
+            position: absolute;
+            top: 20px;
+            right: 50px;
+            background-color: rgba(255, 255, 255, 0.85);
+            padding: 8px 12px;
+            border-radius: 8px;
+            display: flex;
+            gap: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+        .control-btn {
+            background: transparent;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #333;
+            transition: transform 0.2s;
+        }
+        .control-btn:hover { transform: scale(1.1); color: #007eff; }
+
+        /* ======== SWIPER CARDS STYLE ======== */
+        .swiper {
+            width: 550px; /* Lebar buku agak diperlebar agar teks muat */
+            height: 750px; 
+            padding: 20px;
+        }
+
+        .swiper-slide {
+            display: flex;
+            flex-direction: column;
+            border-radius: 8px;
+            background-color: #fdfbf7;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            padding: 40px;
+            box-sizing: border-box;
+            border: 1px solid #ddd;
+            overflow-y: auto; /* Bisa di-scroll jika kepanjangan */
+        }
+
+        .swiper-slide::-webkit-scrollbar { width: 5px; }
+        .swiper-slide::-webkit-scrollbar-thumb { background: #bdc3c7; border-radius: 4px; }
+
+        /* Desain Konten Halaman */
+        .page.cover {
+            background: url('https://nativeindonesia.com/wp-content/uploads/2023/05/pemandian-alam-bekti-harjo.jpg') center/cover;
+            position: relative;
+            align-items: center;
+            justify-content: flex-end;
+            padding-bottom: 50px;
+            color: white;
+            overflow: hidden;
+            text-align: center;
+        }
+        .cover-overlay {
+            position: absolute; top:0; left:0; width:100%; height:100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.95), rgba(0,0,0,0.2));
+            z-index: 0;
+        }
+        .cover-content { z-index: 1; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); }
+        .cover-content h1 { font-size: 32px; margin-bottom: 5px; color: #f1c40f; line-height: 1.2; }
+        
+        .page-title { color: #2c3e50; border-bottom: 3px solid #e74c3c; padding-bottom: 8px; margin-bottom: 15px; font-size: 22px; font-weight: bold; }
+        .page-subtitle { color: #e67e22; font-size: 18px; margin-top: 15px; font-weight: bold;}
+        p, li { color: #34495e; font-size: 14px; line-height: 1.6; text-align: justify; margin-bottom: 10px; }
+        
+        .img-content { width: 100%; border-radius: 5px; margin: 15px 0; border: 1px solid #ddd; box-shadow: 0 3px 6px rgba(0,0,0,0.1); }
+        
+        .btn-video {
+            display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+            background: #e74c3c; color: white; text-decoration: none;
+            padding: 8px 12px; border-radius: 4px; font-size: 13px; margin: 5px 0 15px 0; font-weight: bold; width: fit-content;
+        }
+        .kuis-box { background: #f4f6f7; padding: 12px 15px; border-left: 4px solid #f39c12; margin-bottom: 15px; font-size: 14px; border-radius: 4px;}
+        .page-number { margin-top: auto; text-align: center; color: #95a5a6; font-size: 12px; padding-top: 20px;}
+        
+        .tujuan-box { background: #e8f8f5; border: 1px solid #1abc9c; border-radius: 5px; padding: 15px; margin-bottom: 15px;}
+        .tujuan-box ul { margin: 0; padding-left: 20px; }
+
+        /* Kustomisasi Panah Navigasi Hitam */
+        .swiper-button-next, .swiper-button-prev {
+            color: #000 !important;
+            font-weight: bold;
+            transform: scale(0.8);
+            background: rgba(255,255,255,0.7);
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .swiper-button-next { right: -50px; }
+        .swiper-button-prev { left: -50px; }
+    </style>
+</head>
+<body>
+
+    <div class="logo-backs"></div>
+
+    <div class="flipbook-title">
+        <h1>MENGGALI KEARIFAN LOKAL SEMANDING</h1>
+        <h2>BY - siti nurhalimah</h2>
+        <p>IPAS Kelas V / SD</p>
+    </div>
+
+    <div class="controls-top">
+        <button class="control-btn" title="Search">🔍</button>
+        <button class="control-btn" title="Suara / Audio">🔊</button>
+        <button class="control-btn" title="Bagikan">📤</button>
+        <button class="control-btn" onclick="toggleFullScreen()" title="Fullscreen">⛶</button>
+    </div>
+
+    <div class="swiper mySwiper">
+        <div class="swiper-wrapper">
+            
+            <div class="swiper-slide page cover">
+                <div class="cover-overlay"></div>
+                <div class="cover-content">
+                    <h1>MENGGALI KEARIFAN LOKAL SEMANDING</h1>
+                    <h2 style="margin:10px 0; font-size: 18px; color: white; font-weight: normal;">Menjelajahi Warisan Budaya dan Ilmu Pengetahuan Sosial</h2>
+                    <div style="background: rgba(0,0,0,0.5); padding: 10px; border-radius: 5px; display: inline-block; margin-top: 20px;">
+                        <p style="margin:0; color:#ecf0f1;">Mata Pelajaran: IPAS<br>Kelas: V / SD</p>
+                    </div>
+                    <p style="margin-top:20px; font-weight:bold; color:#f1c40f;">Penulis: siti nurhalimah<br>Tahun: 2026</p>
+                    
+                    <button style="margin-top:20px; background:#e74c3c; color:white; border:none; padding:10px 20px; font-size:16px; border-radius:25px; cursor:pointer; font-weight:bold;" onclick="swiper.slideNext()">MULAI BACA ➡</button>
+                </div>
+            </div>
+
+            <div class="swiper-slide page">
+                <h2 class="page-title">KATA PENGANTAR</h2>
+                <p>Assalamu’alaikum Warahmatullahi Wabarakatuh,</p>
+                <p>Puji syukur kita panjatkan ke hadirat Tuhan Yang Maha Esa. Atas rahmat dan hidayah-Nya, buku elektronik interaktif berjudul "Menggali Kearifan Lokal Semanding" ini dapat diselesaikan dengan baik.</p>
+                <p>Kecamatan Semanding bukan hanya tempat tinggal kita, tetapi juga tanah yang kaya akan sejarah, tradisi, dan nilai-nilai luhur yang diwariskan leluhur. Tahukah kamu? Dahulu, pusat pemerintahan Kabupaten Tuban pernah berada di Prunggahan Kulon, wilayah Semanding lho!</p>
+                <p>Melalui buku ini, kita diajak untuk lebih mengenal, mencintai, dan melestarikan budaya sendiri. Selamat membaca dan menjelajah!</p>
+                <p>Wassalamu’alaikum Warahmatullahi Wabarakatuh.<br><br><b>Penulis</b></p>
+                
+                <h2 class="page-title" style="margin-top: 20px;">PETUNJUK PENGGUNAAN</h2>
+                <p><b>Ayo Belajar dengan Cara Seru!</b></p>
+                <ol style="padding-left: 20px;">
+                    <li>Klik tombol panah di pojok kanan atau kiri untuk membalik halaman.</li>
+                    <li>Perhatikan gambar dan baca teks dengan teliti.</li>
+                    <li>Klik ikon 🔊 Speaker jika ingin mendengar suara penjelasan.</li>
+                    <li>Kerjakan soal latihan dan kuis dengan jujur.</li>
+                    <li>Selamat belajar!</li>
+                </ol>
+                <div class="page-number">- Hal 2 -</div>
+            </div>
+
+            <div class="swiper-slide page">
+                <h2 class="page-title">DAFTAR ISI</h2>
+                <ul style="padding-left: 20px; column-count: 2; column-gap: 20px;">
+                    <li>Halaman Depan</li>
+                    <li>Kata Pengantar</li>
+                    <li>Petunjuk Penggunaan</li>
+                    <li>Bab 1: Mengenal Semanding</li>
+                    <li>Bab 2: Tradisi dan Upacara Adat</li>
+                    <li>Bab 3: Kerajinan dan Kearifan Hidup</li>
+                    <li>Bab 4: Seni dan Budaya</li>
+                    <li>Evaluasi & Tantangan</li>
+                    <li>Penutup & Glosarium</li>
+                </ul>
+
+                <h2 class="page-title" style="margin-top: 20px;">BAB 1: MENGENAL SEMANDING</h2>
+                <div class="tujuan-box">
+                    <b>Tujuan Pembelajaran:</b>
+                    <ul>
+                        <li>Siswa dapat mengetahui letak geografis dan sejarah singkat Semanding.</li>
+                        <li>Siswa dapat menyebutkan potensi alam dan tempat bersejarah di sekitarnya.</li>
+                    </ul>
+                </div>
+
+                <p><b>Ayo Pikir Dulu!</b><br>"Semanding terletak di bagian selatan Kabupaten Tuban. Tahukah kamu apa yang membuat daerah ini istimewa dalam sejarah?"</p>
+                
+                <h3 class="page-subtitle">Semanding: Wilayah Bersejarah dan Berbukit</h3>
+                <p>Kecamatan Semanding terletak di bagian selatan Tuban, dengan wilayah yang sebagian besar berupa perbukitan kapur. Wilayah ini memiliki sejarah yang sangat penting karena pada masa Kerajaan Majapahit, pusat pemerintahan Tuban pernah berada di Desa Prunggahan Kulon, Semanding.</p>
+                <p>Di sini juga terdapat banyak sumber mata air yang jernih dan menjadi tempat wisata favorit, seperti Pemandian Bektiharjo. Selain itu, daerah ini kaya akan hasil bumi seperti padi, jagung, dan kelapa.</p>
+                <div class="page-number">- Hal 3 -</div>
+            </div>
+
+            <div class="swiper-slide page">
+                <h2 class="page-title">GALERI & INFO SEMANDING</h2>
+                <img src="https://tubankab.go.id/storage/2024/05/peta-semanding.jpg" class="img-content" alt="Peta Wilayah Semanding">
+                
+                <p><b>Fakta Menarik:</b></p>
+                <ul style="padding-left: 20px;">
+                    <li>Semanding terdiri dari banyak desa, seperti Prunggahan Wetan, Bektiharjo, Karang, dan lain-lain.</li>
+                    <li>Wilayahnya yang bergunung-gunung membuat udaranya sejuk dan asri.</li>
+                </ul>
+                <a href="https://youtu.be/J3hF9yX7wQk" target="_blank" class="btn-video">▶ Tonton Video Profil Semanding</a>
+
+                <img src="https://nativeindonesia.com/wp-content/uploads/2023/05/pemandian-alam-bekti-harjo.jpg" class="img-content" alt="Pemandian Bektiharjo">
+                <p><i>Keterangan: Tempat ini (Pemandian Bektiharjo) tidak hanya untuk mandi, tapi juga memiliki nilai sejarah dan sering digunakan untuk upacara adat.</i></p>
+                <a href="https://youtu.be/5Z6w2dM9s7U" target="_blank" class="btn-video">▶ Keindahan Pemandian Bektiharjo</a>
+
+                <div class="page-number">- Hal 4 -</div>
+            </div>
+
+            <div class="swiper-slide page">
+                <h2 class="page-title">BAB 2: TRADISI DAN UPACARA ADAT</h2>
+                <div class="tujuan-box">
+                    <b>Tujuan Pembelajaran:</b>
+                    <ul>
+                        <li>Siswa dapat mengenal berbagai tradisi unik di Semanding.</li>
+                        <li>Siswa dapat memahami makna dan nilai yang terkandung di dalamnya.</li>
+                    </ul>
+                </div>
+                
+                <h3 class="page-subtitle">1. Ritual Keleman (Tingkepan Dewi Sri)</h3>
+                <img src="https://tubankab.go.id/storage/2025/07/ritual-keleman-ngino.jpg" class="img-content" onerror="this.src='https://beritajatim.com/wp-content/uploads/2025/09/keleman-sendang-asmoro.jpg';" alt="Ritual Keleman">
+                
+                <p>Ritual Keleman atau Tingkepan Dewi Sri merupakan salah satu tradisi masyarakat Jawa yang masih dilaksanakan oleh warga Desa Ngino dan daerah sekitarnya sebagai bentuk penghormatan kepada Dewi Sri.</p>
+                <p>Kata “tingkepan” memiliki arti selamatan khusus, dan “keleman” berkaitan dengan menjaga kesuburan sawah. Warga desa berkumpul di persawahan membawa tumpeng berbentuk kerucut yang melambangkan rasa syukur.</p>
+                
+                <p><b>Nilai yang Terkandung:</b> Rasa Syukur, Menjaga Keseimbangan Alam, Gotong Royong, Pelestarian Budaya, dan Nilai Spiritual.</p>
+                <a href="https://youtu.be/8yR2z9L7wXg" target="_blank" class="btn-video">▶ Video Prosesi Ritual Keleman</a>
+                
+                <div class="page-number">- Hal 5 -</div>
+            </div>
+
+            <div class="swiper-slide page">
+                <h3 class="page-subtitle">2. Siraman Waranggono</h3>
+                <img src="https://surabaya.tribunnews.com/2025/12/10/waranggono-tuban.jpg" class="img-content" alt="Siraman Waranggono">
+                <p>Merupakan tradisi budaya sakral di Pemandian Bektiharjo. Dilakukan sebagai penyucian (wisuda) bagi para penari Tayub sebelum tampil di umum. Tujuannya membersihkan hati, pikiran, dan niat.</p>
+                <p><b>Nilai:</b> Kesucian Hati, Penghormatan Seni, Disiplin, dan Tanggung Jawab.</p>
+                <a href="https://youtu.be/3tG4vQ7bX9c" target="_blank" class="btn-video">▶ Video Wisuda Penari Tayub</a>
+
+                <h3 class="page-subtitle">3. Tabuh Lesung</h3>
+                <img src="https://rri.co.id/uploads/images/2024/12/tabuh-lesung-prunggahan.jpg" class="img-content" onerror="this.src='https://beritajatim.com/wp-content/uploads/2025/09/tabuh-lesung-dusun-janten.jpg';" alt="Tabuh Lesung">
+                <p>Kesenian menggunakan lesung kayu penumbuk padi. Ketika dipukul dengan alu, menghasilkan bunyi khas berirama. Dahulu berfungsi juga sebagai alat komunikasi desa.</p>
+                <p><b>Nilai:</b> Kerja Sama, Kebersamaan, Gotong Royong, dan Rasa Syukur.</p>
+                <a href="https://youtu.be/9kL2dP4vM7s" target="_blank" class="btn-video">▶ Suara & Cara Menabuh Lesung</a>
+                
+                <div class="page-number">- Hal 6 -</div>
+            </div>
+
+            <div class="swiper-slide page">
+                <h2 class="page-title">BAB 3: KERAJINAN DAN KEARIFAN HIDUP</h2>
+                <div class="tujuan-box">
+                    <b>Tujuan Pembelajaran:</b>
+                    <ul>
+                        <li>Mengetahui kerajinan tangan khas Semanding.</li>
+                        <li>Memahami cara nenek moyang memanfaatkan alam.</li>
+                    </ul>
+                </div>
+                
+                <h3 class="page-subtitle">1. Kerajinan Gerabah / Tembikar</h3>
+                <img src="https://radartuban.jawapos.com/wp-content/uploads/2025/01/mbah-somi-pengrajin-gerabah.jpg" class="img-content" alt="Kerajinan Gerabah">
+                <p>Di Desa Karang, pengrajin (seperti Mbah Somi) masih membuat peralatan dari tanah liat manual (gendok, kuali). Tahapannya meliputi: pengambilan tanah, pengolahan, pembentukan, pengeringan, dan pembakaran suhu tinggi.</p>
+                <a href="https://youtu.be/6bR3vX9zW7e" target="_blank" class="btn-video">▶ Cara Membuat Gerabah</a>
+
+                <h3 class="page-subtitle">2. Seni Patung</h3>
+                <img src="https://bloktuban.com/wp-content/uploads/2024/05/seni-patung-bejagung.jpg" class="img-content" alt="Seni Patung Bejagung">
+                <p>Di Desa Bejagung, seniman (salah satunya Abah Janjang) memahat kayu/batu menjadi karya seni luar biasa. Memerlukan ketelitian, kesabaran, dan kreativitas tinggi.</p>
+                <a href="https://youtu.be/2wR5z9kL7dX" target="_blank" class="btn-video">▶ Video Seni Ukir & Patung</a>
+                <div class="page-number">- Hal 7 -</div>
+            </div>
+
+            <div class="swiper-slide page">
+                <h3 class="page-subtitle">3. Paes Semandingan</h3>
+                <img src="https://tubankab.go.id/storage/2024/08/paes-semandingan.jpg" class="img-content" alt="Paes Semandingan">
+                <p>Paes Semandingan merupakan riasan pengantin khas yang terkenal sederhana tetapi tetap anggun. Menampilkan kesan alami dan elegan dengan makna kesucian serta harapan keluarga harmonis.</p>
+                <a href="https://youtu.be/7vR2dX9bL3k" target="_blank" class="btn-video">▶ Video Rias Paes Semandingan</a>
+
+                <h2 class="page-title" style="margin-top: 30px;">BAB 4: SENI BUDAYA MEMUKAU</h2>
+                <div class="tujuan-box">
+                    <b>Tujuan Pembelajaran:</b>
+                    <ul>
+                        <li>Mengenal kesenian khas Semanding.</li>
+                        <li>Menghargai karya seni daerah sendiri.</li>
+                    </ul>
+                </div>
+
+                <h3 class="page-subtitle">1. Seni Tayub</h3>
+                <img src="https://beritajatim.com/wp-content/uploads/2025/12/tayub-tuban-semanding.jpg" class="img-content" alt="Seni Tayub">
+                <p>Tarian pergaulan yang diiringi musik gamelan Jawa. Penarinya disebut Waranggono. Sangat populer di acara hajatan dan sedekah bumi.</p>
+                <a href="https://youtu.be/4tG3vX7bL9c" target="_blank" class="btn-video">▶ Pertunjukan Tayub Lengkap</a>
+                
+                <div class="page-number">- Hal 8 -</div>
+            </div>
+
+            <div class="swiper-slide page">
+                <h3 class="page-subtitle">2. Seni Sandur</h3>
+                <img src="https://bloktuban.com/wp-content/uploads/2023/09/sandur-tuban.jpg" class="img-content" alt="Seni Sandur">
+                <p>Berkembang pesat di Desa Prunggahan Kulon. Sandur menggabungkan cerita, lawakan, musik, nyanyian, dan tarian. Tokoh utamanya (Tangsil, Pelat, Pethak, Cawik) selalu membawa pesan moral kehidupan.</p>
+                <a href="https://youtu.be/1wR5z9kL7dX" target="_blank" class="btn-video">▶ Tonton Keseruan Sandur</a>
+
+                <h3 class="page-subtitle">3. Musik Kentrung</h3>
+                <img src="https://tubankab.go.id/storage/2024/07/kentrung-semanding.jpg" class="img-content" alt="Musik Kentrung">
+                <p>Musik tradisional menggunakan alat sederhana dari bambu/kayu dengan rebana. Menjadi media penyampaian cerita rakyat, kisah pahlawan, atau nasihat melalui nyanyian.</p>
+                <a href="https://youtu.be/9vR2dX9bL3k" target="_blank" class="btn-video">▶ Dengarkan Musik Kentrung</a>
+                
+                <div class="page-number">- Hal 9 -</div>
+            </div>
+
+            <div class="swiper-slide page">
+                <div style="text-align: center;">
+                    <img src="https://cdn-icons-png.flaticon.com/512/3201/3201355.png" alt="Ikon Kuis" style="width: 80px; margin-bottom: 10px;">
+                </div>
+                <h2 class="page-title" style="text-align: center;">EVALUASI: YUK, KITA COBA!</h2>
+                
+                <div class="kuis-box">
+                    <p style="margin: 0 0 5px 0;"><b>Soal 1:</b> Pusat pemerintahan Tuban pada zaman dahulu pernah berada di desa...</p>
+                    <input type="radio" name="s1"> Prunggahan Kulon<br>
+                    <input type="radio" name="s1"> Kowang<br>
+                    <input type="radio" name="s1"> Gesing
+                </div>
+
+                <div class="kuis-box">
+                    <p style="margin: 0 0 5px 0;"><b>Soal 2:</b> Tradisi syukuran agar padi subur di Desa Ngino disebut...</p>
+                    <input type="radio" name="s2"> Siraman Waranggono<br>
+                    <input type="radio" name="s2"> Ritual Keleman<br>
+                    <input type="radio" name="s2"> Kenduren
+                </div>
+
+                <div class="kuis-box">
+                    <p style="margin: 0 0 5px 0;"><b>Soal 3:</b> Kerajinan tanah liat seperti gendok dan kuali banyak dibuat di desa...</p>
+                    <input type="radio" name="s3"> Bejagung<br>
+                    <input type="radio" name="s3"> Karang<br>
+                    <input type="radio" name="s3"> Bektiharjo
+                </div>
+                
+                <div style="text-align: center; margin-top: 15px;">
+                    <button class="btn-video" style="background:#27ae60; border:none; cursor:pointer;" onclick="alert('Hebat! Kamu sudah paham betul tentang budaya Semanding!\n\n(Jika ada yang salah: Ayo coba lagi! Jangan menyerah ya.)')">KIRIM JAWABAN</button>
+                </div>
+
+                <h3 class="page-subtitle" style="margin-top: 30px;">TANTANGAN AKHIR</h3>
+                <p><b>Tugas:</b> Cobalah amati lingkungan sekitarmu! Apa tradisi atau kerajinan yang ada di desamu? Ceritakan atau gambarkan di buku tulismu!</p>
+                
+                <h3 class="page-subtitle">Glosarium</h3>
+                <ul>
+                    <li><b>Kearifan Lokal:</b> Nilai luhur dalam tata kehidupan masyarakat.</li>
+                    <li><b>Waranggono:</b> Penari wanita pertunjukan Tayub.</li>
+                    <li><b>Gerabah:</b> Barang dari tanah liat yang dibakar.</li>
+                    <li><b>Paes:</b> Tata rias pengantin tradisional.</li>
+                </ul>
+
+                <div style="text-align: center; padding: 15px; background: #eaf2f8; border-radius: 8px; border: 1px solid #d4e6f1; margin-top: 20px;">
+                    <i>"Mencintai budaya sendiri adalah awal dari mencintai bangsa. Mari kita jaga kearifan lokal Semanding agar tidak hilang ditelan zaman."</i>
+                </div>
+
+                <div class="page-number">- Hal 10 -</div>
+            </div>
+
+        </div>
+
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+    </div>
+
+    <script>
+        var swiper = new Swiper(".mySwiper", {
+            effect: "cards",             
+            grabCursor: true,            
+            cardsEffect: {
+                perSlideOffset: 8,       
+                perSlideRotate: 2,       
+                slideShadows: true,      
+            },
+            navigation: {
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
+            },
+        });
+
+        // Fungsi Fullscreen
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+    </script>
+</body>
+</html>
