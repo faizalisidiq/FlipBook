@@ -42,7 +42,7 @@
         position: absolute;
         top: 20px;
         left: 30px;
-        color: #ffffff;
+        color: #522f24;
         text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
         z-index: 10;
       }
@@ -55,7 +55,7 @@
         margin: 5px 0;
         font-size: 16px;
         font-weight: normal;
-        color: #f1c40f;
+        color: #522f24;
       }
       .flipbook-title p {
         margin: 0;
@@ -91,12 +91,13 @@
 
       /* ======== SWIPER CARDS STYLE ======== */
       .swiper {
-        width: 550px; /* Lebar buku agak diperlebar agar teks muat */
-        height: 750px;
+        width: 550px;
+        height: 100vh;
+        max-height: 800px;
         padding: 20px;
         touch-action: pan-y;
-        overflow: hidden;
-        margin-top: 40px;
+        overflow: visible;
+        margin: 0;
       }
 
       .swiper-wrapper {
@@ -363,8 +364,11 @@
           </p>
           <p>Melalui buku ini, kita diajak untuk lebih mengenal, mencintai, dan melestarikan budaya sendiri. Selamat membaca dan menjelajah!</p>
           <p>Wassalamu’alaikum Warahmatullahi Wabarakatuh.<br /><br /><b>Penulis</b></p>
+          <div class="page-number">- Hal 1 -</div>
+        </div>
 
-          <h2 class="page-title" style="margin-top: 20px">PETUNJUK PENGGUNAAN</h2>
+        <div class="swiper-slide page">
+          <h2 class="page-title">PETUNJUK PENGGUNAAN</h2>
           <p><b>Ayo Belajar dengan Cara Seru!</b></p>
           <ol style="padding-left: 20px">
             <li>Klik tombol panah di pojok kanan atau kiri untuk membalik halaman.</li>
@@ -378,19 +382,28 @@
 
         <div class="swiper-slide page">
           <h2 class="page-title">DAFTAR ISI</h2>
-          <ul style="padding-left: 20px; column-count: 2; column-gap: 20px">
-            <li>Halaman Depan</li>
-            <li>Kata Pengantar</li>
-            <li>Petunjuk Penggunaan</li>
-            <li>Bab 1: Mengenal Semanding</li>
-            <li>Bab 2: Tradisi dan Upacara Adat</li>
-            <li>Bab 3: Kerajinan dan Kearifan Hidup</li>
-            <li>Bab 4: Seni dan Budaya</li>
-            <li>Evaluasi & Tantangan</li>
-            <li>Penutup & Glosarium</li>
-          </ul>
+          <ol style="padding-left: 30px; line-height: 1.8; font-weight: bold;">
+            <li>HALAMAN DEPAN
+              <ul style="padding-left: 20px; font-weight: normal; line-height: 1.6;">
+                <li>Cover</li>
+                <li>Identitas Buku</li>
+              </ul>
+            </li>
+            <li>KATA PENGANTAR</li>
+            <li>PETUNJUK PENGGUNAAN E-BOOK</li>
+            <li>DAFTAR ISI</li>
+            <li>BAB 1: MENGENAL SEMANDING</li>
+            <li>BAB 2: TRADISI DAN UPACARA ADAT</li>
+            <li>BAB 3: KERAJINAN DAN KEARIFAN HIDUP</li>
+            <li>BAB 4: SENI DAN BUDAYA YANG MEMUKAU</li>
+            <li>EVALUASI & TANTANGAN</li>
+            <li>PENUTUP & GLOSARIUM</li>
+          </ol>
+          <div class="page-number">- Hal 3 -</div>
+        </div>
 
-          <h2 class="page-title" style="margin-top: 20px">BAB 1: MENGENAL SEMANDING</h2>
+        <div class="swiper-slide page">
+          <h2 class="page-title">BAB 1: MENGENAL SEMANDING</h2>
           <div class="tujuan-box">
             <b>Tujuan Pembelajaran:</b>
             <ul>
@@ -407,7 +420,7 @@
             pernah berada di Desa Prunggahan Kulon, Semanding.
           </p>
           <p>Di sini juga terdapat banyak sumber mata air yang jernih dan menjadi tempat wisata favorit, seperti Pemandian Bektiharjo. Selain itu, daerah ini kaya akan hasil bumi seperti padi, jagung, dan kelapa.</p>
-          <div class="page-number">- Hal 3 -</div>
+          <div class="page-number">- Hal 4 -</div>
         </div>
 
         <div class="swiper-slide page">
@@ -425,7 +438,7 @@
           <p><i>Keterangan: Tempat ini (Pemandian Bektiharjo) tidak hanya untuk mandi, tapi juga memiliki nilai sejarah dan sering digunakan untuk upacara adat.</i></p>
           <a href="https://youtu.be/5Z6w2dM9s7U" target="_blank" class="btn-video">▶ Keindahan Pemandian Bektiharjo</a>
 
-          <div class="page-number">- Hal 4 -</div>
+          <div class="page-number">- Hal 5 -</div>
         </div>
 
         <div class="swiper-slide page">
@@ -438,24 +451,59 @@
             </ul>
           </div>
 
-          <h3 class="page-subtitle">1. Ritual Keleman (Tingkepan Dewi Sri)</h3>
+          <h3 class="page-subtitle">1. Ritual Keleman atau Tingkepan Dewi Sri</h3>
           <img src="https://tubankab.go.id/storage/2025/07/ritual-keleman-ngino.jpg" class="img-content" onerror="this.src = 'https://beritajatim.com/wp-content/uploads/2025/09/keleman-sendang-asmoro.jpg'" alt="Ritual Keleman" />
 
-          <p>Ritual Keleman atau Tingkepan Dewi Sri merupakan salah satu tradisi masyarakat Jawa yang masih dilaksanakan oleh warga Desa Ngino dan daerah sekitarnya sebagai bentuk penghormatan kepada Dewi Sri.</p>
-          <p>Kata “tingkepan” memiliki arti selamatan khusus, dan “keleman” berkaitan dengan menjaga kesuburan sawah. Warga desa berkumpul di persawahan membawa tumpeng berbentuk kerucut yang melambangkan rasa syukur.</p>
+          <p>Ritual Keleman atau Tingkepan Dewi Sri merupakan salah satu tradisi masyarakat Jawa yang masih dilaksanakan oleh warga Desa Ngino dan daerah sekitarnya sebagai bentuk penghormatan kepada Dewi Sri. Dalam kepercayaan masyarakat Jawa, Dewi Sri dianggap sebagai simbol kesuburan, kemakmuran, dan pelindung tanaman padi. Oleh karena itu, ritual ini dilakukan sebagai ungkapan rasa syukur sekaligus harapan agar hasil pertanian tetap baik dan panen melimpah.</p>
 
-          <p><b>Nilai yang Terkandung:</b> Rasa Syukur, Menjaga Keseimbangan Alam, Gotong Royong, Pelestarian Budaya, dan Nilai Spiritual.</p>
+          <p>Ritual ini biasanya dilaksanakan ketika tanaman padi mulai tumbuh subur atau menjelang masa panen. Kata "tingkepan" memiliki arti selamatan atau upacara khusus yang dilakukan untuk memohon keselamatan dan keberkahan. Sementara itu, istilah "keleman" berkaitan dengan kegiatan masyarakat tani dalam menjaga kesuburan sawah dan tanaman.</p>
+
+          <p>Pada pelaksanaannya, warga desa berkumpul di area persawahan dengan membawa berbagai makanan tradisional, terutama tumpeng, jajanan pasar, hasil bumi, dan lauk-pauk. Tumpeng berbentuk kerucut melambangkan rasa syukur kepada Tuhan atas rezeki yang diberikan. Selain itu, hasil bumi yang dibawa menunjukkan harapan agar tanah tetap subur dan memberikan kehidupan bagi masyarakat.</p>
+
+          <p>Acara biasanya diawali dengan doa bersama yang dipimpin oleh tokoh masyarakat atau sesepuh desa. Dalam doa tersebut, masyarakat memohon agar tanaman padi terhindar dari hama, bencana, dan penyakit yang dapat menyebabkan gagal panen. Setelah doa selesai, sebagian makanan dan hasil bumi ditaburkan di sawah. Kegiatan ini memiliki makna simbolis sebagai "tolak bala", yaitu menolak segala hal buruk yang dapat mengganggu pertanian dan kehidupan masyarakat.</p>
+
+          <p>Selain sebagai tradisi adat, Ritual Keleman juga menjadi sarana mempererat hubungan sosial antarwarga. Masyarakat bekerja sama menyiapkan acara, memasak makanan, hingga mengikuti doa bersama. Hal ini menunjukkan adanya nilai gotong royong dan kebersamaan yang masih dijaga dalam kehidupan desa.</p>
+
+          <p><b>Nilai-Nilai yang Terkandung dalam Ritual Keleman:</b></p>
+          <ol style="padding-left: 20px; font-size: 14px;">
+            <li><b>Nilai Rasa Syukur</b> - Ritual ini mengajarkan masyarakat untuk selalu bersyukur atas nikmat yang diberikan Tuhan, terutama hasil pertanian yang menjadi sumber kehidupan warga desa.</li>
+            <li><b>Nilai Menjaga Keseimbangan Alam</b> - Tradisi ini menunjukkan bahwa manusia harus hidup selaras dengan alam. Sawah dan tanaman dianggap sebagai bagian penting kehidupan yang harus dijaga dan dirawat dengan baik.</li>
+            <li><b>Nilai Gotong Royong</b> - Pelaksanaan ritual dilakukan bersama-sama sehingga memperkuat rasa persatuan, kerja sama, dan kepedulian antarwarga.</li>
+            <li><b>Nilai Pelestarian Budaya</b> - Ritual Keleman menjadi warisan budaya lokal yang diwariskan dari generasi ke generasi agar tradisi dan identitas masyarakat tetap terjaga.</li>
+            <li><b>Nilai Spiritual</b> - Masyarakat percaya bahwa doa dan usaha harus berjalan bersama. Oleh karena itu, ritual ini menjadi bentuk pendekatan diri kepada Tuhan untuk memohon keselamatan dan keberkahan.</li>
+          </ol>
           <a href="https://youtu.be/8yR2z9L7wXg" target="_blank" class="btn-video">▶ Video Prosesi Ritual Keleman</a>
 
-          <div class="page-number">- Hal 5 -</div>
+          <div class="page-number">- Hal 6 -</div>
         </div>
 
         <div class="swiper-slide page">
           <h3 class="page-subtitle">2. Siraman Waranggono</h3>
-          <img src="https://surabaya.tribunnews.com/2025/12/10/waranggono-tuban.jpg" class="img-content" alt="Siraman Waranggono" />
-          <p>Merupakan tradisi budaya sakral di Pemandian Bektiharjo. Dilakukan sebagai penyucian (wisuda) bagi para penari Tayub sebelum tampil di umum. Tujuannya membersihkan hati, pikiran, dan niat.</p>
-          <p><b>Nilai:</b> Kesucian Hati, Penghormatan Seni, Disiplin, dan Tanggung Jawab.</p>
-          <a href="https://youtu.be/3tG4vQ7bX9c" target="_blank" class="btn-video">▶ Video Wisuda Penari Tayub</a>
+          <div style="margin: 15px 0; aspect-ratio: 16/9; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
+            <iframe width="100%" height="100%" src="https://www.youtube.com/embed/EpPbhZF95gs" title="Siraman Waranggono" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+          </div>
+          
+          <p>Siraman Waranggono merupakan salah satu tradisi budaya yang bersifat sakral dan masih dilestarikan oleh masyarakat di kawasan Pemandian Bektiharjo. Tradisi ini dilakukan sebagai prosesi penyucian atau "wisuda" bagi para penari Tayub sebelum mereka diperbolehkan tampil di depan umum. Dalam budaya Jawa, penari Tayub sering disebut sebagai "Waranggono" atau "Sindir", yaitu perempuan yang memiliki kemampuan menari dan menyanyi dalam pertunjukan seni tradisional Tayub.</p>
+          
+          <p>Tradisi siraman memiliki makna penting karena dianggap sebagai tahap awal bagi seorang penari untuk memasuki dunia seni pertunjukan. Prosesi ini tidak hanya bertujuan membersihkan tubuh secara fisik, tetapi juga menyucikan hati, pikiran, dan niat para penari agar mereka dapat menjalankan seni dengan baik, sopan, dan penuh tanggung jawab.</p>
+          
+          <p>Pelaksanaan Siraman Waranggono biasanya dilakukan di sumber mata air atau tempat pemandian yang dianggap memiliki nilai sejarah dan kesakralan, salah satunya di Pemandian Bektiharjo. Tempat ini dipercaya memiliki air yang bersih dan membawa keberkahan. Sebelum prosesi dimulai, para calon Waranggono mengenakan pakaian putih bersih sebagai simbol kesucian dan niat yang tulus. Warna putih melambangkan hati yang bersih, kejujuran, dan kesiapan untuk menjalani tanggung jawab sebagai pelaku seni budaya.</p>
+          
+          <p>Acara kemudian dipimpin oleh sesepuh atau tokoh adat yang dihormati masyarakat. Para calon penari disiram air secara bergantian sambil dipanjatkan doa-doa keselamatan dan harapan agar mereka menjadi seniman yang berbudi baik, menjaga nama baik seni tradisional, serta memberikan hiburan yang bermanfaat bagi masyarakat. Air dalam prosesi siraman melambangkan pembersihan diri dari sifat buruk dan harapan agar kehidupan mereka dipenuhi keberkahan.</p>
+          
+          <p>Setelah prosesi selesai, para Waranggono dianggap telah resmi diterima dan diperbolehkan tampil dalam pertunjukan Tayub. Tradisi ini menjadi bentuk penghormatan terhadap seni tradisional karena seorang penari tidak hanya dituntut memiliki kemampuan menari, tetapi juga harus menjaga etika, sikap, dan tata krama dalam kehidupan sehari-hari.</p>
+          
+          <p>Selain memiliki nilai spiritual, Siraman Waranggono juga menjadi sarana pelestarian budaya daerah. Melalui tradisi ini, generasi muda diajarkan untuk menghargai seni tradisional sebagai warisan leluhur yang memiliki makna mendalam, bukan sekadar hiburan semata.</p>
+          
+          <p><b>Nilai-Nilai yang Terkandung dalam Siraman Waranggono:</b></p>
+          <ol style="padding-left: 20px; font-size: 14px;">
+            <li><b>Nilai Kesucian Hati</b> - Prosesi siraman mengajarkan pentingnya membersihkan hati dan niat sebelum menjalankan suatu tugas atau profesi.</li>
+            <li><b>Nilai Penghormatan terhadap Seni</b> - Tradisi ini menunjukkan bahwa seni tradisional memiliki kedudukan yang luhur sehingga harus dijaga dengan sikap hormat dan tanggung jawab.</li>
+            <li><b>Nilai Disiplin dan Tanggung Jawab</b> - Seorang Waranggono harus menjaga perilaku dan menjalankan tugasnya dengan baik karena membawa nama seni dan budaya daerah.</li>
+            <li><b>Nilai Pelestarian Budaya</b> - Tradisi Siraman Waranggono menjadi bagian dari upaya menjaga keberlangsungan seni Tayub agar tidak hilang ditelan perkembangan zaman.</li>
+            <li><b>Nilai Spiritual dan Kebersamaan</b> - Doa bersama dan keterlibatan masyarakat menunjukkan hubungan erat antara budaya, kepercayaan, dan kehidupan sosial masyarakat.</li>
+          </ol>
+
 
           <h3 class="page-subtitle">3. Tabuh Lesung</h3>
           <img src="https://rri.co.id/uploads/images/2024/12/tabuh-lesung-prunggahan.jpg" class="img-content" onerror="this.src = 'https://beritajatim.com/wp-content/uploads/2025/09/tabuh-lesung-dusun-janten.jpg'" alt="Tabuh Lesung" />
@@ -463,7 +511,7 @@
           <p><b>Nilai:</b> Kerja Sama, Kebersamaan, Gotong Royong, dan Rasa Syukur.</p>
           <a href="https://youtu.be/9kL2dP4vM7s" target="_blank" class="btn-video">▶ Suara & Cara Menabuh Lesung</a>
 
-          <div class="page-number">- Hal 6 -</div>
+          <div class="page-number">- Hal 7 -</div>
         </div>
 
         <div class="swiper-slide page">
@@ -485,7 +533,7 @@
           <img src="https://bloktuban.com/wp-content/uploads/2024/05/seni-patung-bejagung.jpg" class="img-content" alt="Seni Patung Bejagung" />
           <p>Di Desa Bejagung, seniman (salah satunya Abah Janjang) memahat kayu/batu menjadi karya seni luar biasa. Memerlukan ketelitian, kesabaran, dan kreativitas tinggi.</p>
           <a href="https://youtu.be/2wR5z9kL7dX" target="_blank" class="btn-video">▶ Video Seni Ukir & Patung</a>
-          <div class="page-number">- Hal 7 -</div>
+          <div class="page-number">- Hal 8 -</div>
         </div>
 
         <div class="swiper-slide page">
@@ -508,7 +556,7 @@
           <p>Tarian pergaulan yang diiringi musik gamelan Jawa. Penarinya disebut Waranggono. Sangat populer di acara hajatan dan sedekah bumi.</p>
           <a href="https://youtu.be/4tG3vX7bL9c" target="_blank" class="btn-video">▶ Pertunjukan Tayub Lengkap</a>
 
-          <div class="page-number">- Hal 8 -</div>
+          <div class="page-number">- Hal 9 -</div>
         </div>
 
         <div class="swiper-slide page">
@@ -522,7 +570,7 @@
           <p>Musik tradisional menggunakan alat sederhana dari bambu/kayu dengan rebana. Menjadi media penyampaian cerita rakyat, kisah pahlawan, atau nasihat melalui nyanyian.</p>
           <a href="https://youtu.be/9vR2dX9bL3k" target="_blank" class="btn-video">▶ Dengarkan Musik Kentrung</a>
 
-          <div class="page-number">- Hal 9 -</div>
+          <div class="page-number">- Hal 10 -</div>
         </div>
 
         <div class="swiper-slide page">
@@ -607,7 +655,7 @@
             <i>"Mencintai budaya sendiri adalah awal dari mencintai bangsa. Mari kita jaga kearifan lokal Semanding agar tidak hilang ditelan zaman."</i>
           </div>
 
-          <div class="page-number">- Hal 10 -</div>
+          <div class="page-number">- Hal 11 -</div>
         </div>
       </div>
 
