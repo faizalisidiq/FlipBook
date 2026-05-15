@@ -5,14 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>E-BOOK INTERAKTIF: Menggali Kearifan Lokal Semanding</title>
 
-    <link
-      href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;900&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
     <style>
@@ -110,26 +104,40 @@
       .swiper {
         width: 100%;
         max-width: 550px;
-        height: 90vh; /* Tinggi menyesuaikan layar */
+        height: 95vh; /* Tinggi menyesuaikan layar */
         padding: 20px 0;
+        touch-action: pan-y;
       }
 
       .swiper-slide {
         border-radius: 15px;
         /* Membuat Latar Belakang Alam (Langit, Hutan, Rumput) menggunakan CSS Gradient */
-        background: linear-gradient(
-          to bottom,
-          #7dd3fc 0%,
-          #38bdf8 30%,
-          #4ade80 70%,
-          #22c55e 100%
-        );
+        background: linear-gradient(to bottom, #7dd3fc 0%, #38bdf8 30%, #4ade80 70%, #22c55e 100%);
         box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
         border: 4px solid #fff;
         position: relative;
         display: flex;
         flex-direction: column;
         overflow: hidden;
+        height: 100%;
+        touch-action: pan-y;
+        user-select: auto !important;
+        -webkit-user-select: auto !important;
+        transform-style: preserve-3d;
+        backface-visibility: hidden;
+        pointer-events: none; /* Cegah interaksi di kartu di belakang */
+      }
+
+      .swiper-slide-active {
+        pointer-events: auto !important; /* Hanya kartu yang aktif (paling depan) yang bisa berinteraksi */
+      }
+
+      .swiper-slide-shadow,
+      .swiper-slide-shadow-left,
+      .swiper-slide-shadow-right,
+      .swiper-slide-shadow-top,
+      .swiper-slide-shadow-bottom {
+        pointer-events: none;
       }
 
       /* Hiasan Awan dan Dedaunan menggunakan elemen pseudo */
@@ -141,9 +149,7 @@
         right: -20px;
         height: 150px;
         background:
-          radial-gradient(circle at 20% 30%, #fff 20px, transparent 21px),
-          radial-gradient(circle at 40% 50%, #fff 30px, transparent 31px),
-          radial-gradient(circle at 70% 20%, #fff 25px, transparent 26px),
+          radial-gradient(circle at 20% 30%, #fff 20px, transparent 21px), radial-gradient(circle at 40% 50%, #fff 30px, transparent 31px), radial-gradient(circle at 70% 20%, #fff 25px, transparent 26px),
           radial-gradient(circle at 90% 40%, #fff 35px, transparent 36px);
         opacity: 0.8;
         z-index: 0;
@@ -155,22 +161,27 @@
         background: rgba(255, 255, 255, 0.85);
         border-radius: 12px;
         padding: 30px;
-        margin: 20px;
+        margin: 10px;
+        height: auto;
         flex: 1;
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         overflow: hidden; /* Ubah dari auto ke hidden */
         position: relative;
-        z-index: 1;
+        z-index: 10;
         display: flex; /* Tambahkan flexbox */
         flex-direction: column; /* Arah kolom */
+        pointer-events: auto !important; /* Pastikan bisa diklik */
+        transform: translateZ(20px); /* Trik untuk efek 3D agar elemen di dalam kartu bisa di klik */
       }
 
       .page-scroll {
         flex: 1; /* Ambil sisa ruang */
         overflow-y: auto; /* Hanya scroll di area ini */
-        padding-bottom: 50px; /* Ruang untuk tombol kayu */
-        margin: -15px; /* Atasi padding induk */
-        padding: 15px; /* Padding internal */
+        padding: 15px 15px 90px; /* Ruang aman untuk teks bawah */
+        margin: 0;
+        box-sizing: border-box;
+        touch-action: pan-y;
+        pointer-events: auto !important;
       }
 
       .glass-box::-webkit-scrollbar {
@@ -222,6 +233,19 @@
         border-left: 5px solid #f59e0b;
         margin-bottom: 15px;
         border-radius: 5px;
+        position: relative;
+        z-index: 10;
+        pointer-events: auto !important;
+      }
+      .kuis-box label,
+      .kuis-box input[type="radio"],
+      .kuis-box button,
+      .page-scroll button,
+      .glass-box button {
+        cursor: pointer;
+        position: relative;
+        z-index: 20;
+        pointer-events: auto !important;
       }
 
       /* Tombol Video */
@@ -264,13 +288,7 @@
         width: 130px !important;
         height: 45px !important;
         background-color: #d97706; /* Warna kayu */
-        background-image: repeating-linear-gradient(
-          45deg,
-          rgba(0, 0, 0, 0.05) 0px,
-          rgba(0, 0, 0, 0.05) 2px,
-          transparent 2px,
-          transparent 6px
-        ); /* Tekstur serat kayu */
+        background-image: repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.05) 0px, rgba(0, 0, 0, 0.05) 2px, transparent 2px, transparent 6px); /* Tekstur serat kayu */
         border: 3px solid #451a03;
         border-radius: 4px;
         top: auto !important;
@@ -301,12 +319,12 @@
         font-size: 18px !important;
       }
       .swiper-button-next {
-        right: 25px !important;
+        right: -25px !important;
         clip-path: polygon(0 0, 90% 0, 100% 50%, 90% 100%, 0 100%);
         padding-right: 15px;
       }
       .swiper-button-prev {
-        left: 25px !important;
+        left: -20px !important;
         clip-path: polygon(10% 0, 100% 0, 100% 100%, 10% 100%, 0 50%);
         padding-left: 15px;
       }
@@ -375,80 +393,31 @@
     <div class="main-book-area">
       <div class="controls-top">
         <button class="control-btn" title="Search">🔍</button>
-        <button class="control-btn" title="Suara / Audio">🔊</button>
+        <button class="control-btn" id="audioToggle" title="Suara / Audio">🔈</button>
         <button class="control-btn" title="Bagikan">📤</button>
-        <button
-          class="control-btn"
-          onclick="toggleFullScreen()"
-          title="Fullscreen"
-        >
-          ⛶
-        </button>
+        <button class="control-btn" onclick="toggleFullScreen()" title="Fullscreen">⛶</button>
       </div>
+
+      <audio id="bgAudio" src="asset/music/INSTRUMENTAL MUSIK GENDING JAWA.mp3" preload="auto" loop></audio>
 
       <div class="swiper mySwiper">
         <div class="swiper-wrapper">
           <div class="swiper-slide">
-            <div
-              class="glass-box"
-              style="
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                text-align: center;
-              "
-            >
-              <h2 class="page-title" style="font-size: 36px; color: #b45309">
-                MENGGALI KEARIFAN LOKAL SEMANDING
-              </h2>
-              <h3 style="font-weight: 800; color: #0369a1; margin-bottom: 30px">
-                Menjelajahi Warisan Budaya dan Ilmu Pengetahuan Sosial
-              </h3>
+            <div class="glass-box" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center">
+              <h2 class="page-title" style="font-size: 36px; color: #b45309">MENGGALI KEARIFAN LOKAL SEMANDING</h2>
+              <h3 style="font-weight: 800; color: #0369a1; margin-bottom: 30px">Menjelajahi Warisan Budaya dan Ilmu Pengetahuan Sosial</h3>
               <img
                 src="https://nativeindonesia.com/wp-content/uploads/2023/05/pemandian-alam-bekti-harjo.jpg"
                 class="img-content"
                 alt="Cover Image"
-                style="
-                  border-radius: 50%;
-                  width: 200px;
-                  height: 200px;
-                  object-fit: cover;
-                  border: 8px solid #fff;
-                  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-                "
+                style="border-radius: 50%; width: 200px; height: 200px; object-fit: cover; border: 8px solid #fff; box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2)"
               />
-              <p
-                style="
-                  margin-top: 20px;
-                  font-weight: 900;
-                  color: #b45309;
-                  font-size: 16px;
-                "
-              >
-                Penulis: siti nurhalimah<br />Tahun: 2026
-              </p>
-              <button
-                style="
-                  margin-top: 20px;
-                  background: #10b981;
-                  color: white;
-                  border: none;
-                  padding: 12px 30px;
-                  font-size: 18px;
-                  border-radius: 25px;
-                  cursor: pointer;
-                  font-weight: 900;
-                  box-shadow: 0 4px 0px #047857;
-                "
-                onclick="swiper.slideNext()"
-              >
+              <p style="margin-top: 20px; font-weight: 900; color: #b45309; font-size: 16px">Penulis: siti nurhalimah<br />Tahun: 2026</p>
+              <button style="margin-top: 20px; background: #10b981; color: white; border: none; padding: 12px 30px; font-size: 18px; border-radius: 25px; cursor: pointer; font-weight: 900; box-shadow: 0 4px 0px #047857" id="startRead">
                 MULAI BACA ➡
               </button>
             </div>
-            <div class="ribbon-bottom">
-              E-Book Interaktif berbasis AR By: siti nurhalimah
-            </div>
+            <div class="ribbon-bottom">E-Book Interaktif berbasis AR By: siti nurhalimah</div>
           </div>
 
           <div class="swiper-slide">
@@ -456,69 +425,39 @@
               <div class="page-scroll">
                 <h2 class="page-title">KATA PENGANTAR</h2>
                 <p>Assalamu’alaikum Warahmatullahi Wabarakatuh,</p>
+                <p>Puji syukur kita panjatkan ke hadirat Tuhan Yang Maha Esa. Atas rahmat dan hidayah-Nya, buku elektronik interaktif berjudul "Menggali Kearifan Lokal Semanding" ini dapat diselesaikan dengan baik.</p>
                 <p>
-                  Puji syukur kita panjatkan ke hadirat Tuhan Yang Maha Esa.
-                  Atas rahmat dan hidayah-Nya, buku elektronik interaktif
-                  berjudul "Menggali Kearifan Lokal Semanding" ini dapat
-                  diselesaikan dengan baik.
+                  Kecamatan Semanding bukan hanya tempat tinggal kita, tetapi juga tanah yang kaya akan sejarah, tradisi, dan nilai-nilai luhur yang diwariskan leluhur. Tahukah kamu? Dahulu, pusat pemerintahan Kabupaten Tuban pernah berada
+                  di Prunggahan Kulon, wilayah Semanding lho!
                 </p>
-                <p>
-                  Kecamatan Semanding bukan hanya tempat tinggal kita, tetapi
-                  juga tanah yang kaya akan sejarah, tradisi, dan nilai-nilai
-                  luhur yang diwariskan leluhur. Tahukah kamu? Dahulu, pusat
-                  pemerintahan Kabupaten Tuban pernah berada di Prunggahan
-                  Kulon, wilayah Semanding lho!
-                </p>
-                <p>
-                  Melalui buku ini, kita diajak untuk lebih mengenal, mencintai,
-                  dan melestarikan budaya sendiri. Selamat membaca dan
-                  menjelajah!
-                </p>
+                <p>Melalui buku ini, kita diajak untuk lebih mengenal, mencintai, dan melestarikan budaya sendiri. Selamat membaca dan menjelajah!</p>
                 <p style="text-align: right"><b>- Penulis</b></p>
               </div>
             </div>
-            <div class="ribbon-bottom">
-              E-Book Interaktif berbasis AR By: siti nurhalimah
-            </div>
+            <div class="ribbon-bottom">E-Book Interaktif berbasis AR By: siti nurhalimah</div>
           </div>
 
           <div class="swiper-slide">
             <div class="glass-box">
               <div class="page-scroll">
                 <h2 class="page-title">PETUNJUK PENGGUNAAN</h2>
-                <p style="text-align: center; color: #b45309; font-weight: 900">
-                  Ayo Belajar dengan Cara Seru!
-                </p>
+                <p style="text-align: center; color: #b45309; font-weight: 900">Ayo Belajar dengan Cara Seru!</p>
                 <ol style="padding-left: 20px">
-                  <li>
-                    Klik tombol kayu <b>NEXT</b> atau <b>BACK</b> di bawah untuk
-                    membalik halaman.
-                  </li>
+                  <li>Klik tombol kayu <b>NEXT</b> atau <b>BACK</b> di bawah untuk membalik halaman.</li>
                   <li>Perhatikan gambar dan baca teks dengan teliti.</li>
-                  <li>
-                    Klik ikon 🔊 Speaker jika ingin mendengar suara penjelasan.
-                  </li>
+                  <li>Klik ikon 🔊 Speaker jika ingin mendengar suara penjelasan.</li>
                   <li>Kerjakan soal latihan dan kuis dengan jujur.</li>
                 </ol>
               </div>
             </div>
-            <div class="ribbon-bottom">
-              E-Book Interaktif berbasis AR By: siti nurhalimah
-            </div>
+            <div class="ribbon-bottom">E-Book Interaktif berbasis AR By: siti nurhalimah</div>
           </div>
 
           <div class="swiper-slide">
             <div class="glass-box">
               <div class="page-scroll">
                 <h2 class="page-title">DAFTAR ISI</h2>
-                <ul
-                  style="
-                    padding-left: 20px;
-                    column-count: 2;
-                    column-gap: 20px;
-                    margin-bottom: 30px;
-                  "
-                >
+                <ul style="padding-left: 20px; column-count: 2; column-gap: 20px; margin-bottom: 30px">
                   <li>Halaman Depan</li>
                   <li>Kata Pengantar</li>
                   <li>Petunjuk Penggunaan</li>
@@ -532,126 +471,55 @@
                 </ul>
               </div>
             </div>
-            <div class="ribbon-bottom">
-              E-Book Interaktif berbasis AR By: siti nurhalimah
-            </div>
+            <div class="ribbon-bottom">E-Book Interaktif berbasis AR By: siti nurhalimah</div>
           </div>
 
           <div class="swiper-slide">
             <div class="glass-box">
               <div class="page-scroll">
                 <h2 class="page-title">BAB 1: MENGENAL SEMANDING</h2>
-                <div
-                  style="
-                    background: #e0f2fe;
-                    padding: 15px;
-                    border-radius: 8px;
-                    border: 2px dashed #0284c7;
-                    margin-bottom: 15px;
-                  "
-                >
-                  <p style="margin: 0">
-                    <b>🎯 Tujuan Pembelajaran:</b><br />- Mengetahui letak
-                    geografis dan sejarah singkat Semanding.<br />- Menyebutkan
-                    potensi alam dan tempat bersejarah.
-                  </p>
+                <div style="background: #e0f2fe; padding: 15px; border-radius: 8px; border: 2px dashed #0284c7; margin-bottom: 15px">
+                  <p style="margin: 0"><b>🎯 Tujuan Pembelajaran:</b><br />- Mengetahui letak geografis dan sejarah singkat Semanding.<br />- Menyebutkan potensi alam dan tempat bersejarah.</p>
                 </div>
 
-                <p
-                  style="
-                    background: #fef3c7;
-                    padding: 10px;
-                    border-radius: 5px;
-                    border-left: 5px solid #d97706;
-                  "
-                >
-                  <b>🤔 Ayo Pikir Dulu!</b><br />"Semanding terletak di bagian
-                  selatan Kabupaten Tuban. Tahukah kamu apa yang membuat daerah
-                  ini istimewa dalam sejarah?"
+                <p style="background: #fef3c7; padding: 10px; border-radius: 5px; border-left: 5px solid #d97706">
+                  <b>🤔 Ayo Pikir Dulu!</b><br />"Semanding terletak di bagian selatan Kabupaten Tuban. Tahukah kamu apa yang membuat daerah ini istimewa dalam sejarah?"
                 </p>
 
                 <h3 class="page-subtitle">Wilayah Bersejarah dan Berbukit</h3>
                 <p>
-                  Kecamatan Semanding terletak di bagian selatan Tuban, dengan
-                  wilayah yang sebagian besar berupa perbukitan kapur. Wilayah
-                  ini memiliki sejarah yang sangat penting karena pada masa
-                  Kerajaan Majapahit, pusat pemerintahan Tuban pernah berada di
-                  Desa Prunggahan Kulon.
+                  Kecamatan Semanding terletak di bagian selatan Tuban, dengan wilayah yang sebagian besar berupa perbukitan kapur. Wilayah ini memiliki sejarah yang sangat penting karena pada masa Kerajaan Majapahit, pusat pemerintahan
+                  Tuban pernah berada di Desa Prunggahan Kulon.
                 </p>
-                <p>
-                  Di sini juga terdapat banyak sumber mata air yang jernih dan
-                  menjadi tempat wisata favorit, seperti Pemandian Bektiharjo.
-                  Selain itu, daerah ini kaya akan hasil bumi seperti padi,
-                  jagung, dan kelapa.
-                </p>
+                <p>Di sini juga terdapat banyak sumber mata air yang jernih dan menjadi tempat wisata favorit, seperti Pemandian Bektiharjo. Selain itu, daerah ini kaya akan hasil bumi seperti padi, jagung, dan kelapa.</p>
               </div>
             </div>
-            <div class="ribbon-bottom">
-              E-Book Interaktif berbasis AR By: siti nurhalimah
-            </div>
+            <div class="ribbon-bottom">E-Book Interaktif berbasis AR By: siti nurhalimah</div>
           </div>
 
           <div class="swiper-slide">
             <div class="glass-box">
               <div class="page-scroll">
                 <h2 class="page-title">GALERI SEMANDING</h2>
-                <h3
-                  class="page-subtitle"
-                  style="text-align: margin-bottom 15px"
-                >
-                  1. Peta Wilayah Semanding
-                </h3>
-                <img
-                  src="asset/gambar/peta semanding.jpg"
-                  class="img-content"
-                  alt="Peta Wilayah Semanding"
-                />
+                <h3 class="page-subtitle" style="text-align: margin-bottom 15px">1. Peta Wilayah Semanding</h3>
+                <img src="asset/gambar/peta semanding.jpg" class="img-content" alt="Peta Wilayah Semanding" />
 
                 <p><b>✨ Fakta Menarik:</b></p>
                 <ul style="padding-left: 20px">
-                  <li>
-                    Semanding terdiri dari banyak desa, seperti Prunggahan
-                    Wetan, Bektiharjo, Karang, dan lain-lain.
-                  </li>
-                  <li>
-                    Wilayahnya yang bergunung-gunung membuat udaranya sejuk.
-                  </li>
+                  <li>Semanding terdiri dari banyak desa, seperti Prunggahan Wetan, Bektiharjo, Karang, dan lain-lain.</li>
+                  <li>Wilayahnya yang bergunung-gunung membuat udaranya sejuk.</li>
                 </ul>
-                <a
-                  href="https://youtu.be/J3hF9yX7wQk"
-                  target="_blank"
-                  class="btn-video"
-                  >▶ Profil Semanding</a
-                >
+                <a href="https://youtu.be/J3hF9yX7wQk" target="_blank" class="btn-video">▶ Profil Semanding</a>
 
-                <h3
-                  class="page-subtitle"
-                  style="text-align: margin-bottom 15px"
-                >
-                  2. Pemandian Bektiharjo
-                </h3>
-                <img
-                  src="https://nativeindonesia.com/wp-content/uploads/2023/05/pemandian-alam-bekti-harjo.jpg"
-                  class="img-content"
-                  alt="Pemandian Bektiharjo"
-                />
+                <h3 class="page-subtitle" style="text-align: margin-bottom 15px">2. Pemandian Bektiharjo</h3>
+                <img src="https://nativeindonesia.com/wp-content/uploads/2023/05/pemandian-alam-bekti-harjo.jpg" class="img-content" alt="Pemandian Bektiharjo" />
                 <p>
-                  <i
-                    >Tempat ini tidak hanya untuk mandi, tapi juga memiliki
-                    nilai sejarah dan sering digunakan untuk upacara adat.</i
-                  >
+                  <i>Tempat ini tidak hanya untuk mandi, tapi juga memiliki nilai sejarah dan sering digunakan untuk upacara adat.</i>
                 </p>
-                <a
-                  href="https://youtu.be/5Z6w2dM9s7U"
-                  target="_blank"
-                  class="btn-video"
-                  >▶ Keindahan Bektiharjo</a
-                >
+                <a href="https://youtu.be/5Z6w2dM9s7U" target="_blank" class="btn-video">▶ Keindahan Bektiharjo</a>
               </div>
             </div>
-            <div class="ribbon-bottom">
-              E-Book Interaktif berbasis AR By: siti nurhalimah
-            </div>
+            <div class="ribbon-bottom">E-Book Interaktif berbasis AR By: siti nurhalimah</div>
           </div>
 
           <div class="swiper-slide">
@@ -659,112 +527,49 @@
               <div class="page-scroll">
                 <h2 class="page-title">BAB 2: TRADISI & UPACARA ADAT</h2>
 
-                <h3 class="page-subtitle">
-                  1. Ritual Keleman (Tingkepan Dewi Sri)
-                </h3>
+                <h3 class="page-subtitle">1. Ritual Keleman (Tingkepan Dewi Sri)</h3>
                 <!-- <img src="asset/gambar/ritual keleman.jpg" class="img-content" onerror="this.src='https://beritajatim.com/wp-content/uploads/2025/09/keleman-sendang-asmoro.jpg';" alt="Ritual Keleman"> -->
 
                 <p>
-                  Ritual Keleman atau Tingkepan Dewi Sri merupakan salah satu
-                  tradisi masyarakat Jawa yang masih dilaksanakan oleh warga
-                  Desa Ngino dan daerah sekitarnya sebagai bentuk penghormatan
-                  kepada Dewi Sri. Dalam kepercayaan masyarakat Jawa, Dewi Sri
-                  dianggap sebagai simbol kesuburan, kemakmuran, dan pelindung
-                  tanaman padi. Oleh karena itu, ritual ini dilakukan sebagai
-                  ungkapan rasa syukur sekaligus harapan agar hasil pertanian
-                  tetap baik dan panen melimpah.
+                  Ritual Keleman atau Tingkepan Dewi Sri merupakan salah satu tradisi masyarakat Jawa yang masih dilaksanakan oleh warga Desa Ngino dan daerah sekitarnya sebagai bentuk penghormatan kepada Dewi Sri. Dalam kepercayaan
+                  masyarakat Jawa, Dewi Sri dianggap sebagai simbol kesuburan, kemakmuran, dan pelindung tanaman padi. Oleh karena itu, ritual ini dilakukan sebagai ungkapan rasa syukur sekaligus harapan agar hasil pertanian tetap baik dan
+                  panen melimpah.
                 </p>
                 <p>
-                  Ritual ini biasanya dilaksanakan ketika tanaman padi mulai
-                  tumbuh subur atau menjelang masa panen. Kata “tingkepan”
-                  memiliki arti selamatan atau upacara khusus yang dilakukan
-                  untuk memohon keselamatan dan keberkahan. Sementara itu,
-                  istilah “keleman” berkaitan dengan kegiatan masyarakat tani
-                  dalam menjaga kesuburan sawah dan tanaman.
+                  Ritual ini biasanya dilaksanakan ketika tanaman padi mulai tumbuh subur atau menjelang masa panen. Kata “tingkepan” memiliki arti selamatan atau upacara khusus yang dilakukan untuk memohon keselamatan dan keberkahan.
+                  Sementara itu, istilah “keleman” berkaitan dengan kegiatan masyarakat tani dalam menjaga kesuburan sawah dan tanaman.
                 </p>
                 <p>
-                  Pada pelaksanaannya, warga desa berkumpul di area persawahan
-                  dengan membawa berbagai makanan tradisional, terutama tumpeng,
-                  jajanan pasar, hasil bumi, dan lauk-pauk. Tumpeng berbentuk
-                  kerucut melambangkan rasa syukur kepada Tuhan atas rezeki yang
-                  diberikan. Selain itu, hasil bumi yang dibawa menunjukkan
-                  harapan agar tanah tetap subur dan memberikan kehidupan bagi
+                  Pada pelaksanaannya, warga desa berkumpul di area persawahan dengan membawa berbagai makanan tradisional, terutama tumpeng, jajanan pasar, hasil bumi, dan lauk-pauk. Tumpeng berbentuk kerucut melambangkan rasa syukur
+                  kepada Tuhan atas rezeki yang diberikan. Selain itu, hasil bumi yang dibawa menunjukkan harapan agar tanah tetap subur dan memberikan kehidupan bagi masyarakat.
+                </p>
+                <p>
+                  Acara biasanya diawali dengan doa bersama yang dipimpin oleh tokoh masyarakat atau sesepuh desa. Dalam doa tersebut, masyarakat memohon agar tanaman padi terhindar dari hama, bencana, dan penyakit yang dapat menyebabkan
+                  gagal panen. Setelah doa selesai, sebagian makanan dan hasil bumi ditaburkan di sawah. Kegiatan ini memiliki makna simbolis sebagai “tolak bala”, yaitu menolak segala hal buruk yang dapat mengganggu pertanian dan kehidupan
                   masyarakat.
                 </p>
                 <p>
-                  Acara biasanya diawali dengan doa bersama yang dipimpin oleh
-                  tokoh masyarakat atau sesepuh desa. Dalam doa tersebut,
-                  masyarakat memohon agar tanaman padi terhindar dari hama,
-                  bencana, dan penyakit yang dapat menyebabkan gagal panen.
-                  Setelah doa selesai, sebagian makanan dan hasil bumi
-                  ditaburkan di sawah. Kegiatan ini memiliki makna simbolis
-                  sebagai “tolak bala”, yaitu menolak segala hal buruk yang
-                  dapat mengganggu pertanian dan kehidupan masyarakat.
-                </p>
-                <p>
-                  Selain sebagai tradisi adat, Ritual Keleman juga menjadi
-                  sarana mempererat hubungan sosial antarwarga. Masyarakat
-                  bekerja sama menyiapkan acara, memasak makanan, hingga
-                  mengikuti doa bersama. Hal ini menunjukkan adanya nilai gotong
-                  royong dan kebersamaan yang masih dijaga dalam kehidupan desa.
+                  Selain sebagai tradisi adat, Ritual Keleman juga menjadi sarana mempererat hubungan sosial antarwarga. Masyarakat bekerja sama menyiapkan acara, memasak makanan, hingga mengikuti doa bersama. Hal ini menunjukkan adanya
+                  nilai gotong royong dan kebersamaan yang masih dijaga dalam kehidupan desa.
                 </p>
 
-                <div
-                  style="
-                    background: #dcfce7;
-                    padding: 10px;
-                    border-radius: 5px;
-                    border-left: 5px solid #16a34a;
-                    margin-top: 10px;
-                  "
-                >
-                  <h3 style="margin: 0 0 8px 0; font-size: 16px">
-                    Nilai-Nilai yang Terkandung dalam Ritual Keleman
-                  </h3>
+                <div style="background: #dcfce7; padding: 10px; border-radius: 5px; border-left: 5px solid #16a34a; margin-top: 10px">
+                  <h3 style="margin: 0 0 8px 0; font-size: 16px">Nilai-Nilai yang Terkandung dalam Ritual Keleman</h3>
                   <ol style="padding-left: 18px; margin: 0">
+                    <li><b>Nilai Rasa Syukur</b><br />Ritual ini mengajarkan masyarakat untuk selalu bersyukur atas nikmat yang diberikan Tuhan, terutama hasil pertanian yang menjadi sumber kehidupan warga desa.</li>
                     <li>
-                      <b>Nilai Rasa Syukur</b><br />Ritual ini mengajarkan
-                      masyarakat untuk selalu bersyukur atas nikmat yang
-                      diberikan Tuhan, terutama hasil pertanian yang menjadi
-                      sumber kehidupan warga desa.
+                      <b>Nilai Menjaga Keseimbangan Alam</b><br />Tradisi ini menunjukkan bahwa manusia harus hidup selaras dengan alam. Sawah dan tanaman dianggap sebagai bagian penting kehidupan yang harus dijaga dan dirawat dengan baik.
                     </li>
-                    <li>
-                      <b>Nilai Menjaga Keseimbangan Alam</b><br />Tradisi ini
-                      menunjukkan bahwa manusia harus hidup selaras dengan alam.
-                      Sawah dan tanaman dianggap sebagai bagian penting
-                      kehidupan yang harus dijaga dan dirawat dengan baik.
-                    </li>
-                    <li>
-                      <b>Nilai Gotong Royong</b><br />Pelaksanaan ritual
-                      dilakukan bersama-sama sehingga memperkuat rasa persatuan,
-                      kerja sama, dan kepedulian antarwarga.
-                    </li>
-                    <li>
-                      <b>Nilai Pelestarian Budaya</b><br />Ritual Keleman
-                      menjadi warisan budaya lokal yang diwariskan dari generasi
-                      ke generasi agar tradisi dan identitas masyarakat tetap
-                      terjaga.
-                    </li>
-                    <li>
-                      <b>Nilai Spiritual</b><br />Masyarakat percaya bahwa doa
-                      dan usaha harus berjalan bersama. Oleh karena itu, ritual
-                      ini menjadi bentuk pendekatan diri kepada Tuhan untuk
-                      memohon keselamatan dan keberkahan.
-                    </li>
+                    <li><b>Nilai Gotong Royong</b><br />Pelaksanaan ritual dilakukan bersama-sama sehingga memperkuat rasa persatuan, kerja sama, dan kepedulian antarwarga.</li>
+                    <li><b>Nilai Pelestarian Budaya</b><br />Ritual Keleman menjadi warisan budaya lokal yang diwariskan dari generasi ke generasi agar tradisi dan identitas masyarakat tetap terjaga.</li>
+                    <li><b>Nilai Spiritual</b><br />Masyarakat percaya bahwa doa dan usaha harus berjalan bersama. Oleh karena itu, ritual ini menjadi bentuk pendekatan diri kepada Tuhan untuk memohon keselamatan dan keberkahan.</li>
                   </ol>
                 </div>
                 <br />
-                <a
-                  href="https://youtu.be/8yR2z9L7wXg"
-                  target="_blank"
-                  class="btn-video"
-                  >▶ Tonton Ritual Keleman</a
-                >
+                <a href="https://youtu.be/8yR2z9L7wXg" target="_blank" class="btn-video">▶ Tonton Ritual Keleman</a>
               </div>
             </div>
-            <div class="ribbon-bottom">
-              E-Book Interaktif berbasis AR By: siti nurhalimah
-            </div>
+            <div class="ribbon-bottom">E-Book Interaktif berbasis AR By: siti nurhalimah</div>
           </div>
 
           <div class="swiper-slide">
@@ -772,119 +577,51 @@
               <div class="page-scroll">
                 <h3 class="page-subtitle">2. Siraman Waranggono</h3>
                 <div
-                  style="
-                    position: relative;
-                    margin: 15px 0;
-                    cursor: pointer;
-                    border-radius: 8px;
-                    overflow: hidden;
-                    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-                  "
-                  onclick="
-                    window.open(
-                      'https://www.youtube.com/watch?v=EpPbhZF95gs',
-                      '_blank',
-                    )
-                  "
+                  style="position: relative; margin: 15px 0; cursor: pointer; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2)"
+                  onclick="window.open('https://www.youtube.com/watch?v=EpPbhZF95gs', '_blank')"
                 >
-                  <img
-                    src="https://i.ytimg.com/vi/EpPbhZF95gs/hqdefault.jpg"
-                    style="width: 100%; display: block"
-                    alt="Thumbnail Siraman Waranggono"
-                  />
-                  <div
-                    style="
-                      position: absolute;
-                      top: 0;
-                      left: 0;
-                      right: 0;
-                      bottom: 0;
-                      background: rgba(0, 0, 0, 0.2);
-                      display: flex;
-                      align-items: center;
-                      justify-content: center;
-                    "
-                  >
-                    <svg
-                      width="80"
-                      height="80"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
+                  <img src="https://i.ytimg.com/vi/EpPbhZF95gs/hqdefault.jpg" style="width: 100%; display: block" alt="Thumbnail Siraman Waranggono" />
+                  <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.2); display: flex; align-items: center; justify-content: center">
+                    <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path
                         d="M8.5 8.18405C8.5 7.03977 9.7575 6.31551 10.7293 6.9263L16.1396 10.1099C17.0932 10.7099 17.0932 12.0901 16.1396 12.6901L10.7293 15.8737C9.7575 16.4845 8.5 15.7602 8.5 14.616V8.18405Z"
                         fill="white"
                         fill-opacity="0.9"
                       />
-                      <path
-                        d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
-                        stroke="white"
-                        stroke-width="2"
-                        stroke-opacity="0.9"
-                      />
+                      <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="white" stroke-width="2" stroke-opacity="0.9" />
                     </svg>
                   </div>
                 </div>
                 <p>
-                  Siraman Waranggono merupakan salah satu tradisi budaya yang
-                  bersifat sakral dan masih dilestarikan oleh masyarakat di
-                  kawasan Pemandian Bektiharjo. Tradisi ini dilakukan sebagai
-                  prosesi penyucian atau “wisuda” bagi para penari Tayub sebelum
-                  mereka diperbolehkan tampil di depan umum. Dalam budaya Jawa,
-                  penari Tayub sering disebut sebagai “Waranggono” atau
-                  “Sindir”, yaitu perempuan yang memiliki kemampuan menari dan
-                  menyanyi dalam pertunjukan seni tradisional Tayub.
+                  Siraman Waranggono merupakan salah satu tradisi budaya yang bersifat sakral dan masih dilestarikan oleh masyarakat di kawasan Pemandian Bektiharjo. Tradisi ini dilakukan sebagai prosesi penyucian atau “wisuda” bagi para
+                  penari Tayub sebelum mereka diperbolehkan tampil di depan umum. Dalam budaya Jawa, penari Tayub sering disebut sebagai “Waranggono” atau “Sindir”, yaitu perempuan yang memiliki kemampuan menari dan menyanyi dalam
+                  pertunjukan seni tradisional Tayub.
                 </p>
                 <p>
-                  Tradisi siraman memiliki makna penting karena dianggap sebagai
-                  tahap awal bagi seorang penari untuk memasuki dunia seni
-                  pertunjukan. Prosesi ini tidak hanya bertujuan membersihkan
-                  tubuh secara fisik, tetapi juga menyucikan hati, pikiran, dan
-                  niat para penari agar mereka dapat menjalankan seni dengan
-                  baik, sopan, dan penuh tanggung jawab.
+                  Tradisi siraman memiliki makna penting karena dianggap sebagai tahap awal bagi seorang penari untuk memasuki dunia seni pertunjukan. Prosesi ini tidak hanya bertujuan membersihkan tubuh secara fisik, tetapi juga menyucikan
+                  hati, pikiran, dan niat para penari agar mereka dapat menjalankan seni dengan baik, sopan, dan penuh tanggung jawab.
                 </p>
                 <p>
-                  Pelaksanaan Siraman Waranggono biasanya dilakukan di sumber
-                  mata air atau tempat pemandian yang dianggap memiliki nilai
-                  sejarah dan kesakralan, salah satunya di Pemandian Bektiharjo.
-                  Tempat ini dipercaya memiliki air yang bersih dan membawa
-                  keberkahan. Sebelum prosesi dimulai, para calon Waranggono
-                  mengenakan pakaian putih bersih sebagai simbol kesucian dan
-                  niat yang tulus. Warna putih melambangkan hati yang bersih,
-                  kejujuran, dan kesiapan untuk menjalani tanggung jawab sebagai
-                  pelaku seni budaya.
+                  Pelaksanaan Siraman Waranggono biasanya dilakukan di sumber mata air atau tempat pemandian yang dianggap memiliki nilai sejarah dan kesakralan, salah satunya di Pemandian Bektiharjo. Tempat ini dipercaya memiliki air yang
+                  bersih dan membawa keberkahan. Sebelum prosesi dimulai, para calon Waranggono mengenakan pakaian putih bersih sebagai simbol kesucian dan niat yang tulus. Warna putih melambangkan hati yang bersih, kejujuran, dan kesiapan
+                  untuk menjalani tanggung jawab sebagai pelaku seni budaya.
                 </p>
                 <p>
-                  Acara kemudian dipimpin oleh sesepuh atau tokoh adat yang
-                  dihormati masyarakat. Para calon penari disiram air secara
-                  bergantian sambil dipanjatkan doa-doa keselamatan dan harapan
-                  agar mereka menjadi seniman yang berbudi baik, menjaga nama
-                  baik seni tradisional, serta memberikan hiburan yang
-                  bermanfaat bagi masyarakat. Air dalam prosesi siraman
-                  melambangkan pembersihan diri dari sifat buruk dan harapan
-                  agar kehidupan mereka dipenuhi keberkahan.
+                  Acara kemudian dipimpin oleh sesepuh atau tokoh adat yang dihormati masyarakat. Para calon penari disiram air secara bergantian sambil dipanjatkan doa-doa keselamatan dan harapan agar mereka menjadi seniman yang berbudi
+                  baik, menjaga nama baik seni tradisional, serta memberikan hiburan yang bermanfaat bagi masyarakat. Air dalam prosesi siraman melambangkan pembersihan diri dari sifat buruk dan harapan agar kehidupan mereka dipenuhi
+                  keberkahan.
                 </p>
                 <p>
-                  Setelah prosesi selesai, para Waranggono dianggap telah resmi
-                  diterima dan diperbolehkan tampil dalam pertunjukan Tayub.
-                  Tradisi ini menjadi bentuk penghormatan terhadap seni
-                  tradisional karena seorang penari tidak hanya dituntut
-                  memiliki kemampuan menari, tetapi juga harus menjaga etika,
-                  sikap, dan tata krama dalam kehidupan sehari-hari.
+                  Setelah prosesi selesai, para Waranggono dianggap telah resmi diterima dan diperbolehkan tampil dalam pertunjukan Tayub. Tradisi ini menjadi bentuk penghormatan terhadap seni tradisional karena seorang penari tidak hanya
+                  dituntut memiliki kemampuan menari, tetapi juga harus menjaga etika, sikap, dan tata krama dalam kehidupan sehari-hari.
                 </p>
                 <p>
-                  Selain memiliki nilai spiritual, Siraman Waranggono juga
-                  menjadi sarana pelestarian budaya daerah. Melalui tradisi ini,
-                  generasi muda diajarkan untuk menghargai seni tradisional
-                  sebagai warisan leluhur yang memiliki makna mendalam, bukan
-                  sekadar hiburan semata.
+                  Selain memiliki nilai spiritual, Siraman Waranggono juga menjadi sarana pelestarian budaya daerah. Melalui tradisi ini, generasi muda diajarkan untuk menghargai seni tradisional sebagai warisan leluhur yang memiliki makna
+                  mendalam, bukan sekadar hiburan semata.
                 </p>
               </div>
             </div>
-            <div class="ribbon-bottom">
-              E-Book Interaktif berbasis AR By: siti nurhalimah
-            </div>
+            <div class="ribbon-bottom">E-Book Interaktif berbasis AR By: siti nurhalimah</div>
           </div>
 
           <div class="swiper-slide">
@@ -893,113 +630,46 @@
                 <h3 class="page-subtitle">3. Tabuh Lesung</h3>
                 <!-- <img src="asset/gambar/tabuh lesuh.jpg" class="img-content" onerror="this.src='https://beritajatim.com/wp-content/uploads/2025/09/tabuh-lesung-dusun-janten.jpg';" alt="Tabuh Lesung"> -->
                 <p>
-                  Tabuh Lesung merupakan salah satu kesenian tradisional
-                  masyarakat Jawa yang berkembang di wilayah Semanding dan
-                  beberapa daerah pedesaan lainnya. Kesenian ini menggunakan
-                  lesung sebagai alat utama. Lesung adalah alat tradisional yang
-                  terbuat dari kayu panjang dan biasanya digunakan untuk
-                  menumbuk padi agar terpisah dari kulitnya. Alat penumbuknya
-                  disebut alu. Pada zaman dahulu, sebelum adanya mesin
-                  penggiling padi modern, masyarakat menggunakan lesung dalam
-                  kehidupan sehari-hari untuk mengolah hasil panen.
+                  Tabuh Lesung merupakan salah satu kesenian tradisional masyarakat Jawa yang berkembang di wilayah Semanding dan beberapa daerah pedesaan lainnya. Kesenian ini menggunakan lesung sebagai alat utama. Lesung adalah alat
+                  tradisional yang terbuat dari kayu panjang dan biasanya digunakan untuk menumbuk padi agar terpisah dari kulitnya. Alat penumbuknya disebut alu. Pada zaman dahulu, sebelum adanya mesin penggiling padi modern, masyarakat
+                  menggunakan lesung dalam kehidupan sehari-hari untuk mengolah hasil panen.
                 </p>
                 <p>
-                  Seiring perkembangan budaya masyarakat, lesung tidak hanya
-                  digunakan sebagai alat pertanian, tetapi juga dimanfaatkan
-                  sebagai alat musik tradisional. Ketika dipukul menggunakan
-                  alu, lesung menghasilkan bunyi yang khas dan berirama. Dari
-                  bunyi tersebut lahirlah kesenian yang disebut Tabuh Lesung.
-                  Irama yang dihasilkan terdengar unik karena setiap bagian
-                  lesung menghasilkan suara yang berbeda-beda. Biasanya,
-                  beberapa orang memainkan lesung secara bersama-sama sehingga
-                  tercipta perpaduan bunyi yang harmonis.
+                  Seiring perkembangan budaya masyarakat, lesung tidak hanya digunakan sebagai alat pertanian, tetapi juga dimanfaatkan sebagai alat musik tradisional. Ketika dipukul menggunakan alu, lesung menghasilkan bunyi yang khas dan
+                  berirama. Dari bunyi tersebut lahirlah kesenian yang disebut Tabuh Lesung. Irama yang dihasilkan terdengar unik karena setiap bagian lesung menghasilkan suara yang berbeda-beda. Biasanya, beberapa orang memainkan lesung
+                  secara bersama-sama sehingga tercipta perpaduan bunyi yang harmonis.
                 </p>
                 <p>
-                  Pada masa lalu, suara tabuhan lesung juga berfungsi sebagai
-                  alat komunikasi masyarakat desa. Bunyi tertentu digunakan
-                  untuk memberi tanda kepada warga, misalnya saat ada kerja
-                  bakti, panen raya, hajatan, atau peristiwa penting lainnya.
-                  Karena suara lesung cukup keras, bunyinya dapat terdengar
-                  hingga ke berbagai sudut desa. Dengan demikian, masyarakat
-                  dapat segera berkumpul dan saling membantu.
+                  Pada masa lalu, suara tabuhan lesung juga berfungsi sebagai alat komunikasi masyarakat desa. Bunyi tertentu digunakan untuk memberi tanda kepada warga, misalnya saat ada kerja bakti, panen raya, hajatan, atau peristiwa
+                  penting lainnya. Karena suara lesung cukup keras, bunyinya dapat terdengar hingga ke berbagai sudut desa. Dengan demikian, masyarakat dapat segera berkumpul dan saling membantu.
                 </p>
                 <p>
-                  Dalam pelaksanaannya, Tabuh Lesung dimainkan secara
-                  berkelompok. Para pemain bekerja sama memukul lesung dengan
-                  pola irama tertentu agar menghasilkan musik yang teratur dan
-                  indah. Permainan ini biasanya dilakukan oleh ibu-ibu atau
-                  warga desa saat acara adat, syukuran panen, pertunjukan
-                  budaya, maupun festival daerah. Selain menjadi hiburan rakyat,
-                  Tabuh Lesung juga mencerminkan kehidupan masyarakat agraris
-                  yang dekat dengan alam dan pertanian.
+                  Dalam pelaksanaannya, Tabuh Lesung dimainkan secara berkelompok. Para pemain bekerja sama memukul lesung dengan pola irama tertentu agar menghasilkan musik yang teratur dan indah. Permainan ini biasanya dilakukan oleh
+                  ibu-ibu atau warga desa saat acara adat, syukuran panen, pertunjukan budaya, maupun festival daerah. Selain menjadi hiburan rakyat, Tabuh Lesung juga mencerminkan kehidupan masyarakat agraris yang dekat dengan alam dan
+                  pertanian.
                 </p>
                 <p>
-                  Kesenian Tabuh Lesung memiliki makna sosial yang kuat. Tradisi
-                  ini menggambarkan semangat gotong royong dan kebersamaan
-                  masyarakat desa. Saat memainkan lesung, setiap pemain harus
-                  saling menyesuaikan irama agar menghasilkan bunyi yang
-                  harmonis. Jika salah satu pemain tidak kompak, maka irama yang
-                  dihasilkan menjadi tidak teratur. Hal tersebut mengajarkan
-                  pentingnya kerja sama dalam kehidupan bermasyarakat.
+                  Kesenian Tabuh Lesung memiliki makna sosial yang kuat. Tradisi ini menggambarkan semangat gotong royong dan kebersamaan masyarakat desa. Saat memainkan lesung, setiap pemain harus saling menyesuaikan irama agar
+                  menghasilkan bunyi yang harmonis. Jika salah satu pemain tidak kompak, maka irama yang dihasilkan menjadi tidak teratur. Hal tersebut mengajarkan pentingnya kerja sama dalam kehidupan bermasyarakat.
                 </p>
                 <p>
-                  Selain itu, Tabuh Lesung juga menjadi simbol rasa syukur
-                  masyarakat atas hasil panen yang diperoleh. Bunyi tabuhan yang
-                  meriah menunjukkan kegembiraan warga setelah bekerja keras di
-                  sawah. Oleh karena itu, kesenian ini sering ditampilkan saat
-                  perayaan panen atau acara adat desa.
+                  Selain itu, Tabuh Lesung juga menjadi simbol rasa syukur masyarakat atas hasil panen yang diperoleh. Bunyi tabuhan yang meriah menunjukkan kegembiraan warga setelah bekerja keras di sawah. Oleh karena itu, kesenian ini
+                  sering ditampilkan saat perayaan panen atau acara adat desa.
                 </p>
-                <div
-                  style="
-                    background: #dcfce7;
-                    padding: 10px;
-                    border-radius: 5px;
-                    border-left: 5px solid #a39a16;
-                    margin-top: 10px;
-                  "
-                >
-                  <h3 style="margin: 0 0 8px 0; font-size: 16px">
-                    Nilai-Nilai yang Terkandung dalam Tabuh Lesung
-                  </h3>
+                <div style="background: #dcfce7; padding: 10px; border-radius: 5px; border-left: 5px solid #a39a16; margin-top: 10px">
+                  <h3 style="margin: 0 0 8px 0; font-size: 16px">Nilai-Nilai yang Terkandung dalam Tabuh Lesung</h3>
                   <ol style="padding-left: 18px; margin: 0">
-                    <li>
-                      <b>Nilai Kerja Sama</b><br />Permainan Tabuh Lesung
-                      dilakukan secara bersama-sama sehingga membutuhkan
-                      kekompakan dan saling bekerja sama antar pemain.
-                    </li>
-                    <li>
-                      <b>Nilai Kebersamaan</b><br />Tradisi ini mempererat
-                      hubungan sosial masyarakat karena warga berkumpul,
-                      berlatih, dan tampil bersama dalam suasana kekeluargaan.
-                    </li>
-                    <li>
-                      <b>Nilai Gotong Royong</b><br />Tabuh Lesung mencerminkan
-                      kehidupan masyarakat desa yang saling membantu dalam
-                      kegiatan pertanian maupun kegiatan sosial lainnya.
-                    </li>
-                    <li>
-                      <b>Nilai Pelestarian Budaya</b><br />Kesenian ini menjadi
-                      warisan budaya tradisional yang harus dijaga agar tetap
-                      dikenal oleh generasi muda.
-                    </li>
-                    <li>
-                      <b>Nilai Rasa Syukur</b><br />Tabuh Lesung sering
-                      dikaitkan dengan perayaan panen sebagai bentuk rasa syukur
-                      kepada Tuhan atas hasil bumi yang melimpah.
-                    </li>
+                    <li><b>Nilai Kerja Sama</b><br />Permainan Tabuh Lesung dilakukan secara bersama-sama sehingga membutuhkan kekompakan dan saling bekerja sama antar pemain.</li>
+                    <li><b>Nilai Kebersamaan</b><br />Tradisi ini mempererat hubungan sosial masyarakat karena warga berkumpul, berlatih, dan tampil bersama dalam suasana kekeluargaan.</li>
+                    <li><b>Nilai Gotong Royong</b><br />Tabuh Lesung mencerminkan kehidupan masyarakat desa yang saling membantu dalam kegiatan pertanian maupun kegiatan sosial lainnya.</li>
+                    <li><b>Nilai Pelestarian Budaya</b><br />Kesenian ini menjadi warisan budaya tradisional yang harus dijaga agar tetap dikenal oleh generasi muda.</li>
+                    <li><b>Nilai Rasa Syukur</b><br />Tabuh Lesung sering dikaitkan dengan perayaan panen sebagai bentuk rasa syukur kepada Tuhan atas hasil bumi yang melimpah.</li>
                   </ol>
                 </div>
-                <a
-                  href="https://youtu.be/9kL2dP4vM7s"
-                  target="_blank"
-                  class="btn-video"
-                  >▶ Cara Menabuh Lesung</a
-                >
+                <a href="https://youtu.be/9kL2dP4vM7s" target="_blank" class="btn-video">▶ Cara Menabuh Lesung</a>
               </div>
             </div>
-            <div class="ribbon-bottom">
-              E-Book Interaktif berbasis AR By: siti nurhalimah
-            </div>
+            <div class="ribbon-bottom">E-Book Interaktif berbasis AR By: siti nurhalimah</div>
           </div>
 
           <div class="swiper-slide">
@@ -1008,180 +678,67 @@
                 <h2 class="page-title">GALERI FOTO & INFO BAB 2</h2>
 
                 <h3 class="page-subtitle">Ritual Keleman</h3>
-                <img
-                  src="asset/gambar/ritual keleman.jpg"
-                  class="img-content"
-                  alt="Ritual Keleman Detail"
-                />
-                <p
-                  style="
-                    text-align: center;
-                    font-style: italic;
-                    margin-top: -10px;
-                    margin-bottom: 15px;
-                  "
-                >
-                  Klik gambar untuk melihat detail!
-                </p>
-                <p>
-                  <b>Penjelasan:</b> Warga berkumpul di dekat mata air atau
-                  persawahan untuk berdoa bersama sebagai wujud syukur atas
-                  kesuburan tanah dan air yang melimpah.
-                </p>
+                <img src="asset/gambar/ritual keleman.jpg" class="img-content" alt="Ritual Keleman Detail" />
+                <p style="text-align: center; font-style: italic; margin-top: -10px; margin-bottom: 15px">Klik gambar untuk melihat detail!</p>
+                <p><b>Penjelasan:</b> Warga berkumpul di dekat mata air atau persawahan untuk berdoa bersama sebagai wujud syukur atas kesuburan tanah dan air yang melimpah.</p>
 
                 <h3 class="page-subtitle">Tabuh Lesung</h3>
-                <img
-                  src="asset/gambar/tabuh lesuh.jpg"
-                  class="img-content"
-                  alt="Tabuh Lesung Detail"
-                />
+                <img src="asset/gambar/tabuh lesuh.jpg" class="img-content" alt="Tabuh Lesung Detail" />
                 <p>
                   <b>Suara:</b>
-                  <a
-                    href="#"
-                    onclick="alert('Memutar suara tabuhan lesung...')"
-                    style="
-                      text-decoration: none;
-                      color: #ef4444;
-                      font-weight: bold;
-                    "
-                    >🔊 Dengarkan irama tabuhan lesung yang gagah!</a
-                  >
+                  <a href="#" onclick="alert('Memutar suara tabuhan lesung...')" style="text-decoration: none; color: #ef4444; font-weight: bold">🔊 Dengarkan irama tabuhan lesung yang gagah!</a>
                 </p>
-                <p>
-                  Lesung tidak hanya alat, tetapi juga instrumen musik yang
-                  menyatukan warga dalam irama kebersamaan dan gotong royong.
-                </p>
+                <p>Lesung tidak hanya alat, tetapi juga instrumen musik yang menyatukan warga dalam irama kebersamaan dan gotong royong.</p>
               </div>
             </div>
-            <div class="ribbon-bottom">
-              E-Book Interaktif berbasis AR By: siti nurhalimah
-            </div>
+            <div class="ribbon-bottom">E-Book Interaktif berbasis AR By: siti nurhalimah</div>
           </div>
 
           <div class="swiper-slide">
             <div class="glass-box">
               <div class="page-scroll">
                 <h2 class="page-title">BAB 3: KERAJINAN & KEARIFAN HIDUP</h2>
-                <div
-                  style="
-                    background: #e0f2fe;
-                    padding: 15px;
-                    border-radius: 8px;
-                    border: 2px dashed #0284c7;
-                    margin-bottom: 15px;
-                  "
-                >
-                  <p style="margin: 0">
-                    <b>🎯 Tujuan Pembelajaran:</b><br />- Siswa dapat mengetahui
-                    kerajinan tangan khas Semanding.<br />- Siswa dapat memahami
-                    cara nenek moyang memanfaatkan alam sekitar.
-                  </p>
+                <div style="background: #e0f2fe; padding: 15px; border-radius: 8px; border: 2px dashed #0284c7; margin-bottom: 15px">
+                  <p style="margin: 0"><b>🎯 Tujuan Pembelajaran:</b><br />- Siswa dapat mengetahui kerajinan tangan khas Semanding.<br />- Siswa dapat memahami cara nenek moyang memanfaatkan alam sekitar.</p>
                 </div>
 
-                <h3 class="page-subtitle">
-                  Kecerdasan dan Keterampilan Warga Semanding
-                </h3>
+                <h3 class="page-subtitle">Kecerdasan dan Keterampilan Warga Semanding</h3>
                 <p>
-                  Masyarakat Semanding memiliki berbagai kecerdasan dan
-                  keterampilan yang diwariskan secara turun-temurun dari nenek
-                  moyang. Keterampilan tersebut tidak hanya menjadi sumber mata
-                  pencaharian, tetapi juga menjadi bagian penting dari budaya
-                  daerah. Beberapa keterampilan khas masyarakat Semanding antara
-                  lain kerajinan gerabah atau tembikar, seni patung, dan Paes
-                  Semandingan sebagai rias pengantin tradisional.
+                  Masyarakat Semanding memiliki berbagai kecerdasan dan keterampilan yang diwariskan secara turun-temurun dari nenek moyang. Keterampilan tersebut tidak hanya menjadi sumber mata pencaharian, tetapi juga menjadi bagian
+                  penting dari budaya daerah. Beberapa keterampilan khas masyarakat Semanding antara lain kerajinan gerabah atau tembikar, seni patung, dan Paes Semandingan sebagai rias pengantin tradisional.
                 </p>
 
                 <h3 class="page-subtitle">1. Kerajinan Gerabah / Tembikar</h3>
                 <p>
-                  Di Desa Karang, terdapat para pengrajin gerabah yang masih
-                  mempertahankan tradisi membuat peralatan dari tanah liat
-                  secara manual. Salah satu pengrajin yang dikenal masyarakat
-                  adalah Mbah Somi. Keahlian membuat gerabah diwariskan dari
-                  generasi ke generasi sehingga tetap lestari hingga sekarang.
+                  Di Desa Karang, terdapat para pengrajin gerabah yang masih mempertahankan tradisi membuat peralatan dari tanah liat secara manual. Salah satu pengrajin yang dikenal masyarakat adalah Mbah Somi. Keahlian membuat gerabah
+                  diwariskan dari generasi ke generasi sehingga tetap lestari hingga sekarang.
                 </p>
 
                 <p>
-                  Gerabah atau tembikar merupakan benda yang dibuat dari tanah
-                  liat yang dibentuk menggunakan tangan atau alat sederhana,
-                  kemudian dikeringkan dan dibakar hingga keras. Masyarakat
-                  membuat berbagai macam peralatan rumah tangga seperti gendok
-                  (tempat air), kuali, kendi, pot, dan vas bunga.
+                  Gerabah atau tembikar merupakan benda yang dibuat dari tanah liat yang dibentuk menggunakan tangan atau alat sederhana, kemudian dikeringkan dan dibakar hingga keras. Masyarakat membuat berbagai macam peralatan rumah
+                  tangga seperti gendok (tempat air), kuali, kendi, pot, dan vas bunga.
                 </p>
 
-                <h3
-                  class="page-subtitle"
-                  style="font-size: 16px; margin-top: 15px"
-                >
-                  Proses Pembuatan Gerabah
-                </h3>
-                <p>
-                  Pembuatan gerabah membutuhkan keterampilan dan ketelitian yang
-                  tinggi. Tahapan pembuatannya antara lain:
-                </p>
+                <h3 class="page-subtitle" style="font-size: 16px; margin-top: 15px">Proses Pembuatan Gerabah</h3>
+                <p>Pembuatan gerabah membutuhkan keterampilan dan ketelitian yang tinggi. Tahapan pembuatannya antara lain:</p>
                 <ul style="padding-left: 20px">
-                  <li>
-                    <b>a. Pengambilan Tanah Liat</b><br />Tanah liat dipilih
-                    dari jenis tanah yang lembut dan mudah dibentuk. Tanah
-                    kemudian dibersihkan dari batu atau kotoran agar hasil
-                    gerabah lebih halus.
-                  </li>
-                  <li>
-                    <b>b. Pengolahan Tanah</b><br />Tanah liat dicampur dengan
-                    air lalu diinjak atau diremas hingga menjadi lentur dan
-                    mudah dibentuk.
-                  </li>
-                  <li>
-                    <b>c. Pembentukan</b><br />Pengrajin membentuk tanah liat
-                    menggunakan tangan atau alat pemutar sederhana sesuai bentuk
-                    yang diinginkan.
-                  </li>
-                  <li>
-                    <b>d. Pengeringan</b><br />Setelah dibentuk, gerabah dijemur
-                    di bawah sinar matahari hingga setengah kering agar tidak
-                    mudah retak saat dibakar.
-                  </li>
-                  <li>
-                    <b>e. Pembakaran</b><br />Gerabah dibakar menggunakan kayu
-                    bakar atau sekam padi dalam suhu tinggi. Proses pembakaran
-                    membuat tanah liat menjadi keras dan kuat.
-                  </li>
+                  <li><b>a. Pengambilan Tanah Liat</b><br />Tanah liat dipilih dari jenis tanah yang lembut dan mudah dibentuk. Tanah kemudian dibersihkan dari batu atau kotoran agar hasil gerabah lebih halus.</li>
+                  <li><b>b. Pengolahan Tanah</b><br />Tanah liat dicampur dengan air lalu diinjak atau diremas hingga menjadi lentur dan mudah dibentuk.</li>
+                  <li><b>c. Pembentukan</b><br />Pengrajin membentuk tanah liat menggunakan tangan atau alat pemutar sederhana sesuai bentuk yang diinginkan.</li>
+                  <li><b>d. Pengeringan</b><br />Setelah dibentuk, gerabah dijemur di bawah sinar matahari hingga setengah kering agar tidak mudah retak saat dibakar.</li>
+                  <li><b>e. Pembakaran</b><br />Gerabah dibakar menggunakan kayu bakar atau sekam padi dalam suhu tinggi. Proses pembakaran membuat tanah liat menjadi keras dan kuat.</li>
                 </ul>
 
-                <h3
-                  class="page-subtitle"
-                  style="font-size: 16px; margin-top: 15px"
-                >
-                  Ilmu Pengetahuan dalam Pembuatan Gerabah
-                </h3>
+                <h3 class="page-subtitle" style="font-size: 16px; margin-top: 15px">Ilmu Pengetahuan dalam Pembuatan Gerabah</h3>
                 <p>
-                  Kerajinan gerabah juga mengandung unsur ilmu pengetahuan.
-                  Tanah liat memiliki sifat lunak ketika basah sehingga mudah
-                  dibentuk. Namun setelah dibakar pada suhu tinggi, tanah liat
-                  mengalami perubahan sifat menjadi keras dan kuat. Oleh karena
-                  itu, gerabah dapat digunakan untuk memasak, menyimpan air, dan
-                  berbagai kebutuhan rumah tangga lainnya.
+                  Kerajinan gerabah juga mengandung unsur ilmu pengetahuan. Tanah liat memiliki sifat lunak ketika basah sehingga mudah dibentuk. Namun setelah dibakar pada suhu tinggi, tanah liat mengalami perubahan sifat menjadi keras dan
+                  kuat. Oleh karena itu, gerabah dapat digunakan untuk memasak, menyimpan air, dan berbagai kebutuhan rumah tangga lainnya.
                 </p>
 
-                <p>
-                  Selain itu, gerabah mampu menjaga suhu air tetap sejuk karena
-                  memiliki pori-pori kecil yang memungkinkan penguapan air
-                  secara alami.
-                </p>
+                <p>Selain itu, gerabah mampu menjaga suhu air tetap sejuk karena memiliki pori-pori kecil yang memungkinkan penguapan air secara alami.</p>
 
-                <div
-                  style="
-                    background: #fef3c7;
-                    padding: 12px 15px;
-                    border-left: 5px solid #f59e0b;
-                    border-radius: 5px;
-                    margin-top: 15px;
-                    margin-bottom: 15px;
-                  "
-                >
-                  <h3 style="margin-top: 0; font-size: 16px">
-                    Nilai-Nilai yang Terkandung
-                  </h3>
+                <div style="background: #fef3c7; padding: 12px 15px; border-left: 5px solid #f59e0b; border-radius: 5px; margin-top: 15px; margin-bottom: 15px">
+                  <h3 style="margin-top: 0; font-size: 16px">Nilai-Nilai yang Terkandung</h3>
                   <ul style="padding-left: 20px; margin: 0">
                     <li>Kerja keras</li>
                     <li>Ketekunan</li>
@@ -1191,214 +748,89 @@
                   </ul>
                 </div>
 
-                <img
-                  src="asset/gambar/membuat gerabah.jpg"
-                  class="img-content"
-                  alt="Kerajinan Gerabah"
-                />
-                <a
-                  href="https://youtu.be/6bR3vX9zW7e"
-                  target="_blank"
-                  class="btn-video"
-                  >▶ Cara Membuat Gerabah</a
-                >
+                <img src="asset/gambar/membuat gerabah.jpg" class="img-content" alt="Kerajinan Gerabah" />
+                <a href="https://youtu.be/6bR3vX9zW7e" target="_blank" class="btn-video">▶ Cara Membuat Gerabah</a>
 
                 <h3 class="page-subtitle">2. Seni Patung</h3>
-                <img
-                  src="asset/gambar/patung.jpg"
-                  class="img-content"
-                  alt="Seni Patung Bejagung"
-                />
+                <img src="asset/gambar/patung.jpg" class="img-content" alt="Seni Patung Bejagung" />
 
                 <p>
-                  Di Desa Bejagung terdapat seniman patung yang memiliki
-                  kemampuan tinggi dalam membuat karya seni dari kayu maupun
-                  batu. Salah satu seniman yang dikenal masyarakat adalah
-                  <b>Abah Janjang</b>. Karya-karyanya sering digunakan untuk
-                  menghiasi tempat ibadah, taman, dan bangunan penting lainnya.
+                  Di Desa Bejagung terdapat seniman patung yang memiliki kemampuan tinggi dalam membuat karya seni dari kayu maupun batu. Salah satu seniman yang dikenal masyarakat adalah
+                  <b>Abah Janjang</b>. Karya-karyanya sering digunakan untuk menghiasi tempat ibadah, taman, dan bangunan penting lainnya.
                 </p>
 
-                <p>
-                  Seni patung adalah seni membuat bentuk tiga dimensi yang
-                  menyerupai manusia, hewan, tumbuhan, atau bentuk tertentu.
-                  Dalam pembuatannya, seniman membutuhkan imajinasi,
-                  keterampilan tangan, dan kesabaran yang tinggi.
-                </p>
+                <p>Seni patung adalah seni membuat bentuk tiga dimensi yang menyerupai manusia, hewan, tumbuhan, atau bentuk tertentu. Dalam pembuatannya, seniman membutuhkan imajinasi, keterampilan tangan, dan kesabaran yang tinggi.</p>
 
                 <p style="margin-bottom: 5px">
                   <b>🛠️ Proses Pembuatan Patung:</b>
                 </p>
-                <ol
-                  type="a"
-                  style="
-                    padding-left: 20px;
-                    color: #1e293b;
-                    font-size: 14.5px;
-                    line-height: 1.6;
-                    font-weight: 600;
-                    margin-bottom: 15px;
-                  "
-                >
-                  <li>
-                    <b>Menentukan Desain:</b> Seniman terlebih dahulu membuat
-                    gambaran atau rancangan bentuk patung yang akan dibuat.
-                  </li>
-                  <li>
-                    <b>Memilih Bahan:</b> Bahan yang digunakan biasanya berupa
-                    kayu atau batu yang kuat dan mudah dibentuk.
-                  </li>
-                  <li>
-                    <b>Membentuk Patung:</b> Kayu atau batu dipahat menggunakan
-                    alat khusus sedikit demi sedikit hingga membentuk pola yang
-                    diinginkan.
-                  </li>
-                  <li>
-                    <b>Penghalusan:</b> Setelah bentuk selesai, permukaan patung
-                    dihaluskan agar terlihat rapi dan indah.
-                  </li>
-                  <li>
-                    <b>Pewarnaan atau Finishing:</b> Beberapa patung diberi cat
-                    atau pelapis agar lebih menarik dan tahan lama.
-                  </li>
+                <ol type="a" style="padding-left: 20px; color: #1e293b; font-size: 14.5px; line-height: 1.6; font-weight: 600; margin-bottom: 15px">
+                  <li><b>Menentukan Desain:</b> Seniman terlebih dahulu membuat gambaran atau rancangan bentuk patung yang akan dibuat.</li>
+                  <li><b>Memilih Bahan:</b> Bahan yang digunakan biasanya berupa kayu atau batu yang kuat dan mudah dibentuk.</li>
+                  <li><b>Membentuk Patung:</b> Kayu atau batu dipahat menggunakan alat khusus sedikit demi sedikit hingga membentuk pola yang diinginkan.</li>
+                  <li><b>Penghalusan:</b> Setelah bentuk selesai, permukaan patung dihaluskan agar terlihat rapi dan indah.</li>
+                  <li><b>Pewarnaan atau Finishing:</b> Beberapa patung diberi cat atau pelapis agar lebih menarik dan tahan lama.</li>
                 </ol>
 
-                <div
-                  style="
-                    background: #dcfce7;
-                    padding: 12px;
-                    border-radius: 5px;
-                    border-left: 5px solid #16a34a;
-                    margin-top: 15px;
-                    margin-bottom: 15px;
-                  "
-                >
+                <div style="background: #dcfce7; padding: 12px; border-radius: 5px; border-left: 5px solid #16a34a; margin-top: 15px; margin-bottom: 15px">
                   <p style="margin: 0 0 8px 0">
                     <b>🌱 Nilai yang Terkandung dalam Seni Patung:</b>
                   </p>
-                  <ul
-                    style="
-                      margin: 0;
-                      padding-left: 20px;
-                      font-size: 14px;
-                      line-height: 1.5;
-                    "
-                  >
-                    <li>
-                      <b>Ketelitian:</b> Seniman harus sangat teliti saat
-                      memahat agar bentuk patung sesuai rancangan.
-                    </li>
-                    <li>
-                      <b>Kesabaran:</b> Proses pembuatan patung membutuhkan
-                      waktu lama sehingga memerlukan kesabaran tinggi.
-                    </li>
-                    <li>
-                      <b>Kreativitas:</b> Memiliki ide dan imajinasi untuk
-                      menciptakan karya unik dan bernilai seni.
-                    </li>
-                    <li>
-                      <b>Nilai Keindahan:</b> Memberikan nilai estetika atau
-                      keindahan pada suatu tempat.
-                    </li>
-                    <li>
-                      <b>Pelestarian Budaya:</b> Menjadi salah satu bentuk
-                      warisan budaya daerah yang harus dijaga.
-                    </li>
+                  <ul style="margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.5">
+                    <li><b>Ketelitian:</b> Seniman harus sangat teliti saat memahat agar bentuk patung sesuai rancangan.</li>
+                    <li><b>Kesabaran:</b> Proses pembuatan patung membutuhkan waktu lama sehingga memerlukan kesabaran tinggi.</li>
+                    <li><b>Kreativitas:</b> Memiliki ide dan imajinasi untuk menciptakan karya unik dan bernilai seni.</li>
+                    <li><b>Nilai Keindahan:</b> Memberikan nilai estetika atau keindahan pada suatu tempat.</li>
+                    <li><b>Pelestarian Budaya:</b> Menjadi salah satu bentuk warisan budaya daerah yang harus dijaga.</li>
                   </ul>
                 </div>
 
-                <a
-                  href="https://youtu.be/2wR5z9kL7dX"
-                  target="_blank"
-                  class="btn-video"
-                  >▶ Karya Abah Janjang</a
-                >
+                <a href="https://youtu.be/2wR5z9kL7dX" target="_blank" class="btn-video">▶ Karya Abah Janjang</a>
               </div>
             </div>
-            <div class="ribbon-bottom">
-              E-Book Interaktif berbasis AR By: siti nurhalimah
-            </div>
+            <div class="ribbon-bottom">E-Book Interaktif berbasis AR By: siti nurhalimah</div>
           </div>
 
           <div class="swiper-slide">
             <div class="glass-box">
               <div class="page-scroll">
                 <h3 class="page-subtitle">3. Paes Semandingan</h3>
-                <img
-                  src="asset/gambar/paes.jpg"
-                  class="img-content"
-                  alt="Paes Semandingan"
-                />
+                <img src="asset/gambar/paes.jpg" class="img-content" alt="Paes Semandingan" />
 
                 <p>
-                  Paes Semandingan merupakan riasan pengantin khas daerah
-                  Semanding yang terkenal sederhana tetapi tetap terlihat anggun
-                  dan berwibawa. Riasan ini biasanya dipadukan dengan pakaian
-                  adat tradisional serta berbagai aksesoris khas Jawa.
+                  Paes Semandingan merupakan riasan pengantin khas daerah Semanding yang terkenal sederhana tetapi tetap terlihat anggun dan berwibawa. Riasan ini biasanya dipadukan dengan pakaian adat tradisional serta berbagai aksesoris
+                  khas Jawa.
                 </p>
 
                 <p>
-                  Paes adalah tata rias khusus pengantin yang bertujuan
-                  mempercantik penampilan sekaligus menunjukkan identitas budaya
-                  daerah. Dalam Paes Semandingan, riasan tidak dibuat terlalu
-                  mencolok, tetapi lebih menonjolkan kesan alami, lembut, dan
-                  elegan.
+                  Paes adalah tata rias khusus pengantin yang bertujuan mempercantik penampilan sekaligus menunjukkan identitas budaya daerah. Dalam Paes Semandingan, riasan tidak dibuat terlalu mencolok, tetapi lebih menonjolkan kesan
+                  alami, lembut, dan elegan.
                 </p>
 
                 <p style="margin-bottom: 5px; color: #b45309">
                   <b>✨ Ciri Khas Paes Semandingan:</b>
                 </p>
-                <ul
-                  style="
-                    padding-left: 20px;
-                    color: #1e293b;
-                    font-size: 14.5px;
-                    line-height: 1.6;
-                    font-weight: 600;
-                    margin-bottom: 15px;
-                  "
-                >
+                <ul style="padding-left: 20px; color: #1e293b; font-size: 14.5px; line-height: 1.6; font-weight: 600; margin-bottom: 15px">
                   <li>Menggunakan riasan yang halus dan sederhana.</li>
                   <li>Menampilkan kesan anggun dan sopan.</li>
                   <li>Dipadukan dengan busana adat Jawa.</li>
                   <li>Menggunakan hiasan rambut dan aksesoris tradisional.</li>
-                  <li>
-                    Memiliki makna kesucian dan harapan kehidupan rumah tangga
-                    yang harmonis.
-                  </li>
+                  <li>Memiliki makna kesucian dan harapan kehidupan rumah tangga yang harmonis.</li>
                 </ul>
 
                 <p style="margin-bottom: 5px; color: #b45309">
                   <b>🌸 Makna dalam Paes Semandingan:</b>
                 </p>
                 <p>
-                  Riasan pengantin tidak hanya bertujuan memperindah penampilan,
-                  tetapi juga memiliki makna simbolis. Pengantin diharapkan
-                  menjadi pribadi yang baik, menjaga kehormatan keluarga, serta
-                  mampu membangun rumah tangga yang harmonis dan penuh
-                  kebahagiaan.
+                  Riasan pengantin tidak hanya bertujuan memperindah penampilan, tetapi juga memiliki makna simbolis. Pengantin diharapkan menjadi pribadi yang baik, menjaga kehormatan keluarga, serta mampu membangun rumah tangga yang
+                  harmonis dan penuh kebahagiaan.
                 </p>
 
-                <div
-                  style="
-                    background: #fef3c7;
-                    padding: 12px;
-                    border-radius: 5px;
-                    border-left: 5px solid #d97706;
-                    margin-top: 15px;
-                    margin-bottom: 15px;
-                  "
-                >
+                <div style="background: #fef3c7; padding: 12px; border-radius: 5px; border-left: 5px solid #d97706; margin-top: 15px; margin-bottom: 15px">
                   <p style="margin: 0 0 8px 0; color: #b45309">
                     <b>💎 Nilai-Nilai yang Terkandung:</b>
                   </p>
-                  <ul
-                    style="
-                      margin: 0;
-                      padding-left: 20px;
-                      font-size: 14px;
-                      line-height: 1.5;
-                    "
-                  >
+                  <ul style="margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.5">
                     <li>Keindahan dan estetika.</li>
                     <li>Kesopanan.</li>
                     <li>Pelestarian budaya daerah.</li>
@@ -1407,95 +839,35 @@
                   </ul>
                 </div>
 
-                <a
-                  href="https://youtu.be/7vR2dX9bL3k"
-                  target="_blank"
-                  class="btn-video"
-                  >▶ Rias Paes Semandingan</a
-                >
+                <a href="https://youtu.be/7vR2dX9bL3k" target="_blank" class="btn-video">▶ Rias Paes Semandingan</a>
 
                 <hr style="border: 1px dashed #94a3b8; margin: 25px 0" />
 
-                <div
-                  style="
-                    background: #e0f2fe;
-                    padding: 15px;
-                    border-radius: 8px;
-                    border: 3px solid #38bdf8;
-                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-                  "
-                >
-                  <h3
-                    style="
-                      color: #0284c7;
-                      margin-top: 0;
-                      margin-bottom: 10px;
-                      font-size: 18px;
-                      font-family: &quot;Fredoka One&quot;, cursive;
-                      text-transform: uppercase;
-                    "
-                  >
-                    Kesimpulan
-                  </h3>
+                <div style="background: #e0f2fe; padding: 15px; border-radius: 8px; border: 3px solid #38bdf8; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05)">
+                  <h3 style="color: #0284c7; margin-top: 0; margin-bottom: 10px; font-size: 18px; font-family: &quot;Fredoka One&quot;, cursive; text-transform: uppercase">Kesimpulan</h3>
                   <p style="margin: 0">
-                    Kecerdasan dan keterampilan masyarakat Semanding terlihat
-                    dari kemampuan mereka dalam membuat gerabah, menciptakan
-                    seni patung, dan melestarikan Paes Semandingan. Semua
-                    keterampilan tersebut diwariskan secara turun-temurun dan
-                    menjadi bagian penting dari identitas budaya masyarakat.
-                    Selain memiliki nilai ekonomi, keterampilan tersebut juga
-                    mengandung nilai kerja keras, kreativitas, kesabaran,
-                    ketelitian, dan pelestarian budaya lokal yang perlu dijaga
-                    oleh generasi muda.
+                    Kecerdasan dan keterampilan masyarakat Semanding terlihat dari kemampuan mereka dalam membuat gerabah, menciptakan seni patung, dan melestarikan Paes Semandingan. Semua keterampilan tersebut diwariskan secara
+                    turun-temurun dan menjadi bagian penting dari identitas budaya masyarakat. Selain memiliki nilai ekonomi, keterampilan tersebut juga mengandung nilai kerja keras, kreativitas, kesabaran, ketelitian, dan pelestarian
+                    budaya lokal yang perlu dijaga oleh generasi muda.
                   </p>
                 </div>
               </div>
             </div>
-            <div class="ribbon-bottom">
-              E-Book Interaktif berbasis AR By: siti nurhalimah
-            </div>
+            <div class="ribbon-bottom">E-Book Interaktif berbasis AR By: siti nurhalimah</div>
           </div>
 
           <div class="swiper-slide">
             <div class="glass-box">
               <div class="page-scroll">
-                <h2 class="page-title" style="font-size: 24px">
-                  GALERI FOTO & INFO
-                </h2>
+                <h2 class="page-title" style="font-size: 24px">GALERI FOTO & INFO</h2>
 
                 <h3 class="page-subtitle">Kerajinan Gerabah</h3>
-                <img
-                  src="asset/gambar/membuat gerabah.jpg"
-                  class="img-content"
-                  alt="Sedang membuat gerabah"
-                  onerror="
-                    this.src =
-                      'https://radartuban.jawapos.com/wp-content/uploads/2025/01/mbah-somi-pengrajin-gerabah.jpg'
-                  "
-                />
-                <div
-                  style="
-                    background: #fef3c7;
-                    padding: 12px;
-                    border-radius: 5px;
-                    border-left: 5px solid #d97706;
-                    margin-top: 10px;
-                    margin-bottom: 20px;
-                  "
-                >
+                <img src="asset/gambar/membuat gerabah.jpg" class="img-content" alt="Sedang membuat gerabah" onerror="this.src = 'https://radartuban.jawapos.com/wp-content/uploads/2025/01/mbah-somi-pengrajin-gerabah.jpg'" />
+                <div style="background: #fef3c7; padding: 12px; border-radius: 5px; border-left: 5px solid #d97706; margin-top: 10px; margin-bottom: 20px">
                   <p style="margin: 0 0 8px 0; color: #b45309">
                     <b>🛠️ Tahapan Membuat Gerabah:</b>
                   </p>
-                  <ol
-                    style="
-                      margin: 0;
-                      padding-left: 20px;
-                      font-size: 14.5px;
-                      line-height: 1.5;
-                      font-weight: 600;
-                      color: #1e293b;
-                    "
-                  >
+                  <ol style="margin: 0; padding-left: 20px; font-size: 14.5px; line-height: 1.5; font-weight: 600; color: #1e293b">
                     <li>Mengambil tanah liat yang berkualitas.</li>
                     <li>Membentuknya menggunakan roda putar.</li>
                     <li>Mengeringkan dan membakarnya sampai keras.</li>
@@ -1505,34 +877,13 @@
                 <hr style="border: 1px dashed #9ca3af; margin: 25px 0" />
 
                 <h3 class="page-subtitle">Paes Semandingan</h3>
-                <img
-                  src="asset/gambar/paes.jpg"
-                  class="img-content"
-                  alt="Contoh Paes Semandingan"
-                  onerror="
-                    this.src =
-                      'https://tubankab.go.id/storage/2024/08/paes-semandingan.jpg'
-                  "
-                />
-                <div
-                  style="
-                    background: #e0f2fe;
-                    padding: 12px;
-                    border-radius: 5px;
-                    border-left: 5px solid #0284c7;
-                    margin-top: 10px;
-                  "
-                >
-                  <p style="margin: 0; color: #1e293b; font-weight: 600">
-                    <b style="color: #0284c7">✨ Ciri Khas:</b> Wajah diberi
-                    bedak tipis dan hiasan yang elegan.
-                  </p>
+                <img src="asset/gambar/paes.jpg" class="img-content" alt="Contoh Paes Semandingan" onerror="this.src = 'https://tubankab.go.id/storage/2024/08/paes-semandingan.jpg'" />
+                <div style="background: #e0f2fe; padding: 12px; border-radius: 5px; border-left: 5px solid #0284c7; margin-top: 10px">
+                  <p style="margin: 0; color: #1e293b; font-weight: 600"><b style="color: #0284c7">✨ Ciri Khas:</b> Wajah diberi bedak tipis dan hiasan yang elegan.</p>
                 </div>
               </div>
             </div>
-            <div class="ribbon-bottom">
-              E-Book Interaktif berbasis AR By: siti nurhalimah
-            </div>
+            <div class="ribbon-bottom">E-Book Interaktif berbasis AR By: siti nurhalimah</div>
           </div>
 
           <div class="swiper-slide">
@@ -1540,15 +891,7 @@
               <div class="page-scroll">
                 <h2 class="page-title">BAB 4: SENI DAN BUDAYA YANG MEMUKAU</h2>
 
-                <div
-                  style="
-                    background: #e0f2fe;
-                    padding: 15px;
-                    border-radius: 8px;
-                    border: 2px dashed #0284c7;
-                    margin-bottom: 15px;
-                  "
-                >
+                <div style="background: #e0f2fe; padding: 15px; border-radius: 8px; border: 2px dashed #0284c7; margin-bottom: 15px">
                   <p style="margin: 0">
                     <b>🎯 Tujuan Pembelajaran:</b><br />
                     - Siswa dapat mengenal kesenian khas Semanding.<br />
@@ -1556,65 +899,27 @@
                   </p>
                 </div>
 
-                <p
-                  style="
-                    color: #b45309;
-                    font-weight: 900;
-                    margin-bottom: 5px;
-                    font-size: 16px;
-                  "
-                >
-                  Materi Inti: Kesenian yang Membanggakan di Semanding
-                </p>
+                <p style="color: #b45309; font-weight: 900; margin-bottom: 5px; font-size: 16px">Materi Inti: Kesenian yang Membanggakan di Semanding</p>
                 <p>
-                  Kecamatan Semanding memiliki berbagai kesenian tradisional
-                  yang menjadi kebanggaan masyarakat. Kesenian tersebut tidak
-                  hanya berfungsi sebagai hiburan, tetapi juga menjadi sarana
-                  pelestarian budaya, media pendidikan, dan alat pemersatu
-                  masyarakat. Beberapa kesenian yang terkenal di Semanding
-                  antara lain Seni Tayub, Seni Sandur, dan Musik Kentrung.
-                  Kesenian ini diwariskan secara turun-temurun dan masih
-                  dilestarikan hingga sekarang.
+                  Kecamatan Semanding memiliki berbagai kesenian tradisional yang menjadi kebanggaan masyarakat. Kesenian tersebut tidak hanya berfungsi sebagai hiburan, tetapi juga menjadi sarana pelestarian budaya, media pendidikan, dan
+                  alat pemersatu masyarakat. Beberapa kesenian yang terkenal di Semanding antara lain Seni Tayub, Seni Sandur, dan Musik Kentrung. Kesenian ini diwariskan secara turun-temurun dan masih dilestarikan hingga sekarang.
                 </p>
 
                 <h3 class="page-subtitle">1. Seni Tayub</h3>
-                <img
-                  src="asset/gambar/tayub.jpg"
-                  class="img-content"
-                  alt="Seni Tayub"
-                  onerror="this.style.display = 'none'"
-                />
+                <img src="asset/gambar/tayub.jpg" class="img-content" alt="Seni Tayub" onerror="this.style.display = 'none'" />
                 <p>
-                  Seni Tayub merupakan salah satu kesenian tradisional yang
-                  sangat populer di daerah Semanding. Tayub adalah tarian
-                  pergaulan yang diiringi musik gamelan Jawa dan biasanya
-                  ditampilkan pada acara hajatan, syukuran, pernikahan, sedekah
-                  bumi, maupun perayaan adat lainnya.
+                  Seni Tayub merupakan salah satu kesenian tradisional yang sangat populer di daerah Semanding. Tayub adalah tarian pergaulan yang diiringi musik gamelan Jawa dan biasanya ditampilkan pada acara hajatan, syukuran,
+                  pernikahan, sedekah bumi, maupun perayaan adat lainnya.
                 </p>
                 <p>
-                  Penari dalam kesenian Tayub disebut Waranggono atau Sindir.
-                  Mereka menari sambil diiringi alunan gamelan dan tembang Jawa.
-                  Dalam pertunjukan Tayub, penonton atau tamu tertentu kadang
-                  diajak menari bersama penari sebagai bentuk kebersamaan dan
-                  hiburan rakyat. Di kawasan Pemandian Bektiharjo, Seni Tayub
-                  masih dijaga. Bahkan terdapat tradisi khusus seperti Siraman
-                  Waranggono sebagai prosesi sakral sebelum penari diperbolehkan
-                  tampil.
+                  Penari dalam kesenian Tayub disebut Waranggono atau Sindir. Mereka menari sambil diiringi alunan gamelan dan tembang Jawa. Dalam pertunjukan Tayub, penonton atau tamu tertentu kadang diajak menari bersama penari sebagai
+                  bentuk kebersamaan dan hiburan rakyat. Di kawasan Pemandian Bektiharjo, Seni Tayub masih dijaga. Bahkan terdapat tradisi khusus seperti Siraman Waranggono sebagai prosesi sakral sebelum penari diperbolehkan tampil.
                 </p>
 
                 <p style="margin-bottom: 5px; color: #b45309">
                   <b>✨ Ciri-Ciri Seni Tayub:</b>
                 </p>
-                <ul
-                  style="
-                    padding-left: 20px;
-                    color: #1e293b;
-                    font-size: 14.5px;
-                    line-height: 1.6;
-                    font-weight: 600;
-                    margin-bottom: 15px;
-                  "
-                >
+                <ul style="padding-left: 20px; color: #1e293b; font-size: 14.5px; line-height: 1.6; font-weight: 600; margin-bottom: 15px">
                   <li>Diiringi musik gamelan Jawa.</li>
                   <li>Menggunakan pakaian tradisional.</li>
                   <li>Gerakan tari lembut dan anggun.</li>
@@ -1625,53 +930,17 @@
                 <p style="margin-bottom: 5px; color: #b45309">
                   <b>🎭 Fungsi Seni Tayub:</b>
                 </p>
-                <ul
-                  style="
-                    padding-left: 20px;
-                    color: #1e293b;
-                    font-size: 14.5px;
-                    line-height: 1.6;
-                    font-weight: 600;
-                    margin-bottom: 15px;
-                  "
-                >
-                  <li>
-                    <b>Sebagai Hiburan Rakyat:</b> Pertunjukan Tayub menjadi
-                    hiburan masyarakat dalam berbagai acara adat dan perayaan.
-                  </li>
-                  <li>
-                    <b>Sebagai Sarana Sosial:</b> Tayub mempererat hubungan
-                    antarwarga karena masyarakat berkumpul menikmati
-                    pertunjukan.
-                  </li>
-                  <li>
-                    <b>Sebagai Pelestarian Budaya:</b> Tayub menjadi warisan
-                    budaya daerah yang harus dijaga agar tidak hilang oleh
-                    zaman.
-                  </li>
+                <ul style="padding-left: 20px; color: #1e293b; font-size: 14.5px; line-height: 1.6; font-weight: 600; margin-bottom: 15px">
+                  <li><b>Sebagai Hiburan Rakyat:</b> Pertunjukan Tayub menjadi hiburan masyarakat dalam berbagai acara adat dan perayaan.</li>
+                  <li><b>Sebagai Sarana Sosial:</b> Tayub mempererat hubungan antarwarga karena masyarakat berkumpul menikmati pertunjukan.</li>
+                  <li><b>Sebagai Pelestarian Budaya:</b> Tayub menjadi warisan budaya daerah yang harus dijaga agar tidak hilang oleh zaman.</li>
                 </ul>
 
-                <div
-                  style="
-                    background: #fef3c7;
-                    padding: 12px;
-                    border-radius: 5px;
-                    border-left: 5px solid #d97706;
-                    margin-top: 15px;
-                    margin-bottom: 15px;
-                  "
-                >
+                <div style="background: #fef3c7; padding: 12px; border-radius: 5px; border-left: 5px solid #d97706; margin-top: 15px; margin-bottom: 15px">
                   <p style="margin: 0 0 8px 0; color: #b45309">
                     <b>💎 Nilai-Nilai dalam Seni Tayub:</b>
                   </p>
-                  <ul
-                    style="
-                      margin: 0;
-                      padding-left: 20px;
-                      font-size: 14px;
-                      line-height: 1.5;
-                    "
-                  >
+                  <ul style="margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.5">
                     <li>Penghormatan terhadap seni budaya</li>
                     <li>Kebersamaan dan kekeluargaan</li>
                     <li>Kesopanan dan etika</li>
@@ -1679,62 +948,31 @@
                   </ul>
                 </div>
 
-                <a
-                  href="https://youtu.be/4tG3vX7bL9c"
-                  target="_blank"
-                  class="btn-video"
-                  >▶ Pertunjukan Tayub</a
-                >
+                <a href="https://youtu.be/4tG3vX7bL9c" target="_blank" class="btn-video">▶ Pertunjukan Tayub</a>
               </div>
             </div>
-            <div class="ribbon-bottom">
-              E-Book Interaktif berbasis AR By: siti nurhalimah
-            </div>
+            <div class="ribbon-bottom">E-Book Interaktif berbasis AR By: siti nurhalimah</div>
           </div>
 
           <div class="swiper-slide">
             <div class="glass-box">
               <div class="page-scroll">
-                <h3 class="page-subtitle" style="margin-top: 0">
-                  2. Seni Sandur
-                </h3>
-                <img
-                  src="asset/gambar/sandur.jpg"
-                  class="img-content"
-                  alt="Seni Sandur"
-                  onerror="this.style.display = 'none'"
-                />
+                <h3 class="page-subtitle" style="margin-top: 0">2. Seni Sandur</h3>
+                <img src="asset/gambar/sandur.jpg" class="img-content" alt="Seni Sandur" onerror="this.style.display = 'none'" />
 
                 <p>
-                  Seni Sandur merupakan kesenian rakyat yang lahir dari
-                  kehidupan masyarakat petani di daerah sekitar Bengawan Solo.
-                  Kesenian ini berkembang sebagai hiburan rakyat setelah
-                  masyarakat selesai bekerja di sawah atau ladang. Desa
-                  Prunggahan Kulon dikenal sebagai salah satu pusat
-                  berkembangnya Seni Sandur di wilayah Tuban dan sekitarnya.
+                  Seni Sandur merupakan kesenian rakyat yang lahir dari kehidupan masyarakat petani di daerah sekitar Bengawan Solo. Kesenian ini berkembang sebagai hiburan rakyat setelah masyarakat selesai bekerja di sawah atau ladang.
+                  Desa Prunggahan Kulon dikenal sebagai salah satu pusat berkembangnya Seni Sandur di wilayah Tuban dan sekitarnya.
                 </p>
                 <p>
-                  Seni Sandur menggabungkan beberapa unsur pertunjukan
-                  sekaligus, seperti cerita, lawakan, dialog, musik, nyanyian,
-                  dan tarian. Oleh karena itu, pertunjukan Sandur sangat menarik
-                  dan menghibur masyarakat. Cerita yang dibawakan biasanya
-                  berkaitan dengan kehidupan sehari-hari masyarakat desa,
-                  perjuangan hidup petani, nasihat moral, atau kisah jenaka.
+                  Seni Sandur menggabungkan beberapa unsur pertunjukan sekaligus, seperti cerita, lawakan, dialog, musik, nyanyian, dan tarian. Oleh karena itu, pertunjukan Sandur sangat menarik dan menghibur masyarakat. Cerita yang
+                  dibawakan biasanya berkaitan dengan kehidupan sehari-hari masyarakat desa, perjuangan hidup petani, nasihat moral, atau kisah jenaka.
                 </p>
 
                 <p style="margin-bottom: 5px; color: #b45309">
                   <b>✨ Ciri-Ciri Seni Sandur:</b>
                 </p>
-                <ul
-                  style="
-                    padding-left: 20px;
-                    color: #1e293b;
-                    font-size: 14.5px;
-                    line-height: 1.6;
-                    font-weight: 600;
-                    margin-bottom: 15px;
-                  "
-                >
+                <ul style="padding-left: 20px; color: #1e293b; font-size: 14.5px; line-height: 1.6; font-weight: 600; margin-bottom: 15px">
                   <li>Menggabungkan tari, musik, cerita, dan lawakan.</li>
                   <li>Menggunakan bahasa daerah Jawa.</li>
                   <li>Bersifat menghibur dan penuh humor.</li>
@@ -1745,122 +983,44 @@
                 <p style="margin-bottom: 5px; color: #b45309">
                   <b>🎭 Fungsi Seni Sandur:</b>
                 </p>
-                <ol
-                  type="a"
-                  style="
-                    padding-left: 20px;
-                    color: #1e293b;
-                    font-size: 14.5px;
-                    line-height: 1.6;
-                    font-weight: 600;
-                    margin-bottom: 15px;
-                  "
-                >
-                  <li>
-                    <b>Hiburan Masyarakat:</b> Sandur menjadi hiburan rakyat
-                    yang murah dan meriah bagi masyarakat desa.
-                  </li>
-                  <li>
-                    <b>Media Pendidikan:</b> Cerita dalam Sandur biasanya
-                    mengandung pesan moral seperti kerja keras, kejujuran, dan
-                    kebersamaan.
-                  </li>
-                  <li>
-                    <b>Sarana Pelestarian Budaya:</b> Kesenian ini membantu
-                    menjaga tradisi dan bahasa daerah agar tetap dikenal
-                    generasi muda.
-                  </li>
+                <ol type="a" style="padding-left: 20px; color: #1e293b; font-size: 14.5px; line-height: 1.6; font-weight: 600; margin-bottom: 15px">
+                  <li><b>Hiburan Masyarakat:</b> Sandur menjadi hiburan rakyat yang murah dan meriah bagi masyarakat desa.</li>
+                  <li><b>Media Pendidikan:</b> Cerita dalam Sandur biasanya mengandung pesan moral seperti kerja keras, kejujuran, dan kebersamaan.</li>
+                  <li><b>Sarana Pelestarian Budaya:</b> Kesenian ini membantu menjaga tradisi dan bahasa daerah agar tetap dikenal generasi muda.</li>
                 </ol>
 
-                <div
-                  style="
-                    background: #dcfce7;
-                    padding: 12px;
-                    border-radius: 5px;
-                    border-left: 5px solid #16a34a;
-                    margin-top: 15px;
-                    margin-bottom: 15px;
-                  "
-                >
+                <div style="background: #dcfce7; padding: 12px; border-radius: 5px; border-left: 5px solid #16a34a; margin-top: 15px; margin-bottom: 15px">
                   <p style="margin: 0 0 8px 0; color: #16a34a">
                     <b>🌱 Nilai-Nilai dalam Seni Sandur:</b>
                   </p>
-                  <ul
-                    style="
-                      margin: 0;
-                      padding-left: 20px;
-                      font-size: 14px;
-                      line-height: 1.5;
-                    "
-                  >
-                    <li>
-                      <b>Nilai Kebersamaan:</b> Dinikmati bersama oleh
-                      masyarakat sehingga mempererat hubungan sosial.
-                    </li>
-                    <li>
-                      <b>Nilai Humor dan Hiburan:</b> Lawakan membuat masyarakat
-                      merasa senang dan terhibur.
-                    </li>
-                    <li>
-                      <b>Nilai Pendidikan Moral:</b> Cerita yang ditampilkan
-                      mengandung nasihat kehidupan yang baik.
-                    </li>
-                    <li>
-                      <b>Nilai Kerja Keras:</b> Lahir dari kehidupan petani yang
-                      bekerja keras memenuhi kebutuhan hidup.
-                    </li>
+                  <ul style="margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.5">
+                    <li><b>Nilai Kebersamaan:</b> Dinikmati bersama oleh masyarakat sehingga mempererat hubungan sosial.</li>
+                    <li><b>Nilai Humor dan Hiburan:</b> Lawakan membuat masyarakat merasa senang dan terhibur.</li>
+                    <li><b>Nilai Pendidikan Moral:</b> Cerita yang ditampilkan mengandung nasihat kehidupan yang baik.</li>
+                    <li><b>Nilai Kerja Keras:</b> Lahir dari kehidupan petani yang bekerja keras memenuhi kebutuhan hidup.</li>
                   </ul>
                 </div>
               </div>
             </div>
-            <div class="ribbon-bottom">
-              E-Book Interaktif berbasis AR By: siti nurhalimah
-            </div>
+            <div class="ribbon-bottom">E-Book Interaktif berbasis AR By: siti nurhalimah</div>
           </div>
 
           <div class="swiper-slide">
             <div class="glass-box">
               <div class="page-scroll">
-                <h3 class="page-subtitle" style="margin-top: 0">
-                  3. Musik Kentrung
-                </h3>
-                <img
-                  src="asset/gambar/kentrung.jpg"
-                  class="img-content"
-                  alt="Musik Kentrung"
-                  onerror="this.style.display = 'none'"
-                />
+                <h3 class="page-subtitle" style="margin-top: 0">3. Musik Kentrung</h3>
+                <img src="asset/gambar/kentrung.jpg" class="img-content" alt="Musik Kentrung" onerror="this.style.display = 'none'" />
 
+                <p>Musik Kentrung adalah kesenian musik tradisional yang menggunakan alat sederhana dari bambu. Musik ini berkembang di masyarakat pedesaan sebagai hiburan rakyat sekaligus media penyampaian cerita dan pesan moral.</p>
                 <p>
-                  Musik Kentrung adalah kesenian musik tradisional yang
-                  menggunakan alat sederhana dari bambu. Musik ini berkembang di
-                  masyarakat pedesaan sebagai hiburan rakyat sekaligus media
-                  penyampaian cerita dan pesan moral.
-                </p>
-                <p>
-                  Alat musik kentrung menghasilkan suara khas ketika dipukul
-                  atau dimainkan dengan pola tertentu. Meskipun sederhana,
-                  bunyinya memiliki irama unik yang menarik didengar. Musik
-                  Kentrung sering digunakan untuk mengiringi lagu daerah,
-                  pertunjukan rakyat, atau cerita tradisional. Dalam beberapa
-                  pertunjukan, pemain juga menyampaikan cerita rakyat, kisah
-                  kepahlawanan, atau nasihat kehidupan melalui nyanyian dan
-                  dialog.
+                  Alat musik kentrung menghasilkan suara khas ketika dipukul atau dimainkan dengan pola tertentu. Meskipun sederhana, bunyinya memiliki irama unik yang menarik didengar. Musik Kentrung sering digunakan untuk mengiringi lagu
+                  daerah, pertunjukan rakyat, atau cerita tradisional. Dalam beberapa pertunjukan, pemain juga menyampaikan cerita rakyat, kisah kepahlawanan, atau nasihat kehidupan melalui nyanyian dan dialog.
                 </p>
 
                 <p style="margin-bottom: 5px; color: #b45309">
                   <b>✨ Ciri-Ciri Musik Kentrung:</b>
                 </p>
-                <ul
-                  style="
-                    padding-left: 20px;
-                    color: #1e293b;
-                    font-size: 14.5px;
-                    line-height: 1.6;
-                    font-weight: 600;
-                    margin-bottom: 15px;
-                  "
-                >
+                <ul style="padding-left: 20px; color: #1e293b; font-size: 14.5px; line-height: 1.6; font-weight: 600; margin-bottom: 15px">
                   <li>Menggunakan alat musik dari bambu.</li>
                   <li>Memiliki irama sederhana namun khas.</li>
                   <li>Digunakan untuk mengiringi lagu dan cerita rakyat.</li>
@@ -1870,52 +1030,17 @@
                 <p style="margin-bottom: 5px; color: #b45309">
                   <b>🎵 Fungsi Musik Kentrung:</b>
                 </p>
-                <ol
-                  type="a"
-                  style="
-                    padding-left: 20px;
-                    color: #1e293b;
-                    font-size: 14.5px;
-                    line-height: 1.6;
-                    font-weight: 600;
-                    margin-bottom: 15px;
-                  "
-                >
-                  <li>
-                    <b>Sebagai Hiburan:</b> Musik Kentrung menjadi hiburan
-                    masyarakat dalam acara adat dan pertunjukan rakyat.
-                  </li>
-                  <li>
-                    <b>Media Penyampaian Cerita:</b> Cerita rakyat dan pesan
-                    moral dapat disampaikan melalui syair lagu.
-                  </li>
-                  <li>
-                    <b>Pelestarian Budaya:</b> Musik tradisional ini menjadi
-                    bagian penting dari budaya daerah.
-                  </li>
+                <ol type="a" style="padding-left: 20px; color: #1e293b; font-size: 14.5px; line-height: 1.6; font-weight: 600; margin-bottom: 15px">
+                  <li><b>Sebagai Hiburan:</b> Musik Kentrung menjadi hiburan masyarakat dalam acara adat dan pertunjukan rakyat.</li>
+                  <li><b>Media Penyampaian Cerita:</b> Cerita rakyat dan pesan moral dapat disampaikan melalui syair lagu.</li>
+                  <li><b>Pelestarian Budaya:</b> Musik tradisional ini menjadi bagian penting dari budaya daerah.</li>
                 </ol>
 
-                <div
-                  style="
-                    background: #fef3c7;
-                    padding: 12px;
-                    border-radius: 5px;
-                    border-left: 5px solid #d97706;
-                    margin-top: 15px;
-                    margin-bottom: 25px;
-                  "
-                >
+                <div style="background: #fef3c7; padding: 12px; border-radius: 5px; border-left: 5px solid #d97706; margin-top: 15px; margin-bottom: 25px">
                   <p style="margin: 0 0 8px 0; color: #b45309">
                     <b>💎 Nilai-Nilai dalam Musik Kentrung:</b>
                   </p>
-                  <ul
-                    style="
-                      margin: 0;
-                      padding-left: 20px;
-                      font-size: 14px;
-                      line-height: 1.5;
-                    "
-                  >
+                  <ul style="margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.5">
                     <li>Kreativitas masyarakat</li>
                     <li>Kesederhanaan</li>
                     <li>Pelestarian budaya lokal</li>
@@ -1926,43 +1051,16 @@
 
                 <hr style="border: 1px dashed #94a3b8; margin: 25px 0" />
 
-                <div
-                  style="
-                    background: #e0f2fe;
-                    padding: 15px;
-                    border-radius: 8px;
-                    border: 3px solid #38bdf8;
-                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-                  "
-                >
-                  <h3
-                    style="
-                      color: #0284c7;
-                      margin-top: 0;
-                      margin-bottom: 10px;
-                      font-size: 18px;
-                      font-family: &quot;Fredoka One&quot;, cursive;
-                      text-transform: uppercase;
-                    "
-                  >
-                    Kesimpulan
-                  </h3>
+                <div style="background: #e0f2fe; padding: 15px; border-radius: 8px; border: 3px solid #38bdf8; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05)">
+                  <h3 style="color: #0284c7; margin-top: 0; margin-bottom: 10px; font-size: 18px; font-family: &quot;Fredoka One&quot;, cursive; text-transform: uppercase">Kesimpulan</h3>
                   <p style="margin: 0">
-                    Kesenian Tayub, Sandur, dan Musik Kentrung merupakan
-                    kekayaan budaya yang membanggakan masyarakat Semanding.
-                    Ketiga kesenian tersebut tidak hanya berfungsi sebagai
-                    hiburan, tetapi juga mengandung nilai kebersamaan,
-                    pendidikan moral, kreativitas, dan pelestarian budaya
-                    daerah. Oleh karena itu, kesenian tradisional ini perlu
-                    dijaga dan diwariskan kepada generasi muda agar tetap
-                    lestari sebagai identitas budaya masyarakat Indonesia.
+                    Kesenian Tayub, Sandur, dan Musik Kentrung merupakan kekayaan budaya yang membanggakan masyarakat Semanding. Ketiga kesenian tersebut tidak hanya berfungsi sebagai hiburan, tetapi juga mengandung nilai kebersamaan,
+                    pendidikan moral, kreativitas, dan pelestarian budaya daerah. Oleh karena itu, kesenian tradisional ini perlu dijaga dan diwariskan kepada generasi muda agar tetap lestari sebagai identitas budaya masyarakat Indonesia.
                   </p>
                 </div>
               </div>
             </div>
-            <div class="ribbon-bottom">
-              E-Book Interaktif berbasis AR By: siti nurhalimah
-            </div>
+            <div class="ribbon-bottom">E-Book Interaktif berbasis AR By: siti nurhalimah</div>
           </div>
 
           <div class="swiper-slide">
@@ -1972,131 +1070,48 @@
 
                 <div class="kuis-box">
                   <p style="margin: 0 0 5px 0">
-                    <b
-                      >1. Pusat pemerintahan Tuban pada zaman dahulu pernah
-                      berada di desa...</b
-                    >
+                    <b>1. Pusat pemerintahan Tuban pada zaman dahulu pernah berada di desa...</b>
                   </p>
                   <div id="q1-options">
-                    <input type="radio" name="s1" value="a" id="s1a" /><label
-                      for="s1a"
-                    >
-                      Prunggahan Kulon</label
-                    >
-                    <span class="feedback"></span><br />
-                    <input type="radio" name="s1" value="b" id="s1b" /><label
-                      for="s1b"
-                    >
-                      Kowang</label
-                    >
-                    <span class="feedback"></span><br />
-                    <input type="radio" name="s1" value="c" id="s1c" /><label
-                      for="s1c"
-                    >
-                      Gesing</label
-                    >
-                    <span class="feedback"></span><br />
+                    <input type="radio" name="s1" value="a" id="s1a" /><label for="s1a"> Prunggahan Kulon</label> <span class="feedback"></span><br />
+                    <input type="radio" name="s1" value="b" id="s1b" /><label for="s1b"> Kowang</label> <span class="feedback"></span><br />
+                    <input type="radio" name="s1" value="c" id="s1c" /><label for="s1c"> Gesing</label> <span class="feedback"></span><br />
                   </div>
                 </div>
 
                 <div class="kuis-box">
                   <p style="margin: 0 0 5px 0">
-                    <b
-                      >2. Tradisi syukuran agar padi subur di Desa Ngino
-                      disebut...</b
-                    >
+                    <b>2. Tradisi syukuran agar padi subur di Desa Ngino disebut...</b>
                   </p>
                   <div id="q2-options">
-                    <input type="radio" name="s2" value="a" id="s2a" /><label
-                      for="s2a"
-                    >
-                      Siraman Waranggono</label
-                    >
-                    <span class="feedback"></span><br />
-                    <input type="radio" name="s2" value="b" id="s2b" /><label
-                      for="s2b"
-                    >
-                      Ritual Keleman</label
-                    >
-                    <span class="feedback"></span><br />
-                    <input type="radio" name="s2" value="c" id="s2c" /><label
-                      for="s2c"
-                    >
-                      Kenduren</label
-                    >
-                    <span class="feedback"></span><br />
+                    <input type="radio" name="s2" value="a" id="s2a" /><label for="s2a"> Siraman Waranggono</label> <span class="feedback"></span><br />
+                    <input type="radio" name="s2" value="b" id="s2b" /><label for="s2b"> Ritual Keleman</label> <span class="feedback"></span><br />
+                    <input type="radio" name="s2" value="c" id="s2c" /><label for="s2c"> Kenduren</label> <span class="feedback"></span><br />
                   </div>
                 </div>
 
                 <div class="kuis-box">
                   <p style="margin: 0 0 5px 0">
-                    <b
-                      >3. Kerajinan tanah liat seperti gendok dan kuali banyak
-                      dibuat di desa...</b
-                    >
+                    <b>3. Kerajinan tanah liat seperti gendok dan kuali banyak dibuat di desa...</b>
                   </p>
                   <div id="q3-options">
-                    <input type="radio" name="s3" value="a" id="s3a" /><label
-                      for="s3a"
-                    >
-                      Bejagung</label
-                    >
-                    <span class="feedback"></span><br />
-                    <input type="radio" name="s3" value="b" id="s3b" /><label
-                      for="s3b"
-                    >
-                      Karang</label
-                    >
-                    <span class="feedback"></span><br />
-                    <input type="radio" name="s3" value="c" id="s3c" /><label
-                      for="s3c"
-                    >
-                      Bektiharjo</label
-                    >
-                    <span class="feedback"></span><br />
+                    <input type="radio" name="s3" value="a" id="s3a" /><label for="s3a"> Bejagung</label> <span class="feedback"></span><br />
+                    <input type="radio" name="s3" value="b" id="s3b" /><label for="s3b"> Karang</label> <span class="feedback"></span><br />
+                    <input type="radio" name="s3" value="c" id="s3c" /><label for="s3c"> Bektiharjo</label> <span class="feedback"></span><br />
                   </div>
                 </div>
 
                 <div style="text-align: center; margin-top: 15px">
-                  <button
-                    style="
-                      background: #10b981;
-                      border: none;
-                      padding: 10px 20px;
-                      border-radius: 8px;
-                      font-weight: 900;
-                      color: #fff;
-                      cursor: pointer;
-                      font-family: &quot;Nunito&quot;;
-                    "
-                    onclick="cekJawaban()"
-                  >
-                    KIRIM JAWABAN
-                  </button>
+                  <button style="background: #10b981; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 900; color: #fff; cursor: pointer; font-family: &quot;Nunito&quot;" onclick="cekJawaban()">KIRIM JAWABAN</button>
                 </div>
 
-                <h3 class="page-subtitle" style="margin-top: 30px">
-                  TANTANGAN AKHIR
-                </h3>
-                <div
-                  style="
-                    background: #e0f2fe;
-                    padding: 15px;
-                    border-radius: 8px;
-                    border: 2px dashed #0284c7;
-                  "
-                >
-                  <p style="margin: 0">
-                    <b>Tugas:</b> Cobalah amati lingkungan sekitarmu! Apa
-                    tradisi atau kerajinan yang ada di desamu? Ceritakan atau
-                    gambarkan di buku tulismu!
-                  </p>
+                <h3 class="page-subtitle" style="margin-top: 30px">TANTANGAN AKHIR</h3>
+                <div style="background: #e0f2fe; padding: 15px; border-radius: 8px; border: 2px dashed #0284c7">
+                  <p style="margin: 0"><b>Tugas:</b> Cobalah amati lingkungan sekitarmu! Apa tradisi atau kerajinan yang ada di desamu? Ceritakan atau gambarkan di buku tulismu!</p>
                 </div>
               </div>
             </div>
-            <div class="ribbon-bottom">
-              E-Book Interaktif berbasis AR By: siti nurhalimah
-            </div>
+            <div class="ribbon-bottom">E-Book Interaktif berbasis AR By: siti nurhalimah</div>
           </div>
 
           <div class="swiper-slide">
@@ -2105,73 +1120,26 @@
                 <h2 class="page-title">HALAMAN PENUTUP</h2>
 
                 <div style="text-align: center; margin-bottom: 30px">
-                  <h3 class="page-subtitle" style="color: #b45309">
-                    ✨ Pesan Bijak
-                  </h3>
-                  <p
-                    style="
-                      font-style: italic;
-                      font-size: 16px;
-                      color: #1e293b;
-                      background: #fffbeb;
-                      padding: 20px;
-                      border-radius: 12px;
-                      border: 1px solid #fde68a;
-                      line-height: 1.6;
-                    "
-                  >
-                    "Mencintai budaya sendiri adalah awal dari mencintai bangsa.
-                    Mari kita jaga kearifan lokal Semanding agar tidak hilang
-                    ditelan zaman."
+                  <h3 class="page-subtitle" style="color: #b45309">✨ Pesan Bijak</h3>
+                  <p style="font-style: italic; font-size: 16px; color: #1e293b; background: #fffbeb; padding: 20px; border-radius: 12px; border: 1px solid #fde68a; line-height: 1.6">
+                    "Mencintai budaya sendiri adalah awal dari mencintai bangsa. Mari kita jaga kearifan lokal Semanding agar tidak hilang ditelan zaman."
                   </p>
                 </div>
 
                 <h3 class="page-subtitle">📚 Glosarium</h3>
-                <ul
-                  style="
-                    background: #f1f5f9;
-                    padding: 15px 15px 15px 35px;
-                    border-radius: 8px;
-                    list-style-type: disc;
-                  "
-                >
-                  <li style="margin-bottom: 10px">
-                    <b>Kearifan Lokal:</b> Nilai-nilai luhur yang berlaku dalam
-                    tata kehidupan masyarakat.
-                  </li>
-                  <li style="margin-bottom: 10px">
-                    <b>Waranggono:</b> Penari wanita dalam pertunjukan Tayub.
-                  </li>
-                  <li style="margin-bottom: 10px">
-                    <b>Gerabah:</b> Barang pecah belah yang terbuat dari tanah
-                    liat.
-                  </li>
-                  <li style="margin-bottom: 10px">
-                    <b>Paes:</b> Tata rias atau bedak wajah pengantin.
-                  </li>
+                <ul style="background: #f1f5f9; padding: 15px 15px 15px 35px; border-radius: 8px; list-style-type: disc">
+                  <li style="margin-bottom: 10px"><b>Kearifan Lokal:</b> Nilai-nilai luhur yang berlaku dalam tata kehidupan masyarakat.</li>
+                  <li style="margin-bottom: 10px"><b>Waranggono:</b> Penari wanita dalam pertunjukan Tayub.</li>
+                  <li style="margin-bottom: 10px"><b>Gerabah:</b> Barang pecah belah yang terbuat dari tanah liat.</li>
+                  <li style="margin-bottom: 10px"><b>Paes:</b> Tata rias atau bedak wajah pengantin.</li>
                 </ul>
 
                 <div style="text-align: center; margin-top: 40px">
-                  <button
-                    style="
-                      background: #334155;
-                      color: white;
-                      border: none;
-                      padding: 10px 20px;
-                      border-radius: 20px;
-                      cursor: pointer;
-                      font-weight: bold;
-                    "
-                    onclick="swiper.slideTo(0)"
-                  >
-                    Kembali ke Sampul
-                  </button>
+                  <button style="background: #334155; color: white; border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; font-weight: bold" onclick="swiper.slideTo(0)">Kembali ke Sampul</button>
                 </div>
               </div>
             </div>
-            <div class="ribbon-bottom">
-              E-Book Interaktif berbasis AR By: siti nurhalimah
-            </div>
+            <div class="ribbon-bottom">E-Book Interaktif berbasis AR By: siti nurhalimah</div>
           </div>
         </div>
 
@@ -2181,14 +1149,28 @@
     </div>
 
     <script>
+      // Force click on non-swiping elements
+      document.addEventListener(
+        "click",
+        function (e) {
+          if (e.target.closest(".page-scroll") || e.target.tagName === "INPUT" || e.target.tagName === "LABEL" || e.target.tagName === "BUTTON") {
+            // Allow default behavior
+          }
+        },
+        true,
+      );
+
       var swiper = new Swiper(".mySwiper", {
         effect: "cards",
         grabCursor: true,
+        preventClicks: false,
+        preventClicksPropagation: false,
+        noSwiping: true,
+        noSwipingSelector: "input, label, button, .kuis-box, .page-scroll, a",
         cardsEffect: {
           perSlideOffset: 12,
           perSlideRotate: 3,
-          slideShadows: true,
-          allowTouchMove: false, // Izinkan interaksi pada slide
+          slideShadows: false,
         },
         navigation: {
           nextEl: ".swiper-button-next",
@@ -2196,34 +1178,78 @@
         },
       });
 
+      // Hapus stopPropagation yang mungkin memblokir input radio/tombol
+      /*
+      document.querySelectorAll(".kuis-box").forEach((box) => {
+        ["pointerdown", "pointerup", "mousedown", "touchstart", "touchmove", "click"].forEach((evt) => {
+          box.addEventListener(evt, (e) => e.stopPropagation());
+        });
+      });
+      */
+
+      const audio = document.getElementById("bgAudio");
+      const audioToggle = document.getElementById("audioToggle");
+      const startRead = document.getElementById("startRead");
+
+      audioToggle.addEventListener("click", () => {
+        if (audio.paused) {
+          audio
+            .play()
+            .then(() => {
+              audioToggle.textContent = "🔊";
+              audioToggle.title = "Matikan Suara";
+            })
+            .catch(() => {
+              audioToggle.textContent = "🔈";
+            });
+        } else {
+          audio.pause();
+          audioToggle.textContent = "🔈";
+          audioToggle.title = "Suara / Audio";
+        }
+      });
+
+      startRead.addEventListener("click", () => {
+        audio
+          .play()
+          .then(() => {
+            audioToggle.textContent = "🔊";
+            audioToggle.title = "Matikan Suara";
+          })
+          .catch(() => {
+            audioToggle.textContent = "🔈";
+          });
+        swiper.slideNext();
+      });
+
       function cekJawaban() {
         const jawaban = { s1: "a", s2: "b", s3: "b" };
         let semuaBenar = true;
 
         for (const soal in jawaban) {
-          const pilihan = document.querySelector(
-            `input[name="${soal}"]:checked`,
-          );
-          const feedbackSpans = document.querySelectorAll(
-            `#${soal}-options .feedback`,
-          );
+          const pilihan = document.querySelector(`input[name="${soal}"]:checked`);
+          const opsi = document.querySelectorAll(`#${soal}-options input[type="radio"]`);
 
           // Reset feedback sebelumnya
-          feedbackSpans.forEach((span) => {
-            span.textContent = "";
-            span.className = "feedback";
+          opsi.forEach((input) => {
+            const span = input.parentElement.querySelector(`label[for="${input.id}"] + .feedback`);
+            if (span) {
+              span.textContent = "";
+              span.className = "feedback";
+            }
           });
 
           if (pilihan) {
-            const feedbackSpan =
-              pilihan.parentElement.querySelector(".feedback");
-            if (pilihan.value === jawaban[soal]) {
-              feedbackSpan.textContent = "✅ Benar";
-              feedbackSpan.className = "feedback correct";
-            } else {
-              feedbackSpan.textContent = "❌ Salah";
-              feedbackSpan.className = "feedback incorrect";
-              semuaBenar = false;
+            const feedbackSpan = pilihan.parentElement.querySelector(`label[for="${pilihan.id}"] + .feedback`);
+            if (feedbackSpan) {
+              if (pilihan.value === jawaban[soal]) {
+                feedbackSpan.textContent = "✅ Benar";
+                feedbackSpan.className = "feedback correct";
+              } else {
+                feedbackSpan.textContent = "❌ Salah";
+                feedbackSpan.className = "feedback incorrect";
+                semuaBenar = false;
+              }
             }
           } else {
             // Jika ada soal yang belum dijawab
@@ -2231,14 +1257,9 @@
           }
         }
 
-        if (
-          semuaBenar &&
-          document.querySelectorAll('input[type="radio"]:checked').length === 3
-        ) {
+        if (semuaBenar && document.querySelectorAll('input[type="radio"]:checked').length === 3) {
           alert("Hebat! Kamu sudah paham betul tentang budaya Semanding!");
-        } else if (
-          document.querySelectorAll('input[type="radio"]:checked').length < 3
-        ) {
+        } else if (document.querySelectorAll('input[type="radio"]:checked').length < 3) {
           alert("Oops! Sepertinya ada soal yang belum kamu jawab.");
         } else {
           alert("Ayo coba lagi! Jangan menyerah ya.");
